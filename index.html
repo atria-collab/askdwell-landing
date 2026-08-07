@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AskDwell — AI-agentic infrastructure for property operations</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
 <style>
   :root{
     --bg:#0E0B0A;--bg2:#161010;--panel:#1A1413;--panel2:#211917;
@@ -92,7 +93,7 @@
   .comingwrap h4{font-size:19px;color:#fff;font-weight:700;}
   .comingwrap p{font-size:13px;color:var(--sub);font-weight:300;max-width:280px;}
 
-  /* proof / STAN-style cards */
+  /* proof cards */
   .proofcards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
   @media(max-width:880px){.proofcards{grid-template-columns:repeat(2,1fr);}}
   @media(max-width:480px){.proofcards{grid-template-columns:1fr;}}
@@ -186,7 +187,12 @@
   .yes{color:var(--green);font-weight:800;font-size:17px;}
   .no{color:var(--muted);font-size:16px;opacity:.5;}
   .part{color:var(--amber);font-size:12px;font-weight:600;}
-  @media(max-width:820px){.comp{overflow-x:auto;} .comprow{grid-template-columns:1.6fr repeat(4,90px);min-width:640px;}}
+  @media(max-width:820px){
+    .comp{overflow-x:auto;-webkit-overflow-scrolling:touch;overflow-y:hidden;}
+    .comprow{grid-template-columns:180px repeat(4,120px);min-width:660px;}
+    .comprow .cell.feat{position:sticky;left:0;z-index:3;background:var(--bg2);box-shadow:6px 0 12px -6px rgba(0,0,0,.5);}
+    .comphead .cell.feat{background:var(--panel);}
+  }
 
   /* personas mini */
   .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
@@ -220,6 +226,56 @@
   .footbot{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);}
   .footbot .g{color:var(--orange-lt);}
   svg{display:block;}
+  .herocaps{list-style:none;display:flex;flex-wrap:wrap;gap:8px 18px;margin:2px 0 26px;}
+  .herocaps li{font-size:13.5px;color:var(--ink);font-weight:400;padding-left:22px;position:relative;}
+  .herocaps li::before{content:"\2713";position:absolute;left:0;color:var(--orange);font-weight:800;}
+  .chatlink{cursor:pointer;border:none;font-family:inherit;text-align:left;font-weight:600;}
+  .chatlink:hover{filter:brightness(1.08);text-decoration:underline;}
+  .social{display:flex;gap:11px;margin-top:16px;}
+  .social a{width:34px;height:34px;border-radius:9px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;transition:.2s;color:var(--sub);}
+  .social a:hover{border-color:var(--orange);color:#fff;}
+  .social svg{width:17px;height:17px;}
+  .modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,6,5,.72);backdrop-filter:blur(4px);}
+  .modal.open{display:flex;}
+  .modalcard{background:#17110E;border:1px solid var(--line2);border-radius:18px;max-width:560px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.6);}
+  .modalhead{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#17110E;}
+  .modalhead h4{font-size:17px;color:#fff;font-weight:700;}
+  .modalhead .sub{font-size:12px;color:var(--muted);margin-top:2px;}
+  .modalclose{background:var(--panel);border:1px solid var(--line2);color:var(--ink);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px;}
+  .modalbody{padding:22px 24px;}
+  .rpt-h{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange-lt);margin:0 0 12px;}
+  .rpt-h.mt{margin-top:26px;}
+  .rpt-t{width:100%;border-collapse:collapse;font-size:13px;}
+  .rpt-t td{padding:7px 4px;border-bottom:1px solid var(--line);color:var(--ink);}
+  .rpt-t td.r{text-align:right;color:#fff;}
+  .rpt-t tr.tot td{border-top:1px solid var(--line2);border-bottom:none;font-weight:700;color:#fff;padding-top:10px;}
+  .rpt-t tr.sub td{color:var(--sub);}
+  .rr{width:100%;border-collapse:collapse;font-size:12px;}
+  .rr th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:6px 6px;border-bottom:1px solid var(--line2);}
+  .rr td{padding:7px 6px;border-bottom:1px solid var(--line);color:var(--ink);}
+  .rr td.r{text-align:right;}
+  .rr .pill{font-size:10px;padding:2px 7px;border-radius:5px;}
+  .rr .cur{background:rgba(79,208,138,.14);color:var(--green);}
+  .rr .vac{background:rgba(240,87,43,.14);color:var(--orange-lt);}
+  .rpt-note{font-size:11px;color:var(--muted);font-style:italic;margin-top:16px;}
+  .vlink{cursor:pointer;font-family:inherit;text-align:left;font-weight:600;}
+  .vlink:hover{filter:brightness(1.08);text-decoration:underline;}
+  .msg.photomsg{padding:5px;max-width:230px;}
+  .msg.photomsg svg{border-radius:9px;display:block;width:100%;height:auto;}
+  .listing{display:flex;gap:14px;align-items:center;padding:15px 0;border-bottom:1px solid var(--line);}
+  .listing:last-of-type{border-bottom:none;}
+  .lphoto{position:relative;width:124px;height:84px;border-radius:11px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);}
+  .lphoto.g1{background:linear-gradient(150deg,#3a2418,#241a14);}
+  .lphoto.g2{background:linear-gradient(150deg,#33231a,#1e1713);}
+  .lphoto .glyph{opacity:.28;}
+  .phlabel2{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:8.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);}
+  .ldet .lt{font-size:14.5px;font-weight:700;color:#fff;}
+  .ldet .lmeta{font-size:12px;color:var(--sub);margin:3px 0 9px;}
+  .lrow{display:flex;gap:14px;align-items:center;}
+  .lprice{font-size:15px;font-weight:800;color:var(--orange);}
+  .lavail{font-size:11px;color:var(--green);background:rgba(79,208,138,.12);padding:3px 9px;border-radius:6px;}
+  .calwrap{max-width:760px;margin:0 auto;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#1a1413;box-shadow:0 20px 50px rgba(0,0,0,.35);}
+  .calendly-inline-widget{border-radius:18px;min-height:640px;}
 </style>
 </head>
 <body>
@@ -244,6 +300,7 @@
       <span class="badge"><span class="pulse"></span>Live in production at Collab — $170M+ AUM</span>
       <h1>Manage more doors with a <span class="grad">smaller team.</span></h1>
       <p class="sub">Tenant texts at midnight. Maintenance requests with no photos. Lease questions, owner updates, work orders slipping through the cracks. AskDwell puts a coordinated team of AI agents on the busywork — so your team handles more units without adding headcount.</p>
+      <ul class="herocaps"><li>In-person showing scheduling</li><li>Real-time tenant-ledger adjustments</li><li>Market-based leasing-price updates</li></ul>
       <div class="herobtns">
         <a href="#book" class="btn btn-p">Book a demo →</a>
         <a href="#how" class="btn btn-g">See how it works</a>
@@ -261,7 +318,7 @@
         <button class="demotab active" data-agent="colby">Colby<span class="who">tenants</span></button>
         <button class="demotab" data-agent="maven">Maven<span class="who">staff</span></button>
         <button class="demotab" data-agent="ava">Ava<span class="who">leasing</span></button>
-        <button class="demotab soon" data-agent="bobby">Bobby<span class="who">owners</span><span class="sn">soon</span></button>
+        <button class="demotab" data-agent="bobby">Bobby<span class="who">owners</span></button>
       </div>
       <div class="chatwin">
         <div class="chathead" id="chathead">
@@ -275,7 +332,7 @@
   </div>
 </header>
 
-<!-- PROOF / STAN-STYLE -->
+<!-- PROOF -->
 <section class="sec" id="proof" style="padding-top:60px;">
   <div class="wrap">
     <div class="sechead reveal">
@@ -321,10 +378,12 @@
     </div>
     <div class="optabs reveal">
       <button class="optab active" data-op="0">Omni-channel tenant care</button>
-      <button class="optab" data-op="1">Maintenance, triaged</button>
-      <button class="optab" data-op="2">Portfolio lookups</button>
-      <button class="optab" data-op="3">Draft → approve → done</button>
-      <button class="optab" data-op="4">Lease answers</button>
+      <button class="optab" data-op="1">Lease answers</button>
+      <button class="optab" data-op="2">Maintenance, triaged</button>
+      <button class="optab" data-op="3">Portfolio lookups</button>
+      <button class="optab" data-op="4">Draft → approve → done</button>
+      <button class="optab" data-op="5">Ava · Leasing</button>
+      <button class="optab" data-op="6">Bobby · Owners</button>
     </div>
     <div class="opwrap reveal">
       <div class="oppanel active" data-op="0">
@@ -332,20 +391,28 @@
         <div class="opvisual"><div class="vmsg them">Is trash pickup today or tomorrow?</div><div class="vmsg me">Tomorrow (Tuesday) before 8 AM for your building 👍 Bins are by the north entrance.</div><div class="vmsg them">¿y el gimnasio a qué hora abre?</div><div class="vmsg me">El gimnasio abre de 6 AM a 11 PM todos los días 💪</div></div>
       </div>
       <div class="oppanel" data-op="1">
+        <div><span class="oe">Colby · lease &amp; rules</span><h3>Answers from the actual lease — not a generic policy</h3><p>Pet rules, sublet terms, quiet hours, late fees — Colby searches that market's real lease document, clause by clause, scoped to the tenant asking.</p><ul><li>Dates, rent, deposit, who's on the lease</li><li>Pets, parking, sublet, quiet hours, late fees</li><li>Cites the tenant's own lease, not a template</li></ul></div>
+        <div class="opvisual"><div class="vmsg them">can I get a second parking spot?</div><div class="vmsg me">Your lease allows one assigned spot; additional spots are $75/mo if available. Want me to flag it to the office?</div><div class="vmsg them">yes please</div><div class="vmsg me">Flagged — they'll follow up on availability 👍</div></div>
+      </div>
+      <div class="oppanel" data-op="2">
         <div><span class="oe">Colby · maintenance</span><h3>Turns a vague complaint into a clean work order</h3><p>Colby describes the issue back to confirm it, checks for duplicates, and drops anything that sounds unsafe straight to a human — then files it.</p><ul><li>Asks for photos and the details staff actually need</li><li>Offers a safe self-fix first — and files nothing if it works</li><li>Creates the work order in Buildium with a reference number</li></ul></div>
         <div class="opvisual"><div class="vmsg them">kitchen sink is leaking 😟</div><div class="vmsg me">Let's sort it. Try the shut-off valve under the sink — does that stop the drip?</div><div class="vmsg them">yes that stopped it!</div><div class="vmsg me">Great — that keeps it from getting worse. Logged as #55501, team will follow up.</div><div class="vmsg sys">✓ Work order created in Buildium</div></div>
       </div>
-      <div class="oppanel" data-op="2">
+      <div class="oppanel" data-op="3">
         <div><span class="oe">Maven · staff</span><h3>Answers your team across the whole portfolio</h3><p>Maven reads everything staff need — tenants, leases, money, work orders, adoption — right inside your team's channel.</p><ul><li>Any tenant, lease, or unit by name or address</li><li>What a lease owes and its exact payment history</li><li>What similar jobs actually cost — averages, medians</li></ul></div>
         <div class="opvisual"><div class="vmsg them">@Maven what's open on 1200 Central?</div><div class="vmsg me">3 open: #55501 sink leak (unassigned) · #55488 hallway light (in progress) · #55470 garage remote (waiting on vendor).</div><div class="vmsg them">what did the last 3 sink jobs run?</div><div class="vmsg me">$140 median, $155 avg — CP-completed.</div></div>
       </div>
-      <div class="oppanel" data-op="3">
+      <div class="oppanel" data-op="4">
         <div><span class="oe">Maven · the write surface</span><h3>Nothing changes until a person says go</h3><p>Every action Maven can take is a draft. A manager reads the exact wording and values, approves, and only then does it happen — and it's all logged.</p><ul><li>Draft → a manager approves → it happens → it's logged</li><li>Never invents a confirmation it can't back up</li><li>Adding staff needs two different managers to sign off</li></ul></div>
         <div class="opvisual"><div class="vmsg them">assign the sink leak to Dave, bump priority</div><div class="vmsg me">Draft → assign #55501 to Dave Ruiz, priority High. Approve to apply?</div><div class="vmsg them">approve ✅</div><div class="vmsg me">Done. #55501 → Dave Ruiz, High. Logged: you, 10:42 AM.</div></div>
       </div>
-      <div class="oppanel" data-op="4">
-        <div><span class="oe">Colby · lease &amp; rules</span><h3>Answers from the actual lease — not a generic policy</h3><p>Pet rules, sublet terms, quiet hours, late fees — Colby searches that market's real lease document, clause by clause, scoped to the tenant asking.</p><ul><li>Dates, rent, deposit, who's on the lease</li><li>Pets, parking, sublet, quiet hours, late fees</li><li>Cites the tenant's own lease, not a template</li></ul></div>
-        <div class="opvisual"><div class="vmsg them">can I get a second parking spot?</div><div class="vmsg me">Your lease allows one assigned spot; additional spots are $75/mo if available. Want me to flag it to the office?</div><div class="vmsg them">yes please</div><div class="vmsg me">Flagged — they'll follow up on availability 👍</div></div>
+      <div class="oppanel" data-op="5">
+        <div><span class="oe">Ava · leasing</span><h3>Turns every inquiry into a guided leasing journey</h3><p>Ava responds to prospective renters, understands what they're looking for, and guides them from first inquiry through tour, application, lease signing, and move-in — using only the client's approved inventory.</p><ul><li>Responds to leads across WhatsApp, SMS, email &amp; listing channels</li><li>Qualifies prospects and recommends matching available units</li><li>Coordinates tours and follows up on applications, leases &amp; deposits</li></ul></div>
+        <div class="opvisual"><div class="vmsg them">I'm looking for a 2-bedroom near UC Berkeley, available August 1.</div><div class="vmsg me">I found two available options that match your move-in date and budget.</div><button class="vmsg me vlink" onclick="openHomes()">🏠 View matching homes</button><div class="vmsg me">Would you prefer an in-person tour or a virtual tour?</div><div class="vmsg them">In person. Saturday afternoon works.</div><div class="vmsg me">Saturday at 2:00 PM is available. I've reserved the tour and sent the confirmation — I'll remind you before the appointment.</div></div>
+      </div>
+      <div class="oppanel" data-op="6">
+        <div><span class="oe">Bobby · owners</span><h3>Gives owners the answer and the decision in one place</h3><p>Bobby turns property data into clear owner updates. Owners can request reports, review operating issues, approve expenses, and track follow-up — without digging through email or scheduling another meeting.</p><ul><li>Provides property, leasing, maintenance &amp; financial updates</li><li>Shares reports and supporting documents through clickable links</li><li>Collects approvals and routes decisions to the operating team</li></ul></div>
+        <div class="opvisual"><div class="vmsg them">Bobby, can you send me the latest T-12 and rent roll for Oxford?</div><div class="vmsg me">Of course. I've prepared the latest property package.</div><button class="vmsg me vlink" onclick="openReport()">📄 View T-12 &amp; Rent Roll</button><div class="vmsg me">There's also one item that needs your approval — the water-heater replacement quote is $6,800, above your approval limit. The unit has failed and the vendor recommends replacement over repair. Approve it?</div><div class="vmsg them">Yes, approve it.</div><div class="vmsg me">Approved and recorded. I've routed the authorization to Maven for scheduling and vendor coordination — I'll update you once installation is confirmed.</div></div>
       </div>
     </div>
   </div>
@@ -390,20 +457,19 @@
       <div class="comprow comphead">
         <div class="cell feat">Capability</div>
         <div class="cell us">AskDwell</div>
-        <div class="cell">STAN&nbsp;AI</div>
-        <div class="cell">Inspectr</div>
-        <div class="cell">Point tools</div>
+        <div class="cell">Traditional PMS</div>
+        <div class="cell">Enterprise AI platforms</div>
+        <div class="cell">Point solutions</div>
       </div>
-      <div class="comprow body"><div class="cell feat">Coordinates tenants, staff &amp; owners in one system</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="part">comms</span></div><div class="cell"><span class="part">ops</span></div><div class="cell"><span class="no">✕</span></div></div>
-      <div class="comprow body"><div class="cell feat">Human approves every change (no rogue actions)</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div></div>
-      <div class="comprow body"><div class="cell feat">Never invents a "done" it can't back up</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div></div>
-      <div class="comprow body"><div class="cell feat">Tenant privacy scoped to one identity</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div></div>
-      <div class="comprow body"><div class="cell feat">Works on top of your existing PMS</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="yes">✓</span></div><div class="cell"><span class="yes">✓</span></div><div class="cell"><span class="part">some</span></div></div>
-      <div class="comprow body"><div class="cell feat">Validated in a live $170M portfolio</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div></div>
+      <div class="comprow body"><div class="cell feat">Coordinates tenants, staff &amp; owners in one system</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="no">✕</span></div></div>
+      <div class="comprow body"><div class="cell feat">A human approves every change (no rogue actions)</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="part">partial</span></div></div>
+      <div class="comprow body"><div class="cell feat">Never invents a &ldquo;done&rdquo; it can&rsquo;t back up</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="part">partial</span></div></div>
+      <div class="comprow body"><div class="cell feat">Tenant privacy scoped to one identity</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="yes">✓</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="part">partial</span></div></div>
+      <div class="comprow body"><div class="cell feat">Works on top of your existing PMS</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="yes">✓</span></div></div>
       <div class="comprow body"><div class="cell feat">Community-Pro field execution</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div><div class="cell"><span class="no">✕</span></div></div>
       <div class="comprow body"><div class="cell feat">One coordinated system vs. a stack of add-ons</div><div class="cell us"><span class="yes">✓</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="part">partial</span></div><div class="cell"><span class="no">✕</span></div></div>
     </div>
-    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:16px;font-style:italic;">Based on public product information as of August 2026. Community-Pro field execution reflects Collab's operating model.</p>
+    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:16px;font-style:italic;">General category comparison as of August 2026. Community-Pro field execution reflects Collab’s operating model.</p>
   </div>
 </section>
 
@@ -439,24 +505,79 @@
 
 <!-- CTA -->
 <section class="sec" id="book" style="padding-top:0;">
-  <div class="wrap"><div class="cta reveal">
-    <h2>See AskDwell run a day of your operations.</h2>
-    <p>Book a 30-minute walkthrough on your own portfolio and watch a request move from a tenant's text to a coordinated, approved action.</p>
-    <a href="mailto:hello@askdwell.ai" class="btn btn-w">Book a demo →</a>
-  </div></div>
+  <div class="wrap">
+    <div class="sechead reveal">
+      <span class="eyebrow">Book a demo</span>
+      <h2>See AskDwell run a day of <b>your operations.</b></h2>
+      <p class="lead">Pick a time below for a 30-minute walkthrough on your own portfolio — and watch a request move from a tenant's text to a coordinated, approved action.</p>
+    </div>
+    <div class="calwrap reveal">
+      <div class="calendly-inline-widget" data-url="https://calendly.com/d/cytg-dvn-xdn?hide_gdpr_banner=1&background_color=1a1413&text_color=efe7e1&primary_color=f0572b" style="min-width:320px;height:700px;"></div>
+    </div>
+  </div>
 </section>
 
 <!-- FOOTER -->
 <footer><div class="wrap">
   <div class="footgrid">
     <div class="footbrand"><a href="#" class="logo"><span class="mk"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 5l8 6.5" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10.5V19h12v-8.5" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14" r="2" fill="#fff"/></svg></span>askdwell</a>
-    <p>AI-agentic infrastructure for property operations. Validated in live operations at Collab before it reaches you.</p></div>
+    <p>AI-agentic infrastructure for property operations. Validated in live operations at Collab before it reaches you.</p>
+      <div class="social"><a href="https://www.instagram.com/askdwell.ai/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.tiktok.com/@askdwell" target="_blank" rel="noopener" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.3 2 1.6 3.6 3.6 3.9V9.4c-1.4 0-2.7-.4-3.6-1.1v6.4A5.6 5.6 0 1 1 10.4 9.1v2.6a3 3 0 1 0 2.6 3V3H16z"/></svg></a><a href="https://www.facebook.com/profile.php?id=61591485185193" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8.5V7c0-.8.4-1.2 1.3-1.2H17V3h-2.4C11.9 3 11 4.6 11 6.6v1.9H9V11h2v10h3V11h2.2l.4-2.5H14z"/></svg></a></div></div>
     <div class="footcol"><h5>Product</h5><a href="#demo">Meet the agents</a><a href="#how">How it works</a><a href="#compare">Compare</a><a href="#pricing">Pricing</a></div>
     <div class="footcol"><h5>Company</h5><a href="#collab">Customers</a><a href="#">Collab partnership</a><a href="#book">Book a demo</a><a href="mailto:hello@askdwell.ai">Contact</a></div>
     <div class="footcol"><h5>Get started</h5><a href="#book">Talk to us</a><a href="mailto:hello@askdwell.ai">hello@askdwell.ai</a><a href="#">askdwell.ai</a></div>
   </div>
-  <div class="footbot"><span>© 2026 AskDwell. All rights reserved.</span><span>Built with <span class="g">AI + a human touch</span> · powered by Collab</span></div>
+  <div class="footbot"><span>© 2026 AskDwell. All rights reserved. · <a href="terms.html" style="color:var(--sub);">Terms of Service</a></span><span>Built with <span class="g">AI + a human touch</span> · powered by Collab</span></div>
 </div></footer>
+
+<div class="modal" id="reportModal">
+  <div class="modalcard">
+    <div class="modalhead">
+      <div><h4>Financial Package &mdash; Collab Oxford, Berkeley</h4><div class="sub">Prepared by Bobby · AI Owner Assistant</div></div>
+      <button class="modalclose" onclick="closeReport()">✕</button>
+    </div>
+    <div class="modalbody">
+      <div class="rpt-h">T-12 Operating Statement</div>
+      <table class="rpt-t">
+        <tr><td>Gross Potential Rent</td><td class="r">$1,248,000</td></tr>
+        <tr class="sub"><td>Less: Vacancy &amp; Credit Loss</td><td class="r">($62,400)</td></tr>
+        <tr class="tot"><td>Effective Gross Income</td><td class="r">$1,185,600</td></tr>
+        <tr class="sub"><td>Payroll &amp; Administration</td><td class="r">$118,000</td></tr>
+        <tr class="sub"><td>Repairs &amp; Maintenance</td><td class="r">$94,500</td></tr>
+        <tr class="sub"><td>Utilities</td><td class="r">$132,000</td></tr>
+        <tr class="sub"><td>Property Taxes</td><td class="r">$146,000</td></tr>
+        <tr class="sub"><td>Insurance</td><td class="r">$38,500</td></tr>
+        <tr class="sub"><td>Management &amp; Other</td><td class="r">$71,000</td></tr>
+        <tr class="tot"><td>Total Operating Expenses</td><td class="r">$600,000</td></tr>
+        <tr class="tot"><td>Net Operating Income (NOI)</td><td class="r" style="color:#4FD08A;">$585,600</td></tr>
+      </table>
+      <div class="rpt-h mt">Current Rent Roll</div>
+      <table class="rr">
+        <thead><tr><th>Unit</th><th>Type</th><th>Status</th><th>Lease End</th><th class="r">Rent</th></tr></thead>
+        <tbody>
+          <tr><td>101</td><td>2BR</td><td><span class="pill cur">Current</span></td><td>07/31/27</td><td class="r">$2,400</td></tr>
+          <tr><td>102</td><td>2BR</td><td><span class="pill cur">Current</span></td><td>08/15/27</td><td class="r">$2,450</td></tr>
+          <tr><td>205</td><td>1BR</td><td><span class="pill cur">Current</span></td><td>06/30/27</td><td class="r">$1,900</td></tr>
+          <tr><td>210</td><td>Studio</td><td><span class="pill vac">Vacant</span></td><td>&mdash;</td><td class="r">$1,650</td></tr>
+          <tr><td>314</td><td>3BR</td><td><span class="pill cur">Current</span></td><td>07/31/27</td><td class="r">$3,150</td></tr>
+        </tbody>
+      </table>
+      <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:12.5px;color:var(--sub);"><span>Occupancy: <b style="color:#fff;">96%</b></span><span>Avg. rent: <b style="color:#fff;">$2,390</b></span></div>
+      <div class="rpt-note">Illustrative sample for demonstration — figures are not actual Collab financials.</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="homesModal">
+  <div class="modalcard">
+    <div class="modalhead"><div><h4>Matching homes near UC Berkeley</h4><div class="sub">Shared by Ava · AI Leasing Assistant · 2 available</div></div><button class="modalclose" onclick="closeHomes()">✕</button></div>
+    <div class="modalbody">
+      <div class="listing"><div class="lphoto g1"><svg class="glyph" width="46" height="46" viewBox="0 0 24 24" fill="none"><path d="M3 21V9l9-6 9 6v12" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="#fff" stroke-width="1.2"/></svg><span class="phlabel2">Listing photo</span></div><div class="ldet"><div class="lt">2 Bed · 1 Bath — Southside</div><div class="lmeta">2140 Dwight Way · 0.3 mi to campus · in-unit laundry</div><div class="lrow"><span class="lprice">$2,400/mo</span><span class="lavail">Available Aug 1</span></div></div></div>
+      <div class="listing"><div class="lphoto g2"><svg class="glyph" width="46" height="46" viewBox="0 0 24 24" fill="none"><path d="M3 21V9l9-6 9 6v12" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="#fff" stroke-width="1.2"/></svg><span class="phlabel2">Listing photo</span></div><div class="ldet"><div class="lt">2 Bed · 2 Bath — Northside</div><div class="lmeta">2160 Hearst Ave · 0.2 mi to campus · parking included</div><div class="lrow"><span class="lprice">$2,550/mo</span><span class="lavail">Available Aug 1</span></div></div></div>
+      <div class="rpt-note">Illustrative sample — shown only from the client's approved inventory.</div>
+    </div>
+  </div>
+</div>
 
 <script>
 const nav=document.getElementById('nav');
@@ -465,14 +586,16 @@ const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.t
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 /* ---------- hero agent chat ---------- */
+const LEAKPHOTO='<img src="data:image/jpeg;base64,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" alt="Photo of the leak under the sink" style="width:100%;height:auto;border-radius:9px;display:block;">';
 const AGENTS={
   colby:{nm:'Colby',st:'online · Tenant Assistant',ch:'WhatsApp',av:'C',avbg:'linear-gradient(135deg,#C08A3A,#E0A94A)',
-    msgs:[{w:'them',t:"Hey, my kitchen sink is leaking under the cabinet 😟"},{w:'them',t:"[sends a photo]",img:1},{w:'me',t:"Oh no — let's sort that out. Before I file anything, try the shut-off valve under the sink, turn it clockwise. Does that stop the drip?"},{w:'them',t:"yes! that stopped it"},{w:'me',t:"Nice — that keeps it from getting worse. I've logged maintenance request #55501 and the team will follow up. 👍"},{w:'sys',t:"✓ Work order created in Buildium · scoped to this unit only"}]},
+    msgs:[{w:'them',t:"Hey, my kitchen sink is leaking under the cabinet 😟"},{w:'me',t:"I'm sorry about that. Could you send a clear photo of the leak and the area under the sink? That helps me gauge how urgent it is and send the right details to the maintenance team."},{w:'them',t:"Sure — here it is."},{w:'them',photo:1},{w:'me',t:"Thank you. It looks like the leak may be coming from the pipe connection. For now, please turn the shut-off valve under the sink clockwise to stop the water. Let me know whether the dripping stops."},{w:'them',t:"Yes, that stopped it."},{w:'me',t:"Great — that will prevent further damage. I've created maintenance request #55501 with your photo and troubleshooting details. The team will follow up with the next steps."},{w:'sys',t:"✓ Work order created in Buildium · photo & troubleshooting history attached · scoped to this unit only"}]},
   maven:{nm:'Maven',st:'online · Staff & Operations',ch:'Discord',av:'M',avbg:'linear-gradient(135deg,#3D6E8F,#5B8FB0)',
     msgs:[{w:'them',t:"@Maven what's open on 1200 Central?"},{w:'me',t:"3 open work orders: #55501 sink leak (unassigned) · #55488 hallway light (in progress) · #55470 garage remote (waiting on vendor)."},{w:'them',t:"assign the sink leak to Dave and bump priority"},{w:'me',t:"Draft → assign #55501 to Dave Ruiz, priority High. Approve to apply?"},{w:'them',t:"approve ✅"},{w:'me',t:"Done. #55501 → Dave Ruiz, High. Logged: you, 10:42 AM."}]},
   ava:{nm:'Ava',st:'online · Leasing Assistant',ch:'SMS',av:'A',avbg:'linear-gradient(135deg,#C0553A,#E07A4A)',
     msgs:[{w:'them',t:"Is the 2-bed at Elm St still available?"},{w:'me',t:"It is! $2,400/mo, available Aug 15. Want me to hold a tour — Thursday 4 PM or Friday 11 AM?"},{w:'them',t:"Friday 11 works"},{w:'me',t:"Booked for Fri 11 AM 🎉 I'll text a reminder and the application link. Anything you'd like to know before then?"},{w:'sys',t:"Searches only Collab's approved inventory"}]},
-  bobby:{coming:1,nm:'Bobby',st:'Owner Assistant',ch:'',av:'B'}
+  bobby:{nm:'Bobby',st:'online · Owner Assistant',ch:'SMS',av:'B',avbg:'linear-gradient(135deg,#6B4E86,#9B7BB8)',
+    msgs:[{w:'them',t:"Bobby, can you send me the latest T-12 and rent roll for Oxford?"},{w:'me',t:"Of course. I've prepared the latest financial package."},{w:'link',t:"📄  View T-12 & Rent Roll"},{w:'me',t:"There's also one item that needs your approval. The main water-heater replacement quote is $6,800 — above your approval limit. The current unit has failed, and the vendor recommends replacement over repair. Approve the replacement?"},{w:'them',t:"Yes, approve it."},{w:'me',t:"Approved and recorded. I've routed the authorization to Maven for scheduling and vendor coordination. I'll update you once the installation is confirmed. ✅"}]}
 };
 let chatTimers=[],chatToken=0;
 const body=document.getElementById('chatbody');
@@ -485,7 +608,7 @@ function playAgent(key){
   head.style.opacity=1;
   const my=++chatToken;let delay=250;
   a.msgs.forEach((m)=>{
-    if(m.w==='me'){
+    if(m.w==='me'||m.w==='link'){
       chatTimers.push(setTimeout(()=>{if(my!==chatToken)return;const tp=document.createElement('div');tp.className='typing';tp.innerHTML='<span></span><span></span><span></span>';body.appendChild(tp);body.scrollTop=body.scrollHeight;},delay));
       delay+=780;
       chatTimers.push(setTimeout(()=>{if(my!==chatToken)return;const t=body.querySelector('.typing');if(t)t.remove();addMsg(m);},delay));
@@ -496,7 +619,7 @@ function playAgent(key){
     }
   });
 }
-function addMsg(m){const d=document.createElement('div');d.className='msg '+(m.w)+(m.img?' img':'');d.textContent=m.t;body.appendChild(d);body.scrollTop=body.scrollHeight;}
+function addMsg(m){let d;if(m.photo){d=document.createElement('div');d.className='msg '+(m.w)+' photomsg';d.innerHTML=LEAKPHOTO;}else if(m.w==='link'){d=document.createElement('button');d.className='msg me chatlink';d.textContent=m.t;d.onclick=openReport;}else{d=document.createElement('div');d.className='msg '+(m.w)+(m.img?' img':'');d.textContent=m.t;}body.appendChild(d);body.scrollTop=body.scrollHeight;}
 document.querySelectorAll('.demotab').forEach(tab=>{
   tab.addEventListener('click',()=>{
     document.querySelectorAll('.demotab').forEach(t=>t.classList.remove('active'));
@@ -515,6 +638,13 @@ document.querySelectorAll('.optab').forEach(tab=>{
     document.querySelector('.oppanel[data-op="'+tab.dataset.op+'"]').classList.add('active');
   });
 });
+function openReport(){document.getElementById('reportModal').classList.add('open');}
+function closeReport(){document.getElementById('reportModal').classList.remove('open');}
+document.getElementById('reportModal').addEventListener('click',function(e){if(e.target.id==='reportModal')closeReport();});
+function openHomes(){document.getElementById('homesModal').classList.add('open');}
+function closeHomes(){document.getElementById('homesModal').classList.remove('open');}
+document.getElementById('homesModal').addEventListener('click',function(e){if(e.target.id==='homesModal')closeHomes();});
+addEventListener('keydown',function(e){if(e.key==='Escape'){closeReport();closeHomes();}});
 </script>
 </body>
 </html>
