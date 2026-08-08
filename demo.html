@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0B1B2B" />
+<title>AskDwell — Property Operations Demo</title>
+<style>
+/* ============================================================
+   AskDwell Demo App — self-contained
+   Style inspired by askdwell.ai: clean modern SaaS,
+   deep navy + confident blue, AI-green accents.
+   ============================================================ */
+
+:root{
+  --ink:#0B1B2B;
+  --ink-2:#122A40;
+  --bg:#EEF1F6;
+  --surface:#FFFFFF;
+  --surface-2:#F6F8FB;
+  --line:#E4E9F0;
+  --line-2:#EDF1F6;
+  --text:#0E1D2B;
+  --muted:#5C6B7A;
+  --muted-2:#8695A4;
+  --brand:#2563EB;
+  --brand-deep:#1749C4;
+  --brand-soft:#E8EFFE;
+  --ai:#10B981;
+  --ai-soft:#E4F7EF;
+  --colby:#0EA5A5;
+  --maven:#6366F1;
+  --ava:#A855F7;
+  --bobby:#F59E0B;
+  --danger:#E4483F;
+  --danger-soft:#FCEBEA;
+  --warn:#F59E0B;
+  --warn-soft:#FEF3E2;
+  --ok:#16A34A;
+  --radius:18px;
+  --radius-sm:12px;
+  --shadow-sm:0 1px 2px rgba(11,27,43,.06),0 1px 3px rgba(11,27,43,.04);
+  --shadow:0 6px 20px rgba(11,27,43,.10);
+  --shadow-lg:0 18px 50px rgba(11,27,43,.18);
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);
+  background:
+    radial-gradient(1200px 700px at 15% -10%, #16305a 0%, transparent 55%),
+    radial-gradient(1000px 600px at 110% 10%, #0f5f56 0%, transparent 45%),
+    linear-gradient(160deg,#0a1726 0%,#0b1b2b 55%,#0a1420 100%);
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- desktop framing ---------- */
+.stage{display:flex;align-items:center;gap:46px;flex-wrap:wrap;justify-content:center}
+.pitch{max-width:330px;color:#dde6f2}
+.pitch .logo{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.pitch .logo .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#2f6bff,#12c7a0);display:grid;place-items:center;box-shadow:0 8px 24px rgba(47,107,255,.4)}
+.pitch .logo .mark svg{width:22px;height:22px}
+.pitch .logo b{font-size:20px;letter-spacing:-.4px;color:#fff;font-weight:800}
+.pitch h1{font-size:31px;line-height:1.15;letter-spacing:-.8px;margin:0 0 14px;color:#fff;font-weight:800}
+.pitch p{font-size:15px;line-height:1.6;color:#a9bcd2;margin:0 0 22px}
+.pitch .chips{display:flex;flex-wrap:wrap;gap:8px}
+.pitch .chips span{font-size:12px;font-weight:600;color:#cfe0f2;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:7px 12px;border-radius:999px}
+.pitch .hint{margin-top:26px;font-size:12.5px;color:#7f93aa;display:flex;align-items:center;gap:8px}
+
+/* ---------- phone ---------- */
+.phone{
+  width:398px;height:830px;max-height:calc(100vh - 48px);
+  background:#0b1b2b;border-radius:46px;padding:13px;
+  box-shadow:var(--shadow-lg),0 0 0 2px rgba(255,255,255,.05) inset;
+  position:relative;flex:none;
+}
+.phone .notch{position:absolute;top:20px;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#0b1b2b;border-radius:0 0 16px 16px;z-index:60}
+.screenwrap{
+  position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;
+  background:var(--bg);display:flex;flex-direction:column;
+}
+
+/* status bar */
+.statusbar{height:44px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 26px;font-size:13px;font-weight:700;color:#fff;background:var(--ink);position:relative;z-index:5}
+.statusbar .r{display:flex;align-items:center;gap:6px}
+.statusbar svg{width:16px;height:16px;fill:#fff}
+
+/* app header */
+.appbar{flex:none;background:var(--ink);color:#fff;padding:6px 18px 16px;position:relative;z-index:4}
+.appbar .row{display:flex;align-items:center;gap:12px}
+.appbar .back{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.08);display:none;place-items:center;cursor:pointer;flex:none;border:none}
+.appbar .back svg{width:18px;height:18px;stroke:#fff}
+.appbar .title{flex:1;min-width:0}
+.appbar .title .k{font-size:11px;font-weight:600;letter-spacing:.3px;color:#7ea0c9;text-transform:uppercase}
+.appbar .title .t{font-size:18px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appbar .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#2f6bff,#12c7a0);display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff;flex:none}
+.wordmark{display:flex;align-items:center;gap:9px}
+.wordmark .mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#2f6bff,#12c7a0);display:grid;place-items:center;flex:none}
+.wordmark .mark svg{width:18px;height:18px}
+.wordmark b{font-size:17px;font-weight:800;letter-spacing:-.3px}
+
+/* scroll body */
+.body{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:88px}
+.body::-webkit-scrollbar{width:0}
+.screen{display:none;animation:fade .28s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- HOME ---------- */
+.hero{background:var(--ink);color:#fff;padding:2px 18px 22px;border-radius:0 0 26px 26px}
+.hero .hello{font-size:13px;color:#8fb0d6;font-weight:600}
+.hero .hname{font-size:22px;font-weight:800;letter-spacing:-.4px;margin:2px 0 16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px}
+.stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:11px 11px 10px}
+.stat .v{font-size:19px;font-weight:800;letter-spacing:-.5px}
+.stat .l{font-size:10.5px;color:#93aecb;font-weight:600;margin-top:2px;line-height:1.2}
+.stat .v small{font-size:11px;color:#7fd7bd;font-weight:700}
+
+.askbar{display:flex;align-items:center;gap:11px;background:#fff;border-radius:15px;padding:14px 15px;box-shadow:0 10px 30px rgba(0,0,0,.28);cursor:pointer;transition:.15s}
+.askbar:active{transform:scale(.985)}
+.askbar .ai{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--ai),#0ea5a5);display:grid;place-items:center;flex:none}
+.askbar .ai svg{width:19px;height:19px}
+.askbar .txt{flex:1}
+.askbar .txt b{display:block;font-size:14px;color:var(--text);font-weight:700}
+.askbar .txt span{font-size:11.5px;color:var(--muted-2)}
+.askbar .go{width:26px;height:26px;border-radius:8px;background:var(--brand-soft);display:grid;place-items:center;flex:none}
+.askbar .go svg{width:15px;height:15px;stroke:var(--brand)}
+
+.section{padding:18px 18px 4px}
+.section .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section .sh b{font-size:15px;font-weight:800;letter-spacing:-.2px}
+.section .sh a{font-size:12.5px;color:var(--brand);font-weight:700;text-decoration:none}
+
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px;cursor:pointer;transition:.15s;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.tile:active{transform:scale(.975)}
+.tile .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;margin-bottom:11px}
+.tile .ic svg{width:21px;height:21px}
+.tile b{display:block;font-size:14px;font-weight:700;letter-spacing:-.2px;margin-bottom:3px}
+.tile span{font-size:11.5px;color:var(--muted);line-height:1.35;display:block}
+.tile .badge{position:absolute;top:12px;right:12px;font-size:9.5px;font-weight:800;color:#fff;background:var(--danger);border-radius:999px;padding:3px 7px;letter-spacing:.2px}
+.ic.b-blue{background:var(--brand-soft)} .ic.b-blue svg{stroke:var(--brand)}
+.ic.b-red{background:var(--danger-soft)} .ic.b-red svg{stroke:var(--danger)}
+.ic.b-green{background:var(--ai-soft)} .ic.b-green svg{stroke:var(--ai)}
+.ic.b-amber{background:var(--warn-soft)} .ic.b-amber svg{stroke:var(--warn)}
+
+.feed{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.fitem{display:flex;gap:12px;padding:13px 14px;border-bottom:1px solid var(--line-2);align-items:flex-start}
+.fitem:last-child{border-bottom:none}
+.fitem .d{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none;font-size:15px}
+.fitem .c{flex:1;min-width:0}
+.fitem .c b{font-size:13px;font-weight:700}
+.fitem .c p{margin:2px 0 0;font-size:12px;color:var(--muted);line-height:1.4}
+.fitem .c .tm{font-size:11px;color:var(--muted-2);margin-top:4px;font-weight:600}
+
+.agentbar{display:flex;gap:9px;overflow-x:auto;padding:2px 18px 4px;-webkit-overflow-scrolling:touch}
+.agentbar::-webkit-scrollbar{height:0}
+.agpill{flex:none;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px 7px 8px;box-shadow:var(--shadow-sm)}
+.agpill .dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:11px}
+.agpill b{font-size:12px;font-weight:700}
+.agpill span{font-size:10.5px;color:var(--muted-2);display:block;margin-top:-1px}
+
+/* ---------- generic content ---------- */
+.pad{padding:16px 18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-sm)}
+.muted{color:var(--muted)}
+
+/* ---------- ASK / SEARCH ---------- */
+.searchbox{padding:14px 18px 6px;background:var(--ink)}
+.searchbox .field{display:flex;align-items:center;gap:10px;background:#fff;border-radius:13px;padding:12px 13px}
+.searchbox .field svg{width:18px;height:18px;stroke:var(--muted-2);flex:none}
+.searchbox .field input{border:none;outline:none;font-family:var(--font);font-size:14px;width:100%;color:var(--text);background:transparent}
+.searchbox .sub{font-size:11px;color:#7ea0c9;margin:9px 2px 2px;display:flex;align-items:center;gap:6px}
+
+.suggests{padding:16px 18px 4px}
+.suggests .lbl{font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+.sug{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:13px 14px;margin-bottom:9px;cursor:pointer;transition:.15s;box-shadow:var(--shadow-sm)}
+.sug:active{transform:scale(.985)}
+.sug .q{width:30px;height:30px;border-radius:9px;background:var(--brand-soft);display:grid;place-items:center;flex:none}
+.sug .q svg{width:16px;height:16px;stroke:var(--brand)}
+.sug .t{flex:1;font-size:13px;line-height:1.35;font-weight:500}
+.sug .t em{font-style:normal;color:var(--brand);font-weight:700}
+.sug .arr{color:var(--muted-2)}
+.sug.feat{border-color:#cfe0fb;background:linear-gradient(180deg,#fbfdff,#f3f8ff)}
+
+.sources-scan{padding:8px 18px}
+.scanrow{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:12.5px;color:var(--muted);border-bottom:1px dashed var(--line)}
+.scanrow:last-child{border:none}
+.scanrow .s-ic{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;flex:none;font-size:13px}
+.scanrow .chk{margin-left:auto;color:var(--ai);opacity:0;transition:.3s}
+.scanrow.done .chk{opacity:1}
+.scanrow.done{color:var(--text)}
+.scanrow .spin{margin-left:auto;width:15px;height:15px;border:2px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* answer */
+.answer{padding:4px 18px 10px;animation:fade .4s ease}
+.answer .ai-head{display:flex;align-items:center;gap:10px;margin:6px 0 12px}
+.answer .ai-head .a{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--ai),#0ea5a5);display:grid;place-items:center;flex:none}
+.answer .ai-head .a svg{width:18px;height:18px}
+.answer .ai-head b{font-size:14px;font-weight:800}
+.answer .ai-head span{font-size:11px;color:var(--muted-2);display:block}
+.ansbody{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow-sm);font-size:13.5px;line-height:1.6}
+.ansbody p{margin:0 0 10px}
+.ansbody p:last-child{margin:0}
+.ansbody strong{font-weight:700;color:var(--ink)}
+.ansbody .hl{background:#fff5d6;padding:0 3px;border-radius:3px;font-weight:600}
+.srcchips{display:flex;flex-wrap:wrap;gap:7px;margin-top:0}
+.srcchip{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;transition:.14s}
+.srcchip:hover{background:#eaeff6;border-color:#d3ddea}
+.srcchip:active{transform:scale(.95)}
+.srcchip .em{font-size:12px}
+.srcchip .chevr{color:var(--muted-2);font-weight:800;margin-left:1px}
+.srclabel{font-size:10px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.5px;margin:15px 0 9px}
+
+/* source popup (bottom sheet) */
+.modal{position:absolute;inset:0;z-index:80;display:none;align-items:flex-end;justify-content:center;background:rgba(6,14,22,.5);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.modal.show{display:flex;animation:mfade .2s ease}
+@keyframes mfade{from{opacity:0}to{opacity:1}}
+.sheet{background:var(--bg);width:100%;max-height:88%;border-radius:22px 22px 0 0;display:flex;flex-direction:column;box-shadow:0 -10px 44px rgba(0,0,0,.34);animation:mup .3s cubic-bezier(.2,.9,.3,1)}
+@keyframes mup{from{transform:translateY(100%)}to{transform:none}}
+.sheet-grab{width:38px;height:4px;border-radius:999px;background:#cbd4de;margin:9px auto 3px}
+.sheet-head{display:flex;align-items:center;gap:10px;padding:6px 15px 12px;border-bottom:1px solid var(--line)}
+.sheet-t{flex:1;font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:9px;min-width:0}
+.sheet-t .si{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:15px;flex:none}
+.sheet-x{width:30px;height:30px;border-radius:50%;border:none;background:#e7ecf2;color:var(--muted);font-size:15px;font-weight:800;cursor:pointer;flex:none;line-height:1}
+.sheet-body{overflow-y:auto;padding:15px 15px 24px}
+.sheet-src{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted-2);font-weight:600;margin:2px 2px 12px;justify-content:center}
+
+.kv{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.kv .r{display:flex;padding:10px 13px;border-bottom:1px solid var(--line-2);font-size:12.5px}
+.kv .r:last-child{border:none}
+.kv .r .k{width:104px;color:var(--muted-2);font-weight:600;flex:none}
+.kv .r .v{font-weight:600;color:var(--text)}
+.imgview{border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-bottom:12px;box-shadow:var(--shadow-sm);background:#fff}
+.imgview img{width:100%;display:block}
+.imgview .cap2{padding:9px 12px;font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px;border-top:1px solid var(--line-2)}
+.inv{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:12px 0}
+.inv .ir{display:flex;justify-content:space-between;padding:9px 12px;font-size:12.5px;border-bottom:1px solid var(--line-2)}
+.inv .ir:last-child{border:none}
+.inv .ir.tot{background:var(--ink);color:#fff;font-weight:800}
+.inv .ir.tot .amt2{color:#7fe0c0}
+.dq{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #f2d9c0;border-left:3px solid var(--warn);border-radius:12px;padding:12px;margin:11px 0}
+.dq .u{width:34px;height:34px;border-radius:9px;background:var(--warn-soft);color:#b3730a;font-weight:800;display:grid;place-items:center;font-size:13px;flex:none}
+.dq .di{flex:1;min-width:0}
+.dq .di b{font-size:13.5px;display:block}
+.dq .di span{font-size:11px;color:var(--muted)}
+.dq .da{text-align:right;flex:none}
+.dq .da b{font-size:15px;color:#b3730a;display:block}
+.dq .da span{font-size:10px;color:var(--muted-2)}
+.filehead{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;box-shadow:var(--shadow-sm);margin-bottom:12px}
+.filehead .fx{width:38px;height:46px;border-radius:6px;background:#e4483f;color:#fff;font-size:9px;font-weight:800;display:grid;place-items:center;flex:none;letter-spacing:.3px}
+.filehead b{font-size:12.5px;display:block;word-break:break-word}
+.filehead span{font-size:11px;color:var(--muted-2)}
+
+.thread-toggle{display:flex;align-items:center;justify-content:center;gap:8px;margin:14px 0 6px;font-size:12.5px;font-weight:700;color:var(--brand);cursor:pointer}
+.thread-toggle svg{width:15px;height:15px;stroke:var(--brand);transition:.2s}
+.thread-toggle.open svg{transform:rotate(180deg)}
+
+/* conversation thread */
+.thread{margin-top:6px}
+.daychip{text-align:center;margin:14px 0 12px}
+.daychip span{font-size:10.5px;font-weight:700;color:var(--muted-2);background:var(--surface);border:1px solid var(--line);padding:4px 12px;border-radius:999px}
+.msg{display:flex;gap:9px;margin-bottom:13px;align-items:flex-end}
+.msg .av{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:800;font-size:10.5px}
+.msg .bubble{max-width:76%;padding:10px 12px;border-radius:15px;font-size:13px;line-height:1.45;box-shadow:var(--shadow-sm)}
+.msg .bubble .who{font-size:10.5px;font-weight:800;margin-bottom:3px;opacity:.85}
+.msg .bubble .tm{font-size:9.5px;margin-top:5px;opacity:.6;font-weight:600}
+.msg.them .bubble{background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px}
+.msg.me{flex-direction:row-reverse}
+.msg.me .bubble{background:var(--colby);color:#fff;border-bottom-right-radius:5px}
+.msg.me .bubble .who{color:#cfeeee}
+.msg.me .av{background:var(--colby)}
+.msg.them .av{background:#64748B}
+.photo-att{margin-top:8px;border-radius:11px;overflow:hidden;border:1px solid rgba(0,0,0,.08);width:150px;background:#fff}
+.photo-att .img{height:104px;display:grid;place-items:center;position:relative;background:linear-gradient(135deg,#dfe7ef,#c5d2df)}
+.photo-att .img img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-att .img svg{width:56px;height:56px;opacity:.8}
+.photo-att .img .drip{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#4aa3e0;box-shadow:0 8px 0 #4aa3e0,0 16px 0 rgba(74,163,224,.6)}
+.photo-att .cap{padding:6px 9px;font-size:10.5px;color:var(--muted);display:flex;align-items:center;gap:5px;background:#fff}
+.photo-att .cap svg{width:12px;height:12px;stroke:var(--muted)}
+
+/* buildium task card */
+.bcard{margin:6px 0 4px;border:1px solid #d9e6f6;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);background:#fff}
+.bcard .bhead{background:linear-gradient(135deg,#1b3a6b,#215a9e);color:#fff;padding:11px 13px;display:flex;align-items:center;gap:9px}
+.bcard .bhead .bi{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-weight:800;font-size:11px}
+.bcard .bhead .bt{flex:1}
+.bcard .bhead .bt b{font-size:12.5px;font-weight:800;display:block}
+.bcard .bhead .bt span{font-size:10px;opacity:.85}
+.bcard .bhead .bp{font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.2)}
+.bcard .brow{display:flex;padding:9px 13px;border-bottom:1px solid var(--line-2);font-size:12px}
+.bcard .brow:last-child{border:none}
+.bcard .brow .bl{width:92px;color:var(--muted-2);font-weight:600;flex:none}
+.bcard .brow .bv{font-weight:600;color:var(--text)}
+.bcard .brow .bv .st{display:inline-flex;align-items:center;gap:5px}
+.bcard .brow .bv .dotk{width:7px;height:7px;border-radius:50%;display:inline-block}
+
+/* ---------- REPAIRS ---------- */
+.emg-banner{margin:14px 18px 4px;background:linear-gradient(135deg,#e4483f,#c9362e);color:#fff;border-radius:15px;padding:13px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 26px rgba(228,72,63,.32)}
+.emg-banner .p{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 0 0 8px rgba(255,255,255,0)}}
+.emg-banner .p svg{width:22px;height:22px;stroke:#fff}
+.emg-banner b{font-size:14px;font-weight:800;display:block}
+.emg-banner span{font-size:11.5px;opacity:.92}
+.done-banner{margin:14px 18px 4px;background:linear-gradient(135deg,#16a34a,#0d8a41);color:#fff;border-radius:15px;padding:13px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 26px rgba(22,163,74,.3)}
+.done-banner .p{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.2);display:grid;place-items:center;flex:none}
+.done-banner .p svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.6}
+.done-banner b{font-size:14px;font-weight:800;display:block}
+.done-banner span{font-size:11.5px;opacity:.94}
+.ratecard{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-sm);padding:18px 16px;text-align:center}
+.ratecard .rlabel{font-size:10px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px}
+.ratecard .stars{font-size:27px;letter-spacing:5px;color:#f5a524;line-height:1;text-indent:5px}
+.ratecard .rnum{font-size:12.5px;font-weight:800;color:var(--ink);margin-top:9px}
+.ratecard .rquote{font-size:13px;line-height:1.5;color:#33404d;font-style:italic;margin:13px 4px 15px}
+.ratecard .rwho{display:flex;align-items:center;gap:10px;justify-content:center}
+.ratecard .rwho .av{width:34px;height:34px;border-radius:50%;background:var(--colby);color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center;flex:none}
+.ratecard .rwho .rt{text-align:left}
+.ratecard .rwho .rt b{font-size:12.5px;display:block}
+.ratecard .rwho .rt span{font-size:10.5px;color:var(--muted-2)}
+/* appointment card */
+.appt{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-sm);overflow:hidden}
+.appt .ah{display:flex;align-items:center;gap:14px;padding:15px;background:linear-gradient(135deg,#eef4ff,#f7faff);border-bottom:1px solid var(--line-2)}
+.appt .ah .cal{width:52px;height:56px;border-radius:11px;background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;box-shadow:var(--shadow-sm)}
+.appt .ah .cal .m{font-size:9px;font-weight:800;color:var(--danger);text-transform:uppercase;letter-spacing:.3px}
+.appt .ah .cal .d{font-size:22px;font-weight:800;line-height:1;color:var(--ink)}
+.appt .ah .at b{font-size:15px;font-weight:800;display:block}
+.appt .ah .at span{font-size:12px;color:var(--muted)}
+.appt .arow{display:flex;padding:11px 15px;border-bottom:1px solid var(--line-2);font-size:12.5px}
+.appt .arow:last-child{border:none}
+.appt .arow .k{width:88px;color:var(--muted-2);font-weight:600;flex:none}
+.appt .arow .v{font-weight:600;color:var(--text)}
+/* reschedule slots */
+.slot{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:9px;cursor:pointer;transition:.15s;box-shadow:var(--shadow-sm)}
+.slot:active{transform:scale(.99)}
+.slot.cur{border-color:#cfe0fb;background:var(--brand-soft)}
+.slot .cal{width:42px;height:46px;border-radius:9px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;border:1px solid var(--line-2)}
+.slot .cal .m{font-size:8.5px;font-weight:800;color:var(--danger);text-transform:uppercase}
+.slot .cal .d{font-size:17px;font-weight:800;line-height:1;color:var(--ink)}
+.slot .si{flex:1;min-width:0}
+.slot .si b{font-size:13px;font-weight:700;display:block}
+.slot .si span{font-size:11px;color:var(--muted-2)}
+.slot .pick{font-size:11px;font-weight:800;color:var(--brand);flex:none}
+.slot .curtag{font-size:9px;font-weight:800;color:var(--brand);background:#fff;border:1px solid #cfe0fb;padding:3px 7px;border-radius:999px;flex:none}
+/* ask-a-question options */
+.qopt{display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-bottom:9px;cursor:pointer;box-shadow:var(--shadow-sm);transition:.15s}
+.qopt:active{transform:scale(.99)}
+.qopt .qi{width:28px;height:28px;border-radius:8px;background:var(--ai-soft);display:grid;place-items:center;flex:none;font-size:14px}
+.qopt .qt{flex:1;font-size:12.5px;line-height:1.4;font-weight:500}
+.qopt .qt small{display:block;font-size:10px;color:var(--muted-2);font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:.3px}
+/* Buildium task record */
+.brtitle{font-size:16px;font-weight:800;color:#0e1d2b;letter-spacing:-.2px}
+.brsub{font-size:11px;color:var(--muted-2);margin-top:3px}
+.brstatus{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;color:#0a8f63;background:var(--ai-soft);padding:5px 11px;border-radius:999px;flex:none}
+.brtabs{display:flex;gap:2px;border-bottom:2px solid #e2e7ee;margin:14px 0 16px}
+.brtab{font-size:12px;font-weight:700;color:var(--muted-2);padding:8px 12px;border-bottom:2px solid transparent;margin-bottom:-2px}
+.brtab.on{color:#153D58;border-bottom-color:#153D58}
+.actfeed{position:relative}
+.actitem{display:flex;gap:11px;padding-bottom:15px;position:relative}
+.actitem:last-child{padding-bottom:0}
+.actitem .aline{position:absolute;left:14px;top:32px;bottom:-3px;width:2px;background:#e2e7ee}
+.actitem:last-child .aline{display:none}
+.actitem .aav{width:30px;height:30px;border-radius:50%;color:#fff;font-weight:800;font-size:10px;display:grid;place-items:center;flex:none;z-index:2}
+.actitem .ac{flex:1;min-width:0;padding-top:2px}
+.actitem .aw{font-size:12.5px;line-height:1.5;color:#2a2f36}
+.actitem .aw b{font-weight:800;color:#0e1d2b}
+.actitem .amt{font-size:10.5px;color:var(--muted-2);margin-top:4px;font-weight:600}
+.actitem .abox{background:var(--surface-2);border:1px solid var(--line-2);border-radius:9px;padding:8px 10px;font-size:11.5px;color:#33404d;margin-top:7px;line-height:1.45}
+
+.repcard{margin:11px 18px;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm);cursor:pointer;transition:.15s}
+.repcard:active{transform:scale(.99)}
+.repcard .rh{padding:13px 15px;display:flex;gap:11px;align-items:flex-start}
+.repcard .sev{width:8px;align-self:stretch;border-radius:8px;flex:none}
+.repcard .sev.hi{background:var(--danger)} .repcard .sev.md{background:var(--warn)} .repcard .sev.lo{background:var(--ok)}
+.repcard .ri{flex:1;min-width:0}
+.repcard .ri .tags{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.tag{font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:.2px}
+.tag.red{background:var(--danger-soft);color:var(--danger)}
+.tag.amber{background:var(--warn-soft);color:#b3730a}
+.tag.grey{background:#eef1f5;color:var(--muted)}
+.tag.green{background:var(--ai-soft);color:#0a8f63}
+.tag.blue{background:var(--brand-soft);color:var(--brand)}
+.repcard .ri b{font-size:14px;font-weight:700;letter-spacing:-.2px;display:block}
+.repcard .ri .meta{font-size:11.5px;color:var(--muted);margin-top:3px}
+.repcard .ri .chan{font-size:11px;color:var(--muted-2);margin-top:7px;display:flex;align-items:center;gap:6px;font-weight:600}
+.repcard .ri .chan svg{width:13px;height:13px;stroke:var(--muted-2)}
+.repcard .arr{color:var(--muted-2);align-self:center}
+.repcard .rfoot{background:var(--surface-2);border-top:1px solid var(--line-2);padding:9px 15px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.repcard .rfoot .av{width:20px;height:20px;border-radius:50%;background:var(--colby);color:#fff;display:grid;place-items:center;font-size:9px;font-weight:800}
+
+/* status timeline */
+.timeline{padding:2px 4px}
+.tl{display:flex;gap:12px;position:relative}
+.tl .rail{width:28px;flex:none;display:flex;flex-direction:column;align-items:center}
+.tl .node{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex:none;z-index:2;font-size:11px}
+.tl .node.done{background:var(--ai);color:#fff}
+.tl .node.active{background:var(--brand);color:#fff}
+.tl .node.wait{background:#fff;border:2px solid var(--line);color:var(--muted-2)}
+.tl .line{width:2px;flex:1;background:var(--line);margin:1px 0}
+.tl .content{flex:1;padding-bottom:16px}
+.tl:last-child .line{display:none}
+.tl .content b{font-size:13px;font-weight:700}
+.tl .content p{margin:2px 0 0;font-size:11.5px;color:var(--muted);line-height:1.4}
+.tl .content .tm{font-size:10.5px;color:var(--muted-2);font-weight:600;margin-top:3px}
+
+/* ---------- MESSAGES ---------- */
+.seg{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:4px;margin:14px 18px 6px;gap:4px}
+.seg button{flex:1;border:none;background:transparent;font-family:var(--font);font-size:12.5px;font-weight:700;color:var(--muted);padding:8px;border-radius:9px;cursor:pointer;transition:.15s}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:var(--shadow-sm)}
+
+.reclist{padding:6px 18px}
+.reclist .lbl{font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin:8px 2px 8px}
+.recsearch{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 11px;box-shadow:var(--shadow-sm);transition:.15s}
+.recsearch:focus-within{border-color:var(--brand)}
+.recsearch svg{width:17px;height:17px;stroke:var(--muted-2);flex:none}
+.recsearch input{border:none;outline:none;font-family:var(--font);font-size:13.5px;width:100%;color:var(--text);background:transparent}
+.recsearch .recclear{border:none;background:#e7ecf2;color:var(--muted);width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:800;cursor:pointer;flex:none;line-height:1}
+.recempty{text-align:center;font-size:12px;color:var(--muted-2);padding:20px 12px;line-height:1.5}
+.hlmark{background:#fff3c4;color:inherit;border-radius:3px;padding:0 1px}
+.recentwrap{margin:0 0 13px}
+.recenthead{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
+.recenthead .rl{font-size:10px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px}
+.recenthead .rc{font-size:11px;font-weight:700;color:var(--brand);cursor:pointer}
+.recentchips{display:flex;flex-wrap:wrap;gap:7px}
+.recentchip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer;box-shadow:var(--shadow-sm);transition:.14s}
+.recentchip:hover{background:#f2f5f9;border-color:#d5deea}
+.recentchip:active{transform:scale(.96)}
+.recentchip svg{width:12px;height:12px;stroke:var(--muted-2);fill:none;flex:none}
+.rec{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--line);border-radius:13px;margin-bottom:8px;cursor:pointer;background:var(--surface);transition:.15s;box-shadow:var(--shadow-sm)}
+.rec.sel{border-color:var(--brand);background:var(--brand-soft)}
+.rec:active{transform:scale(.99)}
+.rec .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;flex:none}
+.rec .ri{flex:1;min-width:0}
+.rec .ri b{font-size:13.5px;font-weight:700;display:block}
+.rec .ri span{font-size:11.5px;color:var(--muted)}
+.rec .ck{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none}
+.rec.sel .ck{background:var(--brand);border-color:var(--brand)}
+.rec .ck svg{width:13px;height:13px;stroke:#fff;opacity:0}
+.rec.sel .ck svg{opacity:1}
+
+.composer{padding:8px 18px 4px}
+.composer .lbl{font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin:12px 2px 8px}
+.composer textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:13px;padding:13px;font-family:var(--font);font-size:13.5px;line-height:1.5;resize:none;outline:none;color:var(--text)}
+.composer textarea:focus{border-color:var(--brand)}
+.prevblock{margin-bottom:16px}
+.prevblock:last-child{margin-bottom:0}
+.prevblock .pv,.prevblock .email{margin:8px 2px 0}
+.chanlabel{font-size:10.5px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin:2px 2px 0;display:flex;align-items:center;gap:6px}
+.nochan{text-align:center;font-size:12px;color:var(--muted-2);padding:22px 12px;border:1px dashed var(--line);border-radius:14px;background:#fff}
+.chanpick{display:flex;gap:8px;margin-top:10px}
+.chanpick .cp{flex:1;border:1px solid var(--line);border-radius:12px;padding:11px;text-align:center;cursor:pointer;transition:.15s;background:var(--surface)}
+.chanpick .cp.on{border-color:var(--brand);background:var(--brand-soft)}
+.chanpick .cp .ci{width:30px;height:30px;border-radius:9px;margin:0 auto 6px;display:grid;place-items:center;background:var(--surface-2)}
+.chanpick .cp.on .ci{background:#fff}
+.chanpick .cp .ci svg{width:17px;height:17px;stroke:var(--brand)}
+.chanpick .cp b{font-size:11.5px;font-weight:700;display:block}
+.chanpick .cp span{font-size:9.5px;color:var(--muted-2)}
+
+.aihelp{display:flex;align-items:center;gap:9px;margin:12px 0 2px;background:var(--ai-soft);border:1px solid #c7ecdd;border-radius:12px;padding:10px 12px;cursor:pointer}
+.aihelp .a{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--ai),#0ea5a5);display:grid;place-items:center;flex:none}
+.aihelp .a svg{width:15px;height:15px}
+.aihelp b{font-size:12px;font-weight:700;color:#0a7d57;display:block}
+.aihelp span{font-size:10.5px;color:#3f9d7e}
+
+.btn{width:100%;border:none;border-radius:14px;padding:15px;font-family:var(--font);font-size:14.5px;font-weight:800;color:#fff;background:var(--brand);cursor:pointer;transition:.15s;box-shadow:0 8px 20px rgba(37,99,235,.28);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.985)}
+.btn svg{width:18px;height:18px;stroke:#fff}
+.btn.ghost{background:var(--surface);color:var(--brand);border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.btn.ghost svg{stroke:var(--brand)}
+.btn.green{background:var(--ai);box-shadow:0 8px 20px rgba(16,185,129,.28)}
+.btn[disabled]{opacity:.45;box-shadow:none}
+
+/* delivery preview mini-phone */
+.deliver{margin:6px 18px 4px}
+.deliver .cap{text-align:center;font-size:10.5px;color:var(--muted-2);margin-top:10px;font-weight:600;line-height:1.4}
+
+/* preview card (SMS + Buildium) — same card style as the email preview */
+.pv{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin:14px 2px 0;overflow:hidden}
+.pv-scr{border-radius:0;overflow:hidden;background:#fff;min-height:238px;display:flex;flex-direction:column}
+.pv-status{display:flex;align-items:center;justify-content:space-between;padding:8px 15px 7px;font-size:10px;font-weight:800}
+
+/* SMS text thread */
+.sms .pv-status{color:#0b1b2b;background:#f2f4f7}
+.sms-head{display:flex;flex-direction:column;align-items:center;padding:6px 0 12px;background:#f2f4f7;border-bottom:1px solid #e2e7ee}
+.sms-head .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--colby),#0e7490);display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;margin-bottom:6px}
+.sms-head b{font-size:13px;color:#0b1b2b}
+.sms-head span{font-size:10px;color:var(--muted-2);margin-top:1px}
+.sms-body{padding:16px 14px 18px;flex:1;background:#fff}
+.sms-when{text-align:center;font-size:10px;color:var(--muted-2);margin-bottom:13px;font-weight:600}
+.sms-bubble{max-width:84%;background:#e9e9eb;color:#0b1b2b;padding:11px 14px;border-radius:18px;border-bottom-left-radius:5px;font-size:13.5px;line-height:1.45}
+.sms-tick{font-size:10px;color:var(--muted-2);margin-top:6px}
+
+/* Buildium Resident Center app */
+.bld .pv-status{color:#fff;background:#153D58}
+.bld-head{background:#153D58;color:#fff;padding:2px 15px 15px}
+.bld-head .top{display:flex;align-items:center;gap:9px}
+.bld-head .logo{width:26px;height:26px;border-radius:7px;background:#fff;display:grid;place-items:center;color:#153D58;font-weight:900;font-size:16px;font-family:Georgia,'Times New Roman',serif}
+.bld-head .top b{font-size:14px;font-weight:800;letter-spacing:-.2px}
+.bld-head .greet{font-size:11px;color:#9db6c8;margin-top:12px;line-height:1.3}
+.bld-head .greet b{color:#fff;font-size:15px;display:block;font-weight:800}
+.bld-body{background:#eaeef2;flex:1;padding:13px}
+.bld-sec{font-size:10px;font-weight:800;color:#153D58;text-transform:uppercase;letter-spacing:.5px;margin:2px 2px 9px;display:flex;align-items:center;gap:6px}
+.bld-sec svg{width:13px;height:13px;flex:none}
+.bld-card{background:#fff;border-radius:12px;padding:13px;box-shadow:var(--shadow-sm);border-left:3px solid #9778D1}
+.bld-card .ch{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.bld-card .ch .ic{width:28px;height:28px;border-radius:8px;background:#9778D1;display:grid;place-items:center;flex:none}
+.bld-card .ch b{font-size:12px;font-weight:800;line-height:1.15}
+.bld-card .ch span{font-size:9.5px;color:var(--muted-2);margin-left:auto;flex:none}
+.bld-card p{margin:0;font-size:12.5px;line-height:1.5;color:#2a2f36}
+.bld-nav{display:flex;background:#fff;border-top:1px solid #e2e7ee;padding:8px 2px 9px}
+.bld-nav .t{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:8px;font-weight:700;color:#9aa7b3;text-align:center}
+.bld-nav .t.on{color:#9778D1}
+.bld-nav .t svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9}
+
+/* Email message */
+.email{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);margin:14px 2px 0;overflow:hidden}
+.email .subj{padding:15px 16px 11px;font-size:15.5px;font-weight:800;color:var(--ink);border-bottom:1px solid var(--line-2);line-height:1.3}
+.email .from{display:flex;align-items:center;gap:11px;padding:13px 16px 11px}
+.email .from .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2f6bff,#12c7a0);display:grid;place-items:center;color:#fff;font-weight:800;font-size:16px;flex:none}
+.email .from .fi{flex:1;min-width:0}
+.email .from .fi .l1{font-size:13px;font-weight:800;color:var(--ink)}
+.email .from .fi .l2{font-size:11px;color:var(--muted-2)}
+.email .from .meta{font-size:10.5px;color:var(--muted-2);text-align:right;flex:none;line-height:1.5}
+.email .ebody{padding:6px 17px 16px;font-size:13.5px;line-height:1.6;color:#242a30}
+.email .eactions{display:flex;gap:9px;padding:0 16px 16px}
+.email .ea{border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:12px;font-weight:700;color:var(--brand);display:flex;align-items:center;gap:7px}
+.email .ea svg{width:14px;height:14px;stroke:var(--brand);fill:none;stroke-width:2}
+
+/* ---------- REPORTS ---------- */
+.optrow{display:flex;gap:9px;margin-bottom:9px;flex-wrap:wrap}
+.opt{border:1px solid var(--line);border-radius:12px;padding:12px 13px;cursor:pointer;background:var(--surface);flex:1;min-width:calc(50% - 5px);transition:.15s;box-shadow:var(--shadow-sm)}
+.opt.on{border-color:var(--brand);background:var(--brand-soft)}
+.opt .oi{display:flex;align-items:center;gap:8px}
+.opt .oi svg{width:16px;height:16px;stroke:var(--brand);flex:none}
+.opt b{font-size:12.5px;font-weight:700}
+.opt span{font-size:10.5px;color:var(--muted);display:block;margin-top:3px;line-height:1.3}
+.selrow{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;background:var(--surface);box-shadow:var(--shadow-sm)}
+.selrow .sl{font-size:12px;color:var(--muted-2);font-weight:700}
+.selrow .sv{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
+.selrow .sv svg{width:15px;height:15px;stroke:var(--muted-2)}
+
+/* report output */
+.report{animation:fade .4s ease}
+.rpthead{background:linear-gradient(135deg,#0f2540,#1a4a86);color:#fff;border-radius:16px 16px 0 0;padding:16px}
+.rpthead .rt{display:flex;align-items:center;gap:10px}
+.rpthead .rt .ri{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.16);display:grid;place-items:center}
+.rpthead .rt .ri svg{width:18px;height:18px;stroke:#fff}
+.rpthead .rt b{font-size:15px;font-weight:800}
+.rpthead .rt span{font-size:11px;opacity:.85;display:block}
+.rptkpi{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+.rptkpi .k{background:rgba(255,255,255,.1);border-radius:11px;padding:9px 10px}
+.rptkpi .k .v{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.rptkpi .k .l{font-size:9.5px;color:#bcd2ea;font-weight:600;margin-top:1px}
+
+.rtable{background:#fff;border:1px solid var(--line);border-top:none;border-radius:0 0 16px 16px;overflow:hidden}
+.rtable .rr{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line-2);font-size:12px;gap:8px}
+.rtable .rr:last-child{border:none}
+.rtable .rr.head{background:var(--surface-2);font-size:10px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.3px}
+.rtable .rr .u{width:42px;font-weight:800;flex:none;color:var(--ink)}
+.rtable .rr .nm{flex:1;min-width:0}
+.rtable .rr .nm b{font-weight:700;display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rtable .rr .nm span{font-size:10px;color:var(--muted-2)}
+.rtable .rr .amt{width:66px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;flex:none}
+.rtable .rr .stt{width:58px;text-align:right;flex:none}
+.pill{font-size:9px;font-weight:800;padding:3px 7px;border-radius:999px}
+.pill.paid{background:var(--ai-soft);color:#0a8f63}
+.pill.due{background:var(--warn-soft);color:#b3730a}
+.pill.late{background:var(--danger-soft);color:var(--danger)}
+.pill.vac{background:#eef1f5;color:var(--muted)}
+.rtable .rr.total{background:var(--ink);color:#fff;font-weight:800}
+.rtable .rr.total .nm b{color:#fff}
+.rtable .rr.total .amt{color:#7fe0c0;font-size:13px}
+
+.barwrap{margin:14px 0 4px}
+.barrow{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.barrow .bl{width:74px;font-size:11px;font-weight:700;color:var(--muted);flex:none}
+.barrow .bt{flex:1;height:9px;background:var(--surface-2);border-radius:999px;overflow:hidden;border:1px solid var(--line-2)}
+.barrow .bt .fill{height:100%;border-radius:999px}
+.barrow .bv{width:44px;text-align:right;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;flex:none}
+
+/* ---------- bottom nav ---------- */
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:78px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);display:flex;padding:8px 6px 20px;z-index:40}
+.tab{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--muted-2);font-family:var(--font);position:relative;padding-top:6px}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2}
+.tab span{font-size:9.5px;font-weight:700}
+.tab.on{color:var(--brand)}
+.tab .ndot{position:absolute;top:2px;right:calc(50% - 15px);width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid #fff}
+
+/* toast */
+.toast{position:absolute;left:18px;right:18px;bottom:96px;background:var(--ink);color:#fff;border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:11px;box-shadow:var(--shadow-lg);z-index:70;transform:translateY(140%);transition:.35s cubic-bezier(.2,.9,.3,1);opacity:0;pointer-events:none}
+.toast.show{transform:none;opacity:1}
+.toast .ti{width:30px;height:30px;border-radius:9px;background:var(--ai);display:grid;place-items:center;flex:none}
+.toast .ti svg{width:17px;height:17px;stroke:#fff}
+.toast b{font-size:13px;font-weight:700;display:block}
+.toast span{font-size:11px;color:#9fb4cc}
+
+/* Colby notification (top-right) */
+.cnotif{position:absolute;top:110px;right:12px;z-index:75;width:222px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer;transform:translateX(135%);opacity:0;transition:.42s cubic-bezier(.2,.9,.3,1);pointer-events:none}
+.cnotif.show{transform:none;opacity:1;pointer-events:auto}
+.cnotif:active{transform:scale(.97)}
+.cnotif .cn-ic{width:34px;height:34px;border-radius:9px;background:var(--ai-soft);display:grid;place-items:center;flex:none;position:relative}
+.cnotif .cn-ic svg{width:19px;height:19px;stroke:var(--ai);fill:none;stroke-width:2}
+.cnotif .cn-ic .dot{position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;background:var(--danger);border:2px solid #fff}
+.cnotif.show .cn-ic .dot{animation:cnpulse 1.6s ease-in-out infinite}
+@keyframes cnpulse{0%,100%{box-shadow:0 0 0 0 rgba(228,72,63,.5)}50%{box-shadow:0 0 0 6px rgba(228,72,63,0)}}
+.cnotif .cn-tx{flex:1;min-width:0}
+.cnotif .cn-tx b{font-size:12.5px;font-weight:800;display:block}
+.cnotif .cn-tx span{font-size:10.5px;color:var(--muted-2)}
+.cnotif .cn-go{color:var(--muted-2);font-weight:800;flex:none}
+
+/* vendor quote cards */
+.quote{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px;box-shadow:var(--shadow-sm);margin-bottom:11px}
+.quote .qh{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.quote .qav{width:36px;height:36px;border-radius:9px;color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center;flex:none}
+.quote .qn{flex:1;min-width:0}
+.quote .qn b{font-size:13px;font-weight:800;display:block}
+.quote .qn span{font-size:10.5px;color:var(--muted-2)}
+.quote .qp{text-align:right;flex:none}
+.quote .qp b{font-size:18px;font-weight:800}
+.quote .qp span{font-size:9.5px;color:var(--muted-2);display:block;margin-top:-1px}
+.quote .qmeta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px}
+.qbtn{width:100%;border:none;border-radius:10px;padding:10px;font-family:var(--font);font-size:12.5px;font-weight:800;cursor:pointer;transition:.15s}
+.qbtn:active{transform:scale(.985)}
+.qbtn.p{background:var(--brand);color:#fff;box-shadow:0 6px 16px rgba(37,99,235,.26)}
+.qbtn.g{background:var(--surface);color:var(--brand);border:1px solid var(--line)}
+
+/* misc */
+.spacer{height:12px}
+.note{font-size:11px;color:var(--muted-2);text-align:center;padding:10px 24px 4px;line-height:1.5}
+.demo-flag{font-size:9px;font-weight:800;color:#b3730a;background:var(--warn-soft);border:1px solid #f4dfb0;padding:3px 8px;border-radius:999px;letter-spacing:.3px}
+
+/* fill / present mode — fills the whole window (also auto-applied on real phones) */
+body.fill{padding:0;display:block}
+body.fill .stage{display:block;width:100vw}
+body.fill .pitch{display:none}
+body.fill .phone{width:100vw;max-width:100vw;height:100vh;max-height:none;border-radius:0;padding:0;box-shadow:none}
+body.fill .phone .notch{display:none}
+body.fill .screenwrap{border-radius:0}
+body.fill .body{min-width:0}
+body.fill .statusbar{padding-top:6px;height:40px}
+
+/* present toggle button */
+#fsBtn{position:fixed;top:16px;right:16px;z-index:200;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#e2ecf7;font-family:var(--font);font-size:12.5px;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:.15s}
+#fsBtn:hover{background:rgba(255,255,255,.18)}
+#fsBtn svg{width:15px;height:15px;stroke:#e2ecf7;fill:none;stroke-width:2}
+body.fill #fsBtn{background:rgba(11,27,43,.55);border-color:rgba(255,255,255,.14)}
+
+/* hide the desktop pitch panel when the window is too narrow to fit it beside the phone */
+@media (max-width:900px){ .pitch{display:none} }
+/* on genuinely small screens the app is already full-bleed, so the toggle isn't needed */
+@media (max-width:600px){ #fsBtn{display:none} }
+</style>
+</head>
+<body>
+<button id="fsBtn" onclick="toggleFill()" title="Switch between framed and full-screen">
+  <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span id="fsLbl">Fill screen</span>
+</button>
+<div class="stage">
+
+  <!-- desktop pitch panel -->
+  <div class="pitch">
+    <div class="logo">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 5l8 6.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10.5V19h12v-8.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14" r="1.6" fill="#fff"/></svg></div>
+      <b>AskDwell</b>
+    </div>
+    <h1>Manage more doors with a smaller team.</h1>
+    <p>A live, interactive demo of the AskDwell property-operations dashboard. Tap through the phone to see the AI agents work — ask anything, resolve emergencies, message tenants, and pull reports.</p>
+    <div class="chips">
+      <span>🤖 AI agents</span><span>✅ Human-approved</span><span>⚡ Live in weeks</span><span>🔌 Works on your PMS</span>
+    </div>
+    <div class="hint">👉 Interact with the phone — it's fully clickable</div>
+  </div>
+
+  <!-- phone -->
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screenwrap">
+
+      <!-- status bar -->
+      <div class="statusbar">
+        <span id="clock">9:41</span>
+        <div class="r">
+          <svg viewBox="0 0 24 24"><path d="M2 17h2v-4H2v4zm4 0h2V9H6v8zm4 0h2V5h-2v12zm4 0h2v-8h-2v8zm4 0h2v-6h-2v6z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 4C7 4 3 7 1 11c2 4 6 7 11 7s9-3 11-7c-2-4-6-7-11-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M17 4h-2V2H9v2H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2zm-1 15H8V6h8v13z"/></svg>
+        </div>
+      </div>
+
+      <!-- dynamic app bar -->
+      <div class="appbar" id="appbar">
+        <div class="row">
+          <button class="back" id="backBtn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="title" id="barTitle">
+            <div class="wordmark">
+              <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 5l8 6.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10.5V19h12v-8.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14" r="1.6" fill="#fff"/></svg></div>
+              <b>AskDwell</b>
+            </div>
+          </div>
+          <div class="avatar" id="barAvatar">DW</div>
+        </div>
+      </div>
+
+      <div class="body" id="body">
+
+        <!-- ============ HOME ============ -->
+        <section class="screen active" data-screen="home">
+          <div class="hero">
+            <div class="hello">Good morning,</div>
+            <div class="hname">Dana Whitfield 👋</div>
+            <div class="stats">
+              <div class="stat"><div class="v">128</div><div class="l">Doors managed</div></div>
+              <div class="stat"><div class="v">96.9%</div><div class="l">Occupancy</div></div>
+              <div class="stat"><div class="v">7</div><div class="l">Open work orders</div></div>
+            </div>
+            <div class="askbar" onclick="openAsk()">
+              <div class="ai"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" fill="#fff"/><circle cx="18.5" cy="16.5" r="2" fill="#fff"/><circle cx="5.5" cy="17.5" r="1.4" fill="#fff"/></svg></div>
+              <div class="txt"><b>Ask anything</b><span>Tenants · leases · maintenance · finances</span></div>
+              <div class="go"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="sh"><b>Your AI operations team</b></div>
+          </div>
+          <div class="agentbar">
+            <div class="agpill"><div class="dot" style="background:var(--colby)">Co</div><div><b>Colby</b><span>Tenant assistant</span></div></div>
+            <div class="agpill"><div class="dot" style="background:var(--maven)">Ma</div><div><b>Maven</b><span>Staff & ops</span></div></div>
+            <div class="agpill"><div class="dot" style="background:var(--bobby)">Bo</div><div><b>Bobby</b><span>Owner reports</span></div></div>
+            <div class="agpill"><div class="dot" style="background:var(--ava)">Av</div><div><b>Ava</b><span>Leasing</span></div></div>
+          </div>
+
+          <div class="section">
+            <div class="sh"><b>What can I do for you?</b></div>
+            <div class="tiles">
+              <div class="tile" onclick="openAsk()">
+                <div class="ic b-blue"><svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke-width="2" stroke-linecap="round"/></svg></div>
+                <b>Ask AI</b><span>Search email, Drive, Buildium &amp; texts instantly</span>
+              </div>
+              <div class="tile" onclick="showScreen('repairs')">
+                <div class="badge">1 urgent</div>
+                <div class="ic b-red"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l9 16H3l9-16z" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v4M12 16h.01" stroke-width="2" stroke-linecap="round"/></svg></div>
+                <b>Emergency repairs</b><span>Triage &amp; dispatch tenant repair requests</span>
+              </div>
+              <div class="tile" onclick="showScreen('messages')">
+                <div class="ic b-green"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke-width="2" stroke-linejoin="round"/></svg></div>
+                <b>Send messages</b><span>Reach tenants &amp; vendors on any channel</span>
+              </div>
+              <div class="tile" onclick="showScreen('reports')">
+                <div class="ic b-amber"><svg viewBox="0 0 24 24" fill="none"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <b>Reports</b><span>Rent roll, delinquency &amp; owner statements</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="sh"><b>Recent activity</b><a onclick="showScreen('repairs')">View all</a></div>
+            <div class="feed">
+              <div class="fitem">
+                <div class="d" style="background:var(--danger-soft)">🚨</div>
+                <div class="c"><b>Emergency: no hot water — Unit 5, 2214 Dwight Way</b><p>Colby triaged and dispatched Bay City Plumbing. Owner approval requested.</p><div class="tm">7:12 AM · via Buildium Resident App</div></div>
+              </div>
+              <div class="fitem">
+                <div class="d" style="background:var(--ai-soft)">✅</div>
+                <div class="c"><b>Faucet repair completed — 3110 College Ave, Unit 2</b><p>Bay City Plumbing replaced the cartridge. WO-4821 closed.</p><div class="tm">Aug 5 · Colby</div></div>
+              </div>
+              <div class="fitem">
+                <div class="d" style="background:var(--brand-soft)">📄</div>
+                <div class="c"><b>July rent roll ready — 3110 College Avenue</b><p>Bobby generated the monthly rent roll &amp; delinquency summary.</p><div class="tm">Aug 1 · Bobby</div></div>
+              </div>
+            </div>
+            <div class="note">This is an interactive product demo with sample data. <span class="demo-flag">DEMO</span></div>
+            <div class="spacer"></div>
+          </div>
+        </section>
+
+        <!-- ============ ASK / SEARCH ============ -->
+        <section class="screen" data-screen="ask">
+          <div class="searchbox">
+            <div class="field">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke-width="2" stroke-linecap="round"/></svg>
+              <input id="askInput" placeholder="Ask about any property or tenant…" />
+            </div>
+            <div class="sub"><span>🔒</span> Securely connected to Gmail · Google Drive · Buildium · Google Voice</div>
+          </div>
+
+          <div id="askSuggests" class="suggests">
+            <div class="lbl">Try asking</div>
+            <div class="sug feat" onclick="runFaucetQuery()">
+              <div class="q"><svg viewBox="0 0 24 24" fill="none"><path d="M8 3v4M8 7c0 0 6 0 6 5v2M14 14h4M16 12v4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="t">What did the tenant at <em>3110 College Avenue</em> ask about the broken faucet in the bedroom bathroom?</div>
+              <div class="arr">→</div>
+            </div>
+            <div class="sug" onclick="runRentQuery()">
+              <div class="q"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21V9l9-6 9 6v12M9 21v-6h6v6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="t">Which units at 3110 College Avenue are behind on rent?</div>
+              <div class="arr">→</div>
+            </div>
+            <div class="sug" onclick="runLeaseQuery()">
+              <div class="q"><svg viewBox="0 0 24 24" fill="none"><path d="M6 2h9l3 3v17H6zM9 12h6M9 16h6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="t">When does Priya Natarajan's lease renew, and what's her current rent?</div>
+              <div class="arr">→</div>
+            </div>
+          </div>
+
+          <!-- scanning + answer injected here -->
+          <div id="askResult"></div>
+          <div class="spacer"></div><div class="spacer"></div>
+        </section>
+
+        <!-- ============ REPAIRS ============ -->
+        <section class="screen" data-screen="repairs">
+          <div id="repairsList">
+            <div class="emg-banner">
+              <div class="p"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l9 16H3l9-16z" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v4M12 16h.01" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div><b>1 emergency needs your approval</b><span>Colby has already triaged &amp; prepared a work order</span></div>
+            </div>
+
+            <div class="repcard" onclick="openRepair()">
+              <div class="rh">
+                <div class="sev hi"></div>
+                <div class="ri">
+                  <div class="tags"><span class="tag red">EMERGENCY</span><span class="tag amber">NO HOT WATER</span></div>
+                  <b>Water heater leaking — no hot water</b>
+                  <div class="meta">2214 Dwight Way · Unit 5 · Marcus Lee</div>
+                  <div class="chan"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2" width="12" height="20" rx="2" stroke-width="2"/><path d="M10 18h4" stroke-width="2" stroke-linecap="round"/></svg> Reported 7:12 AM via Buildium Resident App</div>
+                </div>
+                <div class="arr">›</div>
+              </div>
+              <div class="rfoot"><span class="av">Co</span> Colby triaged in 40 sec · Bay City Plumbing on hold · <b style="color:var(--warn)">Awaiting your approval</b></div>
+            </div>
+
+            <div class="repcard" onclick="openRepair('fridge')">
+              <div class="rh">
+                <div class="sev md"></div>
+                <div class="ri">
+                  <div class="tags"><span class="tag amber">HIGH</span><span class="tag grey">APPLIANCE</span></div>
+                  <b>Refrigerator not cooling</b>
+                  <div class="meta">3110 College Ave · Unit 1 · Tomás Rivera</div>
+                  <div class="chan"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke-width="2"/><path d="M4 10h16" stroke-width="2"/></svg> Reported yesterday 6:20 PM via SMS</div>
+                </div>
+                <div class="arr">›</div>
+              </div>
+              <div class="rfoot"><span class="av">Co</span> Colby scheduled Cool Bay Appliance for Aug 9 · <b style="color:var(--ok)">Scheduled</b></div>
+            </div>
+
+            <div class="repcard" onclick="openRepair('faucet')">
+              <div class="rh">
+                <div class="sev lo"></div>
+                <div class="ri">
+                  <div class="tags"><span class="tag green">RESOLVED</span><span class="tag grey">PLUMBING</span></div>
+                  <b>Broken faucet — bedroom bathroom</b>
+                  <div class="meta">3110 College Ave · Unit 2 · Priya Natarajan</div>
+                  <div class="chan"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke-width="2"/><path d="M4 10h16" stroke-width="2"/></svg> Reported Aug 3 via Google Voice SMS</div>
+                </div>
+                <div class="arr">›</div>
+              </div>
+              <div class="rfoot"><span class="av">Co</span> WO-4821 · Closed Aug 5 · <b style="color:var(--ok)">Completed</b></div>
+            </div>
+            <div class="spacer"></div>
+          </div>
+
+          <!-- repair detail -->
+          <div id="repairDetail" style="display:none">
+            <div class="pad">
+              <div class="tags" style="display:flex;gap:6px;margin-bottom:10px"><span class="tag red">EMERGENCY</span><span class="tag blue">BUILDIUM RESIDENT APP</span></div>
+              <div style="font-size:18px;font-weight:800;letter-spacing:-.3px">Water heater leaking — no hot water</div>
+              <div class="muted" style="font-size:12.5px;margin-top:4px">2214 Dwight Way · Unit 5 · Marcus Lee · Reported today 7:12 AM</div>
+            </div>
+
+            <div class="pad" style="padding-top:4px">
+              <div class="card" style="padding:14px">
+                <div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">How Colby handled it</div>
+                <div class="timeline">
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Tenant reported via Buildium app</b><p>Marcus Lee: "No hot water since last night, and there's water pooling under the heater in the closet."</p><div class="tm">7:12 AM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Colby classified as emergency</b><p>Active leak + loss of hot water → health &amp; safety. Priority set to <strong>Emergency</strong>.</p><div class="tm">7:12 AM · 40 sec later</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Colby messaged the tenant back</b><p>Sent shut-off valve instructions &amp; confirmed a plumber is being dispatched. (See log below.)</p><div class="tm">7:13 AM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Buildium work order created</b><p>WO-4852 opened &amp; matched to a preferred vendor from your list.</p><div class="tm">7:13 AM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node active">!</div><div class="line"></div></div><div class="content"><b>Vendor on hold — awaiting your approval</b><p>Bay City Plumbing can arrive by 9:30 AM. Est. $180–$320. Approve to dispatch.</p><div class="tm">Now</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node wait"></div></div><div class="content"><b>Dispatch &amp; resolve</b><p>Colby will confirm the appointment with Marcus and keep him updated.</p></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pad" style="padding-top:2px">
+              <div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Message log · Tenant ↔ Colby</div>
+              <div class="thread">
+                <div class="msg them"><div class="av">ML</div><div class="bubble"><div class="who">Marcus Lee · Unit 5</div>No hot water since last night, and there's water pooling under the heater in the closet 😩<div class="tm">7:12 AM</div></div></div>
+                <div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Thanks Marcus — that sounds like an emergency and I'm on it right now. First, can you turn the water valve on top of the heater clockwise to stop the leak? I'll walk you through it if needed.<div class="tm">7:12 AM</div></div></div>
+                <div class="msg them"><div class="av">ML</div><div class="bubble"><div class="who">Marcus Lee</div>Done, the valve is off now. Water stopped.<div class="tm">7:13 AM</div></div></div>
+                <div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Perfect. I've opened an emergency work order and a licensed plumber can be there by ~9:30 AM. I'll confirm the exact time shortly. You won't be charged — this is the property's responsibility. 🙏<div class="tm">7:13 AM</div></div></div>
+              </div>
+            </div>
+
+            <div class="pad" style="padding-top:2px">
+              <div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Work order created in Buildium</div>
+              <div class="bcard">
+                <div class="bhead"><div class="bi">B</div><div class="bt"><b>WO-4852 · Water heater — leak &amp; no hot water</b><span>2214 Dwight Way · Unit 5</span></div><div class="bp">EMERGENCY</div></div>
+                <div class="brow"><div class="bl">Category</div><div class="bv">Plumbing › Water heater</div></div>
+                <div class="brow"><div class="bl">Priority</div><div class="bv"><span class="st"><span class="dotk" style="background:var(--danger)"></span> Emergency</span></div></div>
+                <div class="brow"><div class="bl">Vendor</div><div class="bv">Bay City Plumbing (on hold)</div></div>
+                <div class="brow"><div class="bl">Est. cost</div><div class="bv">$180 – $320</div></div>
+                <div class="brow"><div class="bl">Created by</div><div class="bv">Colby (AI) · 7:13 AM today</div></div>
+                <div class="brow"><div class="bl">Status</div><div class="bv"><span class="st"><span class="dotk" style="background:var(--warn)"></span> Awaiting owner approval</span></div></div>
+              </div>
+            </div>
+
+            <div class="pad">
+              <button class="btn" onclick="toast('Vendor dispatched','Colby confirmed Bay City Plumbing for 9:30 AM &amp; notified Marcus')"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Approve &amp; dispatch plumber</button>
+              <div class="spacer"></div>
+              <button class="btn ghost" onclick="askQuotes()">Ask Colby to get more quotes</button>
+            </div>
+            <div class="spacer"></div>
+          </div>
+
+          <!-- completed repair detail (faucet) -->
+          <div id="repairDone" style="display:none">
+            <div class="done-banner">
+              <div class="p"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div><b>Task fully completed</b><span>Resolved &amp; closed Aug 5 · tenant confirmed the fix</span></div>
+            </div>
+
+            <div class="pad">
+              <div class="tags" style="display:flex;gap:6px;margin-bottom:10px"><span class="tag green">RESOLVED</span><span class="tag grey">PLUMBING</span></div>
+              <div style="font-size:18px;font-weight:800;letter-spacing:-.3px">Broken faucet — bedroom bathroom</div>
+              <div class="muted" style="font-size:12.5px;margin-top:4px">3110 College Ave · Unit 2 · Priya Natarajan · Reported Aug 3</div>
+            </div>
+
+            <div class="pad" style="padding-top:4px">
+              <div class="card" style="padding:14px">
+                <div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">How it was resolved</div>
+                <div class="timeline">
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Reported via Google Voice SMS</b><p>Priya: bedroom bathroom faucet won't shut off, dripping fast.</p><div class="tm">Aug 3 · 6:42 PM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Colby triaged &amp; created WO‑4821</b><p>Classified as a normal-priority faucet repair; photo attached.</p><div class="tm">Aug 3 · 6:47 PM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Bay City Plumbing scheduled</b><p>Confirmed Tue Aug 5, 10:00 AM window with tech Luis R.</p><div class="tm">Aug 4 · 9:05 AM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Repair completed</b><p>Worn cartridge replaced &amp; tested — no more dripping.</p><div class="tm">Aug 5 · 11:40 AM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">★</div><div class="line"></div></div><div class="content"><b>Tenant confirmed the fix &amp; rated 5★</b><p>Priya replied "works perfectly" and left a 5‑star review.</p><div class="tm">Aug 5 · 12:05 PM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div></div><div class="content"><b>Invoice $142 paid · work order closed</b><p>Vendor invoice reconciled and WO‑4821 closed.</p><div class="tm">Aug 5 · 1:20 PM</div></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pad" style="padding-top:2px">
+              <div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Tenant's rating of the vendor</div>
+              <div class="ratecard">
+                <div class="rlabel">★ Bay City Plumbing · Luis R.</div>
+                <div class="stars">★★★★★</div>
+                <div class="rnum">5.0 out of 5</div>
+                <div class="rquote">“Super fast and friendly — Luis fixed the leak in about 20 minutes and cleaned up after himself. Thank you!”</div>
+                <div class="rwho"><div class="av">PN</div><div class="rt"><b>Priya Natarajan</b><span>Unit 2 · rated Aug 5 · via Resident App</span></div></div>
+              </div>
+            </div>
+
+            <div class="pad" style="padding-top:2px">
+              <div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Work order</div>
+              <div class="bcard">
+                <div class="bhead"><div class="bi">B</div><div class="bt"><b>WO-4821 · Faucet leak — bedroom bathroom</b><span>3110 College Avenue · Unit 2</span></div><div class="bp">CLOSED</div></div>
+                <div class="brow"><div class="bl">Vendor</div><div class="bv">Bay City Plumbing · Luis R.</div></div>
+                <div class="brow"><div class="bl">Completed</div><div class="bv">Aug 5, 11:40 AM</div></div>
+                <div class="brow"><div class="bl">Resolution</div><div class="bv">Replaced worn cartridge</div></div>
+                <div class="brow"><div class="bl">Invoice</div><div class="bv">$142.00 · paid</div></div>
+                <div class="brow"><div class="bl">Tenant rating</div><div class="bv"><span style="color:#f5a524;letter-spacing:1px">★★★★★</span> 5.0</div></div>
+                <div class="brow"><div class="bl">Status</div><div class="bv"><span class="st"><span class="dotk" style="background:var(--ok)"></span> Completed &amp; closed Aug 5</span></div></div>
+              </div>
+            </div>
+
+            <div class="pad">
+              <button class="btn ghost" onclick="openSrc('buildium')">View full record in Buildium</button>
+            </div>
+            <div class="spacer"></div>
+          </div>
+
+          <!-- scheduled repair detail (fridge) -->
+          <div id="repairSched" style="display:none">
+            <div class="emg-banner" style="background:linear-gradient(135deg,#2563eb,#1749c4);box-shadow:0 10px 26px rgba(37,99,235,.3)">
+              <div class="p" style="animation:none"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="16" rx="2" stroke="#fff" stroke-width="2"/><path d="M4 9h16M8 3v4M16 3v4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+              <div><b>Repair scheduled</b><span>Cool Bay Appliance · confirmed for Sat, Aug 9</span></div>
+            </div>
+
+            <div class="pad">
+              <div class="tags" style="display:flex;gap:6px;margin-bottom:10px"><span class="tag amber">HIGH</span><span class="tag grey">APPLIANCE</span></div>
+              <div style="font-size:18px;font-weight:800;letter-spacing:-.3px">Refrigerator not cooling</div>
+              <div class="muted" style="font-size:12.5px;margin-top:4px">3110 College Ave · Unit 1 · Tomás Rivera · Reported yesterday via SMS</div>
+            </div>
+
+            <div class="pad" style="padding-top:4px">
+              <div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Appointment</div>
+              <div class="appt">
+                <div class="ah">
+                  <div class="cal"><div class="m" id="apptM">AUG</div><div class="d" id="apptD">9</div></div>
+                  <div class="at"><b id="apptTime">1:00 – 3:00 PM</b><span id="apptDay">Saturday, Aug 9, 2026</span></div>
+                </div>
+                <div class="arow"><div class="k">Vendor</div><div class="v">Cool Bay Appliance</div></div>
+                <div class="arow"><div class="k">Technician</div><div class="v">Ken Alvarez · (510) 555‑0175</div></div>
+                <div class="arow"><div class="k">Location</div><div class="v">3110 College Ave · Unit 1</div></div>
+                <div class="arow"><div class="k">Tenant</div><div class="v">Tomás Rivera · notified &amp; confirmed</div></div>
+                <div class="arow"><div class="k">Status</div><div class="v"><span class="st"><span class="dotk" style="background:var(--ok)"></span> Confirmed</span></div></div>
+              </div>
+            </div>
+
+            <div class="pad" style="padding-top:8px">
+              <button class="btn" onclick="openSrc('reschedule')"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5v6h6M20 19v-6h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 00-13-2M5 13a7 7 0 0013 2" stroke-width="2" stroke-linecap="round"/></svg> Reschedule appointment</button>
+              <div class="spacer"></div>
+              <button class="btn ghost" onclick="openSrc('askq')"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 00-9 9c0 1.6.4 3 1.2 4.3L3 21l4.7-1.2A9 9 0 1012 3z" stroke-width="2" stroke-linejoin="round"/><path d="M9.6 9.4a2.4 2.4 0 014 .1c.6 1-.1 1.9-.9 2.4-.5.4-.9.8-.9 1.6M12 16.5h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Ask additional questions</button>
+            </div>
+
+            <div class="pad" style="padding-top:8px">
+              <div class="card" style="padding:14px">
+                <div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:14px">How Colby handled it</div>
+                <div class="timeline">
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Reported via SMS</b><p>Tomás: "The fridge isn't cooling and the food's starting to get warm."</p><div class="tm">Yesterday · 6:20 PM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Colby triaged as High priority</b><p>Food-safety risk. Confirmed with Tomás it isn't a power or dial issue.</p><div class="tm">6:22 PM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node done">✓</div><div class="line"></div></div><div class="content"><b>Matched to Cool Bay Appliance</b><p>Preferred appliance vendor · likely a compressor relay or thermostat.</p><div class="tm">6:25 PM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node active">✓</div><div class="line"></div></div><div class="content"><b>Appointment booked &amp; confirmed</b><p>Sat Aug 9, 1–3 PM. Tomás and the vendor both confirmed.</p><div class="tm">6:31 PM</div></div></div>
+                  <div class="tl"><div class="rail"><div class="node wait"></div></div><div class="content"><b>Upcoming visit</b><p>Colby will remind Tomás the morning of the appointment.</p></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="spacer"></div>
+          </div>
+        </section>
+
+        <!-- ============ MESSAGES ============ -->
+        <section class="screen" data-screen="messages">
+          <div class="seg">
+            <button class="on" id="segTenant" onclick="setAudience('tenant')">Tenants</button>
+            <button id="segVendor" onclick="setAudience('vendor')">Vendors</button>
+          </div>
+
+          <div class="reclist">
+            <div class="lbl">Send to</div>
+            <div class="recsearch">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke-width="2"/><path d="M20 20l-3.2-3.2" stroke-width="2" stroke-linecap="round"/></svg>
+              <input id="recSearch" placeholder="Search by name, unit or address…" oninput="renderRecipItems()" />
+              <button class="recclear" id="recClear" onclick="clearRecSearch()" style="display:none">✕</button>
+            </div>
+            <div id="recRecent"></div>
+            <div id="recItems"></div>
+          </div>
+
+          <div class="composer">
+            <div class="lbl">Message</div>
+            <textarea id="msgText" placeholder="Type your message…" oninput="updatePreview()">Hi Priya — just confirming the plumber completed the faucet repair in your bedroom bathroom. Everything working as expected? Let me know if anything else needs attention. – Collab Home</textarea>
+
+            <div class="aihelp" onclick="aiDraft()">
+              <div class="a"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" fill="#fff"/></svg></div>
+              <div><b>Draft this with Colby</b><span>Tap to have AI write a friendly, on-brand message</span></div>
+            </div>
+
+            <div class="lbl">Deliver via · choose one or more</div>
+            <div class="chanpick">
+              <div class="cp on" id="chSMS" onclick="setChannel('sms')">
+                <div class="ci"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke-width="2" stroke-linejoin="round"/></svg></div>
+                <b>SMS / Text</b><span>Google Voice</span>
+              </div>
+              <div class="cp" id="chApp" onclick="setChannel('app')">
+                <div class="ci"><svg viewBox="0 0 24 24" fill="none"><rect x="6" y="2" width="12" height="20" rx="2" stroke-width="2"/><path d="M10 18h4" stroke-width="2" stroke-linecap="round"/></svg></div>
+                <b>Resident App</b><span>Buildium</span>
+              </div>
+              <div class="cp" id="chEmail" onclick="setChannel('email')">
+                <div class="ci"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke-width="2"/><path d="M4 7l8 6 8-6" stroke-width="2"/></svg></div>
+                <b>Email</b><span>Gmail</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- delivery preview (renders per channel) -->
+          <div class="deliver">
+            <div id="deliverFrame"></div>
+            <div class="cap" id="deliverCap"></div>
+          </div>
+
+          <div class="pad">
+            <button class="btn" id="sendBtn" onclick="sendMessage()"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-6 16-3-6-7-2z" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg> Send message</button>
+            <div class="note">In this demo, no real message is sent. In production, tenants &amp; vendors receive it instantly on their chosen channel.</div>
+          </div>
+          <div class="spacer"></div>
+        </section>
+
+        <!-- ============ REPORTS ============ -->
+        <section class="screen" data-screen="reports">
+          <div id="reportForm">
+            <div class="pad">
+              <div class="lbl" style="font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">Report type</div>
+              <div class="optrow">
+                <div class="opt on" id="optRR" onclick="pickReport('rr')">
+                  <div class="oi"><svg viewBox="0 0 24 24" fill="none"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Rent roll</b></div>
+                  <span>Units, tenants, rent &amp; balances</span>
+                </div>
+                <div class="opt" id="optDeliq" onclick="pickReport('rr')">
+                  <div class="oi"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M6 8h9a3 3 0 010 6H8a3 3 0 000 6h9" stroke-width="2" stroke-linecap="round"/></svg><b>Delinquency</b></div>
+                  <span>Past-due balances &amp; aging</span>
+                </div>
+                <div class="opt" id="optOwner" onclick="pickReport('rr')">
+                  <div class="oi"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4zM4 10h16M8 15h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Owner statement</b></div>
+                  <span>Income, expenses &amp; net</span>
+                </div>
+                <div class="opt" id="optOcc" onclick="pickReport('rr')">
+                  <div class="oi"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21V9l9-6 9 6v12M9 21v-6h6v6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Occupancy</b></div>
+                  <span>Vacancy &amp; turnover</span>
+                </div>
+              </div>
+
+              <div class="lbl" style="font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin:16px 2px 10px">Scope</div>
+              <div class="selrow"><div class="sl">Property</div><div class="sv"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 5l8 6.5M6 10.5V19h12v-8.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 3110 College Avenue</div></div>
+              <div class="selrow"><div class="sl">Period</div><div class="sv"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="16" rx="2" stroke-width="2"/><path d="M4 9h16M8 3v4M16 3v4" stroke-width="2" stroke-linecap="round"/></svg> July 2026</div></div>
+              <div class="selrow"><div class="sl">Source data</div><div class="sv" style="color:var(--ai)"><svg viewBox="0 0 24 24" fill="none" style="stroke:var(--ai)"><path d="M5 12l5 5L20 7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Buildium (live)</div></div>
+
+              <div class="spacer"></div>
+              <button class="btn" onclick="generateReport()"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" fill="none" stroke-width="2" stroke-linejoin="round"/></svg> Generate with Bobby</button>
+              <div class="note">Bobby pulls live data from your PMS and compiles the report in seconds.</div>
+            </div>
+          </div>
+
+          <div id="reportOutput" style="display:none"></div>
+          <div class="spacer"></div>
+        </section>
+
+      </div><!-- /body -->
+
+      <!-- source popup -->
+      <div class="modal" id="srcModal" onclick="closeSrc()">
+        <div class="sheet" onclick="event.stopPropagation()">
+          <div class="sheet-grab"></div>
+          <div class="sheet-head">
+            <div class="sheet-t" id="srcTitle"></div>
+            <button class="sheet-x" onclick="closeSrc()">✕</button>
+          </div>
+          <div class="sheet-body" id="srcBody"></div>
+        </div>
+      </div>
+
+      <!-- Colby notification -->
+      <div class="cnotif" id="colbyNotif" onclick="openQuotes()">
+        <div class="cn-ic"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9z" stroke-linejoin="round"/><path d="M10.5 21a2 2 0 003 0" stroke-linecap="round"/></svg><span class="dot"></span></div>
+        <div class="cn-tx"><b>3 new quotes ready</b><span>Colby · tap to review</span></div>
+        <div class="cn-go">›</div>
+      </div>
+
+      <!-- toast -->
+      <div class="toast" id="toast"><div class="ti"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b id="toastT">Done</b><span id="toastS"></span></div></div>
+
+      <!-- bottom nav -->
+      <div class="tabbar">
+        <button class="tab on" data-tab="home" onclick="showScreen('home')">
+          <svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5M6 10.5V19h12v-8.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Home</span>
+        </button>
+        <button class="tab" data-tab="ask" onclick="openAsk()">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2" stroke-linecap="round"/></svg><span>Ask AI</span>
+        </button>
+        <button class="tab" data-tab="repairs" onclick="showScreen('repairs')">
+          <span class="ndot"></span>
+          <svg viewBox="0 0 24 24"><path d="M12 2l9 16H3l9-16z" stroke-linejoin="round"/><path d="M12 9v4M12 16h.01" stroke-linecap="round"/></svg><span>Repairs</span>
+        </button>
+        <button class="tab" data-tab="messages" onclick="showScreen('messages')">
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z" stroke-linejoin="round"/></svg><span>Messages</span>
+        </button>
+        <button class="tab" data-tab="reports" onclick="showScreen('reports')">
+          <svg viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 8h6M9 12h6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reports</span>
+        </button>
+      </div>
+
+    </div><!-- /screenwrap -->
+  </div><!-- /phone -->
+</div><!-- /stage -->
+
+<script>
+var FAUCET_IMG="data:image/jpeg;base64,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";
+/* ---------------- navigation ---------------- */
+var TITLES = {
+  home:    {k:'Property operations', t:'Dashboard'},
+  ask:     {k:'AI search', t:'Ask AskDwell'},
+  repairs: {k:'Maintenance', t:'Emergency repairs'},
+  messages:{k:'Communication', t:'Send a message'},
+  reports: {k:'Reporting', t:'Reports'}
+};
+var current='home';
+
+function setBar(name){
+  var isHome = (name==='home');
+  document.getElementById('backBtn').style.display = isHome ? 'none':'grid';
+  var bt = document.getElementById('barTitle');
+  var av = document.getElementById('barAvatar');
+  if(isHome){
+    bt.innerHTML = '<div class="wordmark"><div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 5l8 6.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10.5V19h12v-8.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14" r="1.6" fill="#fff"/></svg></div><b>AskDwell</b></div>';
+    av.style.display='grid';
+  } else {
+    var m = TITLES[name];
+    bt.innerHTML = '<div class="k">'+m.k+'</div><div class="t">'+m.t+'</div>';
+    av.style.display='none';
+  }
+}
+
+function showScreen(name){
+  current=name;
+  var screens=document.querySelectorAll('.screen');
+  for(var i=0;i<screens.length;i++){screens[i].classList.remove('active')}
+  document.querySelector('.screen[data-screen="'+name+'"]').classList.add('active');
+  var tabs=document.querySelectorAll('.tab');
+  for(var j=0;j<tabs.length;j++){tabs[j].classList.toggle('on', tabs[j].getAttribute('data-tab')===name)}
+  setBar(name);
+  document.getElementById('body').scrollTop=0;
+  // reset sub-views
+  if(name==='repairs'){document.getElementById('repairsList').style.display='block';document.getElementById('repairDetail').style.display='none';document.getElementById('repairDone').style.display='none';document.getElementById('repairSched').style.display='none';}
+  if(name==='reports'){document.getElementById('reportForm').style.display='block';document.getElementById('reportOutput').style.display='none';}
+}
+
+function goBack(){
+  // repair detail -> list, report output -> form, otherwise home
+  if(current==='repairs' && (document.getElementById('repairDetail').style.display==='block' || document.getElementById('repairDone').style.display==='block' || document.getElementById('repairSched').style.display==='block')){
+    document.getElementById('repairsList').style.display='block';
+    document.getElementById('repairDetail').style.display='none';
+    document.getElementById('repairDone').style.display='none';
+    document.getElementById('repairSched').style.display='none';
+    document.getElementById('body').scrollTop=0;return;
+  }
+  if(current==='reports' && document.getElementById('reportOutput').style.display==='block'){
+    document.getElementById('reportForm').style.display='block';
+    document.getElementById('reportOutput').style.display='none';
+    document.getElementById('body').scrollTop=0;return;
+  }
+  showScreen('home');
+}
+
+function openAsk(){
+  showScreen('ask');
+  document.getElementById('askResult').innerHTML='';
+  document.getElementById('askSuggests').style.display='block';
+  document.getElementById('askInput').value='';
+}
+
+/* ---------------- AI search (faucet) ---------------- */
+function runFaucetQuery(){
+  var q="What did the tenant at 3110 College Avenue ask about the broken faucet in the bedroom bathroom?";
+  document.getElementById('askInput').value=q;
+  document.getElementById('askSuggests').style.display='none';
+  var box=document.getElementById('askResult');
+  box.innerHTML =
+    '<div class="answer"><div class="ai-head"><div class="a"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" fill="#fff"/></svg></div><div><b>Colby is searching…</b><span>Looking across your connected sources</span></div></div></div>'+
+    '<div class="sources-scan" id="scan">'+
+      scanRow('gm','📧','Gmail','Owner & vendor emails')+
+      scanRow('dr','📁','Google Drive','Photos & invoices')+
+      scanRow('bd','🏢','Buildium','Work orders & lease')+
+      scanRow('gv','💬','Google Voice','Tenant text messages')+
+    '</div>';
+  var order=['gm','dr','bd','gv'];
+  order.forEach(function(id,idx){
+    setTimeout(function(){
+      var row=document.getElementById('scan-'+id);
+      if(row){row.classList.add('done');row.querySelector('.spin').style.display='none';}
+    }, 500+idx*430);
+  });
+  setTimeout(showAnswer, 500+order.length*430+350);
+  document.getElementById('body').scrollTop=0;
+}
+
+function scanRow(id,em,name,desc){
+  return '<div class="scanrow" id="scan-'+id+'"><div class="s-ic" style="background:var(--surface-2)">'+em+'</div>'+
+    '<div><b style="font-weight:700;font-size:12.5px">'+name+'</b> · <span style="color:var(--muted-2)">'+desc+'</span></div>'+
+    '<div class="spin"></div>'+
+    '<div class="chk"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" style="stroke:var(--ai)"><path d="M5 12l5 5L20 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>';
+}
+
+function showAnswer(){
+  var box=document.getElementById('askResult');
+  var html =
+  '<div class="answer">'+
+    '<div class="ai-head"><div class="a"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" fill="#fff"/></svg></div>'+
+    '<div><b>Colby</b><span>Answer · 4 sources · 1.2s</span></div></div>'+
+
+    '<div class="ansbody">'+
+      '<p><strong>Priya Natarajan</strong> (Unit 2, 3110 College Avenue) first reported the issue on <strong>Aug 3</strong> via text. She wrote that the <span class="hl">faucet in her bedroom bathroom wouldn\'t fully shut off and was dripping fast</span>, and asked two things:</p>'+
+      '<p>1️⃣ <strong>"Can someone come fix it?"</strong> — she was worried about the constant running water.<br>2️⃣ <strong>"Will I be charged for this?"</strong></p>'+
+      '<p>Colby confirmed it\'s the property\'s responsibility (no tenant charge), collected a photo, opened <strong>Buildium WO-4821</strong>, and scheduled <strong>Bay City Plumbing</strong>. The worn cartridge was replaced and the job was <strong>completed &amp; closed on Aug 5</strong>.</p>'+
+      '<div class="srclabel">Sources · tap to open</div>'+
+      '<div class="srcchips">'+
+        '<span class="srcchip" onclick="openSrc(\'sms\')"><span class="em">💬</span> Google Voice · 4 texts <span class="chevr">›</span></span>'+
+        '<span class="srcchip" onclick="openSrc(\'drive\')"><span class="em">📁</span> Drive · faucet_leak.jpg <span class="chevr">›</span></span>'+
+        '<span class="srcchip" onclick="openSrc(\'wo\')"><span class="em">🏢</span> Buildium · WO-4821 <span class="chevr">›</span></span>'+
+        '<span class="srcchip" onclick="openSrc(\'email\')"><span class="em">📧</span> Gmail · vendor invoice <span class="chevr">›</span></span>'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="thread-toggle" id="thtog" onclick="toggleThread()">'+
+      '<svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+      '<span>Show the full conversation &amp; work order</span></div>'+
+
+    '<div class="thread" id="thread" style="display:none">'+
+      '<div class="daychip"><span>Sun, Aug 3 · 2026</span></div>'+
+
+      '<div class="msg them"><div class="av">PN</div><div class="bubble"><div class="who">Priya Natarajan · Unit 2</div>Hi, the faucet in my bedroom bathroom is broken — the water won\'t shut off all the way and it\'s dripping pretty fast. Can someone come fix it? Also, will I be charged for this?<div class="tm">6:42 PM · Google Voice</div></div></div>'+
+
+      '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Hi Priya! Sorry about that — thanks for flagging it. This is on us, so there\'s <b>no charge to you</b>. Could you send a quick photo of the faucet so I can get the right plumber out?<div class="tm">6:43 PM</div></div></div>'+
+
+      '<div class="msg them"><div class="av">PN</div><div class="bubble"><div class="who">Priya Natarajan</div>Sure, here you go 👇'+
+        '<div class="photo-att"><div class="img"><img src="'+FAUCET_IMG+'" alt="Leaking bathroom faucet"></div><div class="cap"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke-width="2"/><circle cx="9" cy="10" r="1.6"/><path d="M5 17l4-4 3 3 3-4 4 5" stroke-width="1.6"/></svg> faucet_leak.jpg</div></div>'+
+        '<div class="tm">6:45 PM</div></div></div>'+
+
+      '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Got it — looks like a worn cartridge. I\'ve opened a work order and I\'m scheduling Bay City Plumbing. I\'ll confirm the time shortly. In the meantime you can close the shut-off valve under the sink to stop the drip.<div class="tm">6:47 PM</div></div></div>'+
+
+      '<div class="daychip"><span>Mon, Aug 4</span></div>'+
+      '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Update: Bay City Plumbing is confirmed for <b>Tue Aug 5, 10:00 AM–12:00 PM</b>. The tech\'s name is Luis. Does that window work for you?<div class="tm">9:05 AM</div></div></div>'+
+      '<div class="msg them"><div class="av">PN</div><div class="bubble"><div class="who">Priya Natarajan</div>That works, thank you! 🙏<div class="tm">9:12 AM</div></div></div>'+
+
+      '<div class="daychip"><span>Tue, Aug 5</span></div>'+
+      '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Luis finished the repair — replaced the faucet cartridge and tested it, no more dripping. I\'ve closed the work order. Anything else I can help with? 😊<div class="tm">11:40 AM</div></div></div>'+
+      '<div class="msg them"><div class="av">PN</div><div class="bubble"><div class="who">Priya Natarajan</div>All good now, works perfectly. Thanks for the fast fix!<div class="tm">12:05 PM</div></div></div>'+
+
+      '<div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin:18px 0 8px">Linked Buildium work order</div>'+
+      '<div class="bcard">'+
+        '<div class="bhead"><div class="bi">B</div><div class="bt"><b>WO-4821 · Faucet leak — bedroom bathroom</b><span>3110 College Avenue · Unit 2</span></div><div class="bp">CLOSED</div></div>'+
+        '<div class="brow"><div class="bl">Category</div><div class="bv">Plumbing › Faucet / fixture</div></div>'+
+        '<div class="brow"><div class="bl">Priority</div><div class="bv"><span class="st"><span class="dotk" style="background:var(--warn)"></span> Normal</span></div></div>'+
+        '<div class="brow"><div class="bl">Vendor</div><div class="bv">Bay City Plumbing · Luis R.</div></div>'+
+        '<div class="brow"><div class="bl">Scheduled</div><div class="bv">Aug 5, 10:00 AM</div></div>'+
+        '<div class="brow"><div class="bl">Resolution</div><div class="bv">Replaced worn cartridge</div></div>'+
+        '<div class="brow"><div class="bl">Invoice</div><div class="bv">$142.00 · paid</div></div>'+
+        '<div class="brow"><div class="bl">Status</div><div class="bv"><span class="st"><span class="dotk" style="background:var(--ok)"></span> Completed &amp; closed Aug 5</span></div></div>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+  box.innerHTML=html;
+}
+
+function toggleThread(){
+  var t=document.getElementById('thread');
+  var tog=document.getElementById('thtog');
+  var open=t.style.display==='none';
+  t.style.display=open?'block':'none';
+  tog.classList.toggle('open',open);
+  tog.querySelector('span').textContent = open ? 'Hide the conversation' : 'Show the full conversation & work order';
+}
+
+/* ---------------- repairs ---------------- */
+function openRepair(key){
+  key=key||'emergency';
+  document.getElementById('repairsList').style.display='none';
+  document.getElementById('repairDetail').style.display=(key==='emergency')?'block':'none';
+  document.getElementById('repairDone').style.display=(key==='faucet')?'block':'none';
+  document.getElementById('repairSched').style.display=(key==='fridge')?'block':'none';
+  document.getElementById('body').scrollTop=0;
+}
+
+/* ---------------- messages ---------------- */
+var audience='tenant';
+var channels={sms:true,app:false,email:false};
+var RECIPS={
+  tenant:[
+    {id:'pn',n:'Priya Natarajan',s:'3110 College Ave · Unit 2',c:'var(--colby)',in:'PN',
+      email:'priya.natarajan@gmail.com',subj:'Your faucet repair — all set?',
+      msg:'Hi Priya — just confirming the plumber completed the faucet repair in your bedroom bathroom. Everything working as expected? Let me know if anything else needs attention. – Collab Home'},
+    {id:'ml',n:'Marcus Lee',s:'2214 Dwight Way · Unit 5',c:'var(--maven)',in:'ML',
+      email:'marcus.lee@outlook.com',subj:'Your hot water is being restored today',
+      msg:'Hi Marcus — the plumber is on the way for your water heater and should arrive by 9:30 AM. You\'ll have hot water back shortly. Thanks for your patience this morning! – Collab Home'},
+    {id:'tr',n:'Tomás Rivera',s:'3110 College Ave · Unit 1',c:'var(--bobby)',in:'TR',
+      email:'t.rivera@gmail.com',subj:'Scheduling your refrigerator repair',
+      msg:'Hi Tomás — we\'ve scheduled Cool Bay Appliance to look at your refrigerator on Aug 9 between 1–3 PM. Does that window work for you? – Collab Home'},
+    {id:'ao',n:'Aisha Okafor',s:'3110 College Ave · Unit 3',c:'var(--maven)',in:'AO'},
+    {id:'dg',n:'Marco Delgado',s:'3110 College Ave · Unit 4',c:'var(--ai)',in:'MD'},
+    {id:'sk',n:'Sam Kowalski',s:'3110 College Ave · Unit 5',c:'var(--bobby)',in:'SK'},
+    {id:'wz',n:'Wei Zhang',s:'2214 Dwight Way · Unit 2',c:'var(--ava)',in:'WZ'},
+    {id:'br',n:'Bianca Rossi',s:'2214 Dwight Way · Unit 4',c:'var(--colby)',in:'BR'}
+  ],
+  vendor:[
+    {id:'bc',n:'Bay City Plumbing',s:'Preferred vendor · Plumbing',c:'var(--brand)',in:'BC',
+      email:'dispatch@baycityplumbing.com',subj:'Confirm arrival — Unit 5 water heater (2214 Dwight Way)',
+      msg:'Hi Bay City — can you confirm your arrival window for the Unit 5 water heater at 2214 Dwight Way this morning? The tenant is expecting you. Thanks! – Collab Home'},
+    {id:'cb',n:'Cool Bay Appliance',s:'Vendor · Appliance repair',c:'var(--ai)',in:'CB',
+      email:'service@coolbayappliance.com',subj:'Confirm Aug 9 appointment — 3110 College Ave #1',
+      msg:'Hi Cool Bay — please confirm the Aug 9 (1–3 PM) appointment for the refrigerator at 3110 College Ave, Unit 1. Let me know if you need access details. – Collab Home'},
+    {id:'gc',n:'Green Clean Co.',s:'Vendor · Turnover cleaning',c:'var(--ava)',in:'GC',
+      email:'hello@greencleanco.com',subj:'Turnover cleaning — Unit 6, 3110 College Ave',
+      msg:'Hi Green Clean — Unit 6 at 3110 College Ave is ready for turnover cleaning. Can you fit it in this week? I\'ll share the lockbox code once we schedule. – Collab Home'},
+    {id:'rr',n:'Reliable Rooter',s:'Vendor · Plumbing',c:'var(--brand)',in:'RR'},
+    {id:'se',n:'Sparks Electric',s:'Vendor · Electrical',c:'var(--bobby)',in:'SE'},
+    {id:'nh',n:'NorCal HVAC',s:'Vendor · Heating & cooling',c:'var(--maven)',in:'NH'},
+    {id:'gl',n:'Golden Gate Locksmith',s:'Vendor · Locks & keys',c:'var(--ai)',in:'GL'}
+  ]
+};
+var selRecip='pn';
+
+function isVendorRec(r){ return /vendor/i.test(r.s); }
+function recMsg(r){
+  if(r.msg) return r.msg;
+  if(isVendorRec(r)) return 'Hi '+r.n+' — this is Collab Home. Following up about a job at one of our properties. Are you available this week? Thanks!';
+  return 'Hi '+r.n.split(' ')[0]+' — quick note from Collab Home. Just checking in on your unit; let me know if you need anything. – Collab Home';
+}
+function recEmail(r){ return r.email || (r.n.toLowerCase().replace(/[^a-z0-9]+/g,'.').replace(/^\.+|\.+$/g,'')+(isVendorRec(r)?'@vendor.com':'@example.com')); }
+function recSubj(r){ return r.subj || 'A note from Collab Home'; }
+function hl(text,q){
+  if(!q) return text;
+  var i=text.toLowerCase().indexOf(q);
+  if(i<0) return text;
+  return text.slice(0,i)+'<mark class="hlmark">'+text.slice(i,i+q.length)+'</mark>'+text.slice(i+q.length);
+}
+function renderRecips(){
+  var s=document.getElementById('recSearch');
+  if(s) s.placeholder = (audience==='vendor') ? 'Search vendors by name or service…' : 'Search tenants by name, unit or address…';
+  renderRecipItems();
+}
+var recent={tenant:['Dwight Way','Unit 3','Rivera'],vendor:['Plumbing','HVAC','Bay City']};
+function addRecent(term){
+  term=(term||'').trim(); if(!term) return;
+  var arr=(recent[audience]||[]).filter(function(t){return t.toLowerCase()!==term.toLowerCase();});
+  arr.unshift(term);
+  recent[audience]=arr.slice(0,6);
+}
+function renderRecents(){
+  var host=document.getElementById('recRecent'); if(!host) return;
+  var s=document.getElementById('recSearch');
+  var q=(s?s.value:'').trim();
+  var arr=recent[audience]||[];
+  if(q || !arr.length){ host.innerHTML=''; host.style.display='none'; return; }
+  host.style.display='block';
+  var chips=arr.map(function(t){
+    return '<div class="recentchip" onclick="runRecent(\''+t.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">'+
+      '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-width="2"/><path d="M12 8v4l3 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+esc(t)+'</div>';
+  }).join('');
+  host.innerHTML='<div class="recentwrap"><div class="recenthead"><div class="rl">Recent searches</div><div class="rc" onclick="clearRecents()">Clear</div></div><div class="recentchips">'+chips+'</div></div>';
+}
+function runRecent(t){
+  var s=document.getElementById('recSearch'); if(s) s.value=t;
+  addRecent(t);
+  renderRecipItems();
+}
+function clearRecents(){ recent[audience]=[]; renderRecents(); }
+function renderRecipItems(){
+  renderRecents();
+  var s=document.getElementById('recSearch');
+  var q=(s?s.value:'').trim().toLowerCase();
+  var clr=document.getElementById('recClear'); if(clr) clr.style.display=q?'block':'none';
+  var host=document.getElementById('recItems'); if(!host) return;
+  var list=RECIPS[audience].filter(function(r){ return !q || (r.n+' '+r.s).toLowerCase().indexOf(q)>=0; });
+  if(!list.length){
+    host.innerHTML='<div class="recempty">No matches for “'+esc(q)+'”.<br>Try a name, unit number, or address.</div>';
+    updatePreview(); return;
+  }
+  var html='';
+  for(var i=0;i<list.length;i++){ var r=list[i];
+    html+='<div class="rec'+(r.id===selRecip?' sel':'')+'" onclick="selectRecip(\''+r.id+'\')">'+
+      '<div class="av" style="background:'+r.c+'">'+r.in+'</div>'+
+      '<div class="ri"><b>'+hl(r.n,q)+'</b><span>'+hl(r.s,q)+'</span></div>'+
+      '<div class="ck"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>';
+  }
+  host.innerHTML=html;
+  updatePreview();
+}
+function clearRecSearch(){ var s=document.getElementById('recSearch'); if(s){s.value='';s.focus();} renderRecipItems(); }
+function setAudience(a){
+  audience=a;
+  document.getElementById('segTenant').classList.toggle('on',a==='tenant');
+  document.getElementById('segVendor').classList.toggle('on',a==='vendor');
+  var s=document.getElementById('recSearch'); if(s) s.value='';
+  selRecip=RECIPS[a][0].id;
+  document.getElementById('msgText').value=recMsg(RECIPS[a][0]);
+  renderRecips();
+}
+function selectRecip(id){
+  var sq=(document.getElementById('recSearch')||{}).value||'';
+  selRecip=id;
+  document.getElementById('msgText').value=recMsg(currentRecip());
+  if(sq.trim()) addRecent(sq.trim());
+  renderRecipItems();
+}
+function setChannel(c){
+  channels[c]=!channels[c];
+  refreshChannelUI();
+  updatePreview();
+}
+function refreshChannelUI(){
+  document.getElementById('chSMS').classList.toggle('on',channels.sms);
+  document.getElementById('chApp').classList.toggle('on',channels.app);
+  document.getElementById('chEmail').classList.toggle('on',channels.email);
+}
+function selectedChannels(){ return ['sms','app','email'].filter(function(c){return channels[c];}); }
+function currentRecip(){
+  var list=RECIPS[audience];
+  for(var i=0;i<list.length;i++){if(list[i].id===selRecip)return list[i];}
+  return list[0];
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function setPvBody(t){var els=document.querySelectorAll('.pvbody'); for(var i=0;i<els.length;i++) els[i].textContent=t;}
+
+/* icon markup */
+var IC={
+  bull:'<svg viewBox="0 0 24 24" fill="none" stroke="#153D58" stroke-width="2"><path d="M4 10v4h3l6 4V6L7 10H4z" stroke-linejoin="round"/><path d="M16 9a4 4 0 010 6" stroke-linecap="round"/></svg>',
+  bullW:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="width:15px;height:15px"><path d="M4 10v4h3l6 4V6L7 10H4z" stroke-linejoin="round"/><path d="M16 9a4 4 0 010 6" stroke-linecap="round"/></svg>',
+  home:'<svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6M6 10v9h12v-9" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  pay:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>',
+  req:'<svg viewBox="0 0 24 24"><path d="M14.5 6.5a3.5 3.5 0 01-4.6 4.6L5 16l3 3 4.9-4.9a3.5 3.5 0 014.6-4.6l-2.3 2.3-2-2 2.3-2.3z" stroke-linejoin="round"/></svg>',
+  more:'<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>',
+  reply:'<svg viewBox="0 0 24 24"><path d="M9 7L4 12l5 5M4 12h11a5 5 0 015 5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  fwd:'<svg viewBox="0 0 24 24"><path d="M15 7l5 5-5 5M20 12H9a5 5 0 00-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+function bnav(icon,label,on){return '<div class="t'+(on?' on':'')+'">'+icon+'<span>'+label+'</span></div>';}
+
+function smsView(who,body){
+  return '<div class="pv sms"><div class="pv-scr">'+
+    '<div class="pv-status"><span>9:41</span><span>Messages · Google Voice</span></div>'+
+    '<div class="sms-head"><div class="av">CH</div><b>Collab Home</b><span>(510) 555‑0142</span></div>'+
+    '<div class="sms-body"><div class="sms-when">Today 9:41 AM</div>'+
+      '<div class="sms-bubble pvbody">'+esc(body)+'</div>'+
+      '<div class="sms-tick">Delivered</div>'+
+    '</div></div></div>';
+}
+function buildiumView(who,body){
+  return '<div class="pv bld"><div class="pv-scr">'+
+    '<div class="pv-status"><span>9:41</span><span>Resident Center</span></div>'+
+    '<div class="bld-head"><div class="top"><div class="logo">b</div><b>Resident Center</b></div>'+
+      '<div class="greet">Welcome back,<b>'+esc(who)+'</b></div></div>'+
+    '<div class="bld-body">'+
+      '<div class="bld-sec">'+IC.bull+' New message</div>'+
+      '<div class="bld-card"><div class="ch"><div class="ic">'+IC.bullW+'</div><b>Collab Home<br>Property Management</b><span>now</span></div>'+
+        '<p class="pvbody">'+esc(body)+'</p></div>'+
+    '</div>'+
+    '<div class="bld-nav">'+bnav(IC.home,'Home',false)+bnav(IC.pay,'Payments',false)+bnav(IC.req,'Requests',false)+bnav(IC.bull.replace(/#153D58/g,'currentColor'),'Inbox',true)+bnav(IC.more,'More',false)+'</div>'+
+    '</div></div>';
+}
+function emailView(r,who,body){
+  return '<div class="email">'+
+    '<div class="subj">'+esc(recSubj(r))+'</div>'+
+    '<div class="from"><div class="av">C</div>'+
+      '<div class="fi"><div class="l1">Collab Home Management</div><div class="l2">hello@collabhome.io</div></div>'+
+      '<div class="meta">9:41 AM<br>to '+esc(recEmail(r))+'</div></div>'+
+    '<div class="ebody pvbody">'+esc(body)+'</div>'+
+    '<div class="eactions"><div class="ea">'+IC.reply+' Reply</div><div class="ea">'+IC.fwd+' Forward</div></div>'+
+  '</div>';
+}
+
+function updatePreview(){
+  var r=currentRecip();
+  var who = (audience==='vendor') ? r.n : r.n.split(' ')[0];
+  var body = document.getElementById('msgText').value;
+  var frame=document.getElementById('deliverFrame');
+  var cap=document.getElementById('deliverCap');
+  if(!frame) return;
+  var sel=selectedChannels();
+  var sendBtn=document.getElementById('sendBtn');
+  if(!sel.length){
+    frame.innerHTML='<div class="nochan">Select at least one delivery channel above ↑</div>';
+    cap.innerHTML='';
+    if(sendBtn) sendBtn.setAttribute('disabled','');
+    return;
+  }
+  if(sendBtn) sendBtn.removeAttribute('disabled');
+  var LBL={sms:'💬 Text message · SMS',app:'📱 Buildium Resident App',email:'✉️ Email'};
+  var SHORT={sms:'SMS',app:'Resident App',email:'email'};
+  var html='';
+  sel.forEach(function(c){
+    var view = (c==='sms')?smsView(who,body):((c==='app')?buildiumView(who,body):emailView(r,who,body));
+    html+='<div class="prevblock"><div class="chanlabel">'+LBL[c]+'</div>'+view+'</div>';
+  });
+  frame.innerHTML=html;
+  cap.innerHTML='↑ How '+esc(who)+' receives it — '+sel.map(function(c){return SHORT[c];}).join(' + ');
+}
+function aiDraft(){
+  var draft=currentRecip().msg;
+  var ta=document.getElementById('msgText');
+  ta.value='';
+  var i=0;
+  var timer=setInterval(function(){
+    ta.value=draft.slice(0,i); i+=2; setPvBody(ta.value);
+    if(i>draft.length){clearInterval(timer); ta.value=draft; updatePreview();}
+  },12);
+  toast('Colby drafted your message','Review &amp; edit before sending');
+}
+function sendMessage(){
+  var r=currentRecip();
+  var who = (audience==='vendor') ? r.n : r.n.split(' ')[0];
+  var sel=selectedChannels();
+  if(!sel.length){ toast('Pick a channel','Select at least one delivery channel first'); return; }
+  var NAMES={sms:'SMS',app:'the Buildium Resident App',email:'email'};
+  var parts=sel.map(function(c){return NAMES[c];});
+  var joined = parts.length===1 ? parts[0] : (parts.slice(0,-1).join(', ')+' & '+parts[parts.length-1]);
+  toast('Message sent to '+who,'Delivered via '+joined+' · demo (no real message sent)');
+}
+
+/* ---------------- reports ---------------- */
+function pickReport(t){
+  ['optRR','optDeliq','optOwner','optOcc'].forEach(function(id){document.getElementById(id).classList.remove('on');});
+  event.currentTarget.classList.add('on');
+}
+function generateReport(){
+  var out=document.getElementById('reportOutput');
+  document.getElementById('reportForm').style.display='none';
+  out.style.display='block';
+  out.innerHTML='<div class="pad"><div class="card" style="padding:26px;text-align:center">'+
+    '<div class="spin" style="margin:0 auto 14px;width:26px;height:26px;border:3px solid var(--line);border-top-color:var(--brand)"></div>'+
+    '<div style="font-weight:800;font-size:14px">Bobby is compiling your rent roll…</div>'+
+    '<div class="muted" style="font-size:12px;margin-top:5px">Pulling live ledgers from Buildium</div></div></div>';
+  document.getElementById('body').scrollTop=0;
+  setTimeout(renderReport,1400);
+}
+function renderReport(){
+  var rows=[
+    {u:'#1',n:'Tomás Rivera',t:'Lease ends Nov 2026',amt:'2,650',st:'paid'},
+    {u:'#2',n:'Priya Natarajan',t:'Lease ends Mar 2027',amt:'2,795',st:'paid'},
+    {u:'#3',n:'A. Okafor',t:'Lease ends Aug 2026',amt:'2,500',st:'paid'},
+    {u:'#4',n:'J. & M. Delgado',t:'Lease ends Jun 2027',amt:'3,150',st:'paid'},
+    {u:'#5',n:'S. Kowalski',t:'Month-to-month',amt:'2,600',st:'due'},
+    {u:'#6',n:'Vacant',t:'Turnover in progress',amt:'2,900',st:'vac'}
+  ];
+  var pillTxt={paid:'Paid',due:'Due',late:'Late',vac:'Vacant'};
+  var body='';
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i];
+    body+='<div class="rr"><div class="u">'+r.u+'</div>'+
+      '<div class="nm"><b>'+r.n+'</b><span>'+r.t+'</span></div>'+
+      '<div class="amt">'+(r.st==='vac'?'—':'$'+r.amt)+'</div>'+
+      '<div class="stt"><span class="pill '+r.st+'">'+pillTxt[r.st]+'</span></div></div>';
+  }
+  var out=document.getElementById('reportOutput');
+  out.innerHTML=
+  '<div class="pad report">'+
+    '<div class="rpthead">'+
+      '<div class="rt"><div class="ri"><svg viewBox="0 0 24 24" fill="none"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+      '<div><b>Rent Roll — July 2026</b><span>3110 College Avenue, Berkeley CA · 6 units</span></div></div>'+
+      '<div class="rptkpi">'+
+        '<div class="k"><div class="v">$13,695</div><div class="l">Scheduled rent</div></div>'+
+        '<div class="k"><div class="v">$11,095</div><div class="l">Collected</div></div>'+
+        '<div class="k"><div class="v">83.3%</div><div class="l">Occupied</div></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="rtable">'+
+      '<div class="rr head"><div class="u">Unit</div><div class="nm">Tenant</div><div class="amt">Rent</div><div class="stt">Status</div></div>'+
+      body+
+      '<div class="rr total"><div class="u"></div><div class="nm"><b>Total billed (5 occupied)</b></div><div class="amt">$13,695</div><div class="stt"></div></div>'+
+    '</div>'+
+
+    '<div class="card" style="padding:15px;margin-top:14px">'+
+      '<div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px">Collections this period</div>'+
+      '<div class="barwrap">'+
+        bar('Collected','var(--ai)',81,'81.0%')+
+        bar('Outstanding','var(--warn)',19,'19.0%')+
+      '</div>'+
+      '<div style="border-top:1px solid var(--line-2);margin-top:4px;padding-top:12px;display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Outstanding balance (Unit 5)</span><b style="color:#b3730a">$2,600</b></div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:8px"><span class="muted">Vacancy loss (Unit 6, market $2,900)</span><b>$2,900</b></div>'+
+    '</div>'+
+
+    '<div class="spacer"></div>'+
+    '<button class="btn ghost" onclick="toast(\'Export ready\',\'Rent roll saved as PDF &amp; shared to the owner\\\'s portal\')"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12M7 10l5 5 5-5M5 21h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Export PDF &amp; send to owner</button>'+
+    '<div class="note">Generated by Bobby from live Buildium data · sample figures for demo</div>'+
+  '</div>';
+  document.getElementById('body').scrollTop=0;
+}
+function bar(label,color,pct,val){
+  return '<div class="barrow"><div class="bl">'+label+'</div><div class="bt"><div class="fill" style="width:'+pct+'%;background:'+color+'"></div></div><div class="bv">'+val+'</div></div>';
+}
+
+/* ---------------- toast ---------------- */
+var toastTimer;
+function toast(t,s){
+  document.getElementById('toastT').innerHTML=t;
+  document.getElementById('toastS').innerHTML=s;
+  var el=document.getElementById('toast');
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){el.classList.remove('show')},3200);
+}
+
+/* ---------------- source popups ---------------- */
+function tl(state,title,time){
+  var mark = state==='done'?'✓':(state==='active'?'!':'');
+  return '<div class="tl"><div class="rail"><div class="node '+state+'">'+mark+'</div><div class="line"></div></div>'+
+    '<div class="content"><b>'+title+'</b><div class="tm">'+time+'</div></div></div>';
+}
+var SRC={
+  sms:{em:'💬',bg:'#e4f5f5',title:'Google Voice · Texts',html:function(){
+    return '<div class="sheet-src">🔒 Synced from Google Voice · 8 messages in thread</div>'+
+      '<div class="thread">'+
+        '<div class="msg them"><div class="av">PN</div><div class="bubble"><div class="who">Priya · Unit 2</div>Hi, the faucet in my bedroom bathroom is broken — the water won\'t shut off all the way and it\'s dripping pretty fast. Can someone come fix it? Also, will I be charged?<div class="tm">Aug 3 · 6:42 PM</div></div></div>'+
+        '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby</div>Hi Priya! Sorry about that — this is on us, so <b>no charge to you</b>. Could you send a quick photo of the faucet?<div class="tm">6:43 PM</div></div></div>'+
+        '<div class="msg them"><div class="av">PN</div><div class="bubble"><div class="who">Priya</div>Sure, here you go 👇<div class="photo-att"><div class="img"><img src="'+FAUCET_IMG+'" alt="faucet"></div><div class="cap">🖼 faucet_leak.jpg</div></div><div class="tm">6:45 PM</div></div></div>'+
+        '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby</div>Got it — looks like a worn cartridge. I\'ve opened a work order and I\'m scheduling Bay City Plumbing. I\'ll confirm the time shortly.<div class="tm">6:47 PM</div></div></div>'+
+      '</div>'+
+      '<div style="text-align:center;font-size:11px;color:var(--muted-2);margin-top:4px">+ 4 later texts confirming the Aug 5 appointment &amp; completion</div>';
+  }},
+  drive:{em:'📁',bg:'#e9effb',title:'Google Drive · Photo',html:function(){
+    return '<div class="sheet-src">🔒 Synced from Google Drive</div>'+
+      '<div class="imgview"><img src="'+FAUCET_IMG+'" alt="faucet_leak.jpg"><div class="cap2">🖼 faucet_leak.jpg</div></div>'+
+      '<div class="kv">'+
+        '<div class="r"><div class="k">File name</div><div class="v">faucet_leak.jpg</div></div>'+
+        '<div class="r"><div class="k">Type · size</div><div class="v">JPEG image · 212 KB</div></div>'+
+        '<div class="r"><div class="k">Added</div><div class="v">Aug 3, 2026 · 6:45 PM</div></div>'+
+        '<div class="r"><div class="k">Source</div><div class="v">Received via Google Voice from Priya Natarajan</div></div>'+
+        '<div class="r"><div class="k">Folder</div><div class="v">Maintenance / 3110 College Ave / Unit 2</div></div>'+
+        '<div class="r"><div class="k">Linked to</div><div class="v">Buildium WO‑4821</div></div>'+
+      '</div>';
+  }},
+  wo:{em:'🏢',bg:'#e8eef7',title:'Buildium · WO‑4821',html:function(){
+    return '<div class="sheet-src">🔒 Synced from Buildium</div>'+
+      '<div class="bcard" style="margin:0 0 14px">'+
+        '<div class="bhead"><div class="bi">B</div><div class="bt"><b>WO-4821 · Faucet leak — bedroom bathroom</b><span>3110 College Avenue · Unit 2</span></div><div class="bp">CLOSED</div></div>'+
+        '<div class="brow"><div class="bl">Category</div><div class="bv">Plumbing › Faucet / fixture</div></div>'+
+        '<div class="brow"><div class="bl">Priority</div><div class="bv"><span class="st"><span class="dotk" style="background:var(--warn)"></span> Normal</span></div></div>'+
+        '<div class="brow"><div class="bl">Reported by</div><div class="bv">Priya Natarajan (Unit 2)</div></div>'+
+        '<div class="brow"><div class="bl">Vendor</div><div class="bv">Bay City Plumbing · Luis R.</div></div>'+
+        '<div class="brow"><div class="bl">Scheduled</div><div class="bv">Aug 5, 10:00 AM</div></div>'+
+        '<div class="brow"><div class="bl">Resolution</div><div class="bv">Replaced worn cartridge</div></div>'+
+        '<div class="brow"><div class="bl">Invoice</div><div class="bv">$142.00 · paid</div></div>'+
+        '<div class="brow"><div class="bl">Status</div><div class="bv"><span class="st"><span class="dotk" style="background:var(--ok)"></span> Completed &amp; closed Aug 5</span></div></div>'+
+      '</div>'+
+      '<div class="srclabel" style="margin:2px 2px 12px">Work order activity</div>'+
+      '<div class="timeline">'+
+        tl('done','Created by Colby (AI) from tenant text','Aug 3 · 6:47 PM')+
+        tl('done','Vendor scheduled — Bay City Plumbing','Aug 4 · 9:05 AM')+
+        tl('done','Repair completed — cartridge replaced','Aug 5 · 11:40 AM')+
+        tl('done','Invoice $142.00 paid · work order closed','Aug 5 · 1:20 PM')+
+      '</div>';
+  }},
+  email:{em:'📧',bg:'#fceeee',title:'Gmail · Vendor invoice',html:function(){
+    return '<div class="sheet-src">🔒 Synced from Gmail</div>'+
+      '<div class="email" style="margin:0">'+
+        '<div class="subj">Invoice #BCP‑2087 — Faucet repair (3110 College Ave, Unit 2)</div>'+
+        '<div class="from"><div class="av" style="background:linear-gradient(135deg,#1f6f5c,#0e9f7a)">BC</div>'+
+          '<div class="fi"><div class="l1">Bay City Plumbing</div><div class="l2">billing@baycityplumbing.com</div></div>'+
+          '<div class="meta">Aug 5 · 1:12 PM<br>to hello@collabhome.io</div></div>'+
+        '<div class="ebody">Hi Collab Home,<br><br>Thanks for the business. Here\'s the invoice for today\'s faucet repair at 3110 College Ave, Unit 2 (WO‑4821).'+
+          '<div class="inv">'+
+            '<div class="ir"><span>Faucet cartridge (Moen 1225)</span><span>$28.00</span></div>'+
+            '<div class="ir"><span>Labor — 1.0 hr</span><span>$114.00</span></div>'+
+            '<div class="ir tot"><span>Total</span><span class="amt2">$142.00</span></div>'+
+          '</div>'+
+          'Payment received in full — thank you!<br>— Luis R., Bay City Plumbing</div>'+
+        '<div class="eactions"><div class="ea">'+IC.reply+' Reply</div><div class="ea">'+IC.fwd+' Forward</div></div>'+
+      '</div>';
+  }}
+};
+function openSrc(key){
+  var c=SRC[key]; if(!c) return;
+  document.getElementById('srcTitle').innerHTML='<span class="si" style="background:'+c.bg+'">'+c.em+'</span>'+c.title;
+  var b=document.getElementById('srcBody');
+  b.innerHTML=c.html();
+  b.scrollTop=0;
+  document.getElementById('srcModal').classList.add('show');
+}
+function closeSrc(){ document.getElementById('srcModal').classList.remove('show'); }
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeSrc(); });
+
+/* ---------------- more AI queries (rent + lease) ---------------- */
+var SPARK='<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" fill="#fff"/></svg>';
+function aihead(n,secs){ return '<div class="ai-head"><div class="a">'+SPARK+'</div><div><b>Colby</b><span>Answer · '+n+' sources · '+secs+'</span></div></div>'; }
+function runScan(rows, done){
+  var box=document.getElementById('askResult');
+  box.innerHTML='<div class="answer"><div class="ai-head"><div class="a">'+SPARK+'</div><div><b>Colby is searching…</b><span>Looking across your connected sources</span></div></div></div>'+
+    '<div class="sources-scan" id="scan">'+rows.map(function(r){return scanRow(r.id,r.em,r.name,r.desc);}).join('')+'</div>';
+  rows.forEach(function(r,idx){ setTimeout(function(){ var el=document.getElementById('scan-'+r.id); if(el){el.classList.add('done');el.querySelector('.spin').style.display='none';} }, 500+idx*450); });
+  setTimeout(done, 500+rows.length*450+350);
+  document.getElementById('body').scrollTop=0;
+}
+
+function runRentQuery(){
+  document.getElementById('askInput').value="Which units at 3110 College Avenue are behind on rent?";
+  document.getElementById('askSuggests').style.display='none';
+  runScan([{id:'bd',em:'🏢',name:'Buildium',desc:'Rent ledgers & balances'},{id:'gm',em:'📧',name:'Gmail',desc:'Payment reminders sent'}], showRentAnswer);
+}
+function showRentAnswer(){
+  document.getElementById('askResult').innerHTML=
+    '<div class="answer">'+aihead(2,'0.9s')+
+      '<div class="ansbody">'+
+        '<p><strong>One unit is behind on rent</strong> at 3110 College Avenue — the rest of the building is paid through August.</p>'+
+        '<div class="dq"><div class="u">#5</div><div class="di"><b>S. Kowalski</b><span>Month-to-month · rent $2,600/mo</span></div><div class="da"><b>$2,600</b><span>8 days past due</span></div></div>'+
+        '<p>Colby sent an automated reminder on <strong>Aug 5</strong>; there\'s been no payment or reply since. Suggested next step: a second reminder or a quick call.</p>'+
+        '<p><strong>Total outstanding: $2,600.</strong> <span class="muted" style="font-size:12px">(Unit 6 is vacant for turnover, so it isn\'t counted as delinquent.)</span></p>'+
+      '</div>'+
+      '<div class="srclabel">Sources · tap to open</div>'+
+      '<div class="srcchips">'+
+        '<span class="srcchip" onclick="openSrc(\'ledger\')"><span class="em">🏢</span> Buildium · Unit 5 ledger <span class="chevr">›</span></span>'+
+        '<span class="srcchip" onclick="openSrc(\'reminder\')"><span class="em">📧</span> Gmail · reminder sent <span class="chevr">›</span></span>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('body').scrollTop=0;
+}
+
+function runLeaseQuery(){
+  document.getElementById('askInput').value="When does Priya Natarajan's lease renew, and what's her current rent?";
+  document.getElementById('askSuggests').style.display='none';
+  runScan([{id:'bd',em:'🏢',name:'Buildium',desc:'Lease terms & rent'},{id:'dr',em:'📁',name:'Google Drive',desc:'Signed lease document'}], showLeaseAnswer);
+}
+function showLeaseAnswer(){
+  document.getElementById('askResult').innerHTML=
+    '<div class="answer">'+aihead(2,'0.8s')+
+      '<div class="ansbody">'+
+        '<p><strong>Priya Natarajan</strong> (Unit 2) is on a 24‑month lease. Her <strong>current rent is $2,795/mo</strong>, and the lease <strong>renews on Mar 31, 2027</strong>.</p>'+
+        '<div class="kv" style="margin:11px 0">'+
+          '<div class="r"><div class="k">Tenant</div><div class="v">Priya Natarajan · Unit 2</div></div>'+
+          '<div class="r"><div class="k">Lease term</div><div class="v">Apr 1, 2025 – Mar 31, 2027 (24 mo)</div></div>'+
+          '<div class="r"><div class="k">Current rent</div><div class="v">$2,795.00 / month</div></div>'+
+          '<div class="r"><div class="k">Renewal window</div><div class="v">Opens Dec 1, 2026 (~90 days out)</div></div>'+
+          '<div class="r"><div class="k">Status</div><div class="v">Active · in good standing</div></div>'+
+        '</div>'+
+        '<p>Colby can start renewal outreach in December, before expiry. Want me to draft a renewal offer?</p>'+
+      '</div>'+
+      '<div class="srclabel">Sources · tap to open</div>'+
+      '<div class="srcchips">'+
+        '<span class="srcchip" onclick="openSrc(\'lease\')"><span class="em">🏢</span> Buildium · lease terms <span class="chevr">›</span></span>'+
+        '<span class="srcchip" onclick="openSrc(\'leasedoc\')"><span class="em">📁</span> Drive · signed lease <span class="chevr">›</span></span>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('body').scrollTop=0;
+}
+
+/* extra source popups for the rent & lease answers */
+SRC.ledger={em:'🏢',bg:'#e8eef7',title:'Buildium · Unit 5 ledger',html:function(){
+  return '<div class="sheet-src">🔒 Synced from Buildium · S. Kowalski, Unit 5</div>'+
+    '<div class="kv">'+
+      '<div class="r"><div class="k">Tenant</div><div class="v">S. Kowalski · Unit 5</div></div>'+
+      '<div class="r"><div class="k">Lease</div><div class="v">Month-to-month</div></div>'+
+      '<div class="r"><div class="k">Monthly rent</div><div class="v">$2,600.00</div></div>'+
+    '</div>'+
+    '<div class="srclabel" style="margin:14px 2px 10px">Ledger — August 2026</div>'+
+    '<div class="inv">'+
+      '<div class="ir"><span>Aug 1 · Rent charge</span><span>$2,600.00</span></div>'+
+      '<div class="ir"><span>Payments received</span><span>$0.00</span></div>'+
+      '<div class="ir tot"><span>Balance due</span><span class="amt2">$2,600.00</span></div>'+
+    '</div>'+
+    '<div style="font-size:11.5px;color:var(--muted-2);text-align:center">8 days past due · automated reminder sent Aug 5</div>';
+}};
+SRC.reminder={em:'📧',bg:'#fceeee',title:'Gmail · Rent reminder',html:function(){
+  return '<div class="sheet-src">🔒 Synced from Gmail · sent by Colby</div>'+
+    '<div class="email" style="margin:0">'+
+      '<div class="subj">Friendly reminder: August rent is past due</div>'+
+      '<div class="from"><div class="av">Co</div><div class="fi"><div class="l1">Collab Home (Colby)</div><div class="l2">hello@collabhome.io</div></div><div class="meta">Aug 5 · 9:00 AM<br>to s.kowalski@gmail.com</div></div>'+
+      '<div class="ebody">Hi Sam,<br><br>Just a friendly heads-up that your August rent of <b>$2,600</b> for Unit 5 is now past due. You can pay securely in the Resident Center anytime.<br><br>If you\'ve already sent it, thank you — please disregard. Happy to help if anything is needed.<br><br>— Collab Home</div>'+
+      '<div class="eactions"><div class="ea">'+IC.reply+' Reply</div><div class="ea">'+IC.fwd+' Forward</div></div>'+
+    '</div>';
+}};
+SRC.lease={em:'🏢',bg:'#e8eef7',title:'Buildium · Lease (Unit 2)',html:function(){
+  return '<div class="sheet-src">🔒 Synced from Buildium</div>'+
+    '<div class="kv">'+
+      '<div class="r"><div class="k">Tenant</div><div class="v">Priya Natarajan</div></div>'+
+      '<div class="r"><div class="k">Unit</div><div class="v">3110 College Ave · Unit 2</div></div>'+
+      '<div class="r"><div class="k">Lease term</div><div class="v">Apr 1, 2025 – Mar 31, 2027 (24 mo)</div></div>'+
+      '<div class="r"><div class="k">Current rent</div><div class="v">$2,795.00 / month</div></div>'+
+      '<div class="r"><div class="k">Deposit</div><div class="v">$2,795.00 held</div></div>'+
+      '<div class="r"><div class="k">Renewal window</div><div class="v">Opens Dec 1, 2026</div></div>'+
+      '<div class="r"><div class="k">Status</div><div class="v">Active · in good standing</div></div>'+
+    '</div>';
+}};
+SRC.leasedoc={em:'📁',bg:'#e9effb',title:'Drive · Signed lease',html:function(){
+  return '<div class="sheet-src">🔒 Synced from Google Drive</div>'+
+    '<div class="filehead"><div class="fx">PDF</div><div><b>Lease_Agreement_Unit2_Natarajan.pdf</b><span>Signed · 14 pages · 486 KB</span></div></div>'+
+    '<div class="kv">'+
+      '<div class="r"><div class="k">Signed by</div><div class="v">Priya Natarajan · Apr 1, 2025</div></div>'+
+      '<div class="r"><div class="k">Countersigned</div><div class="v">Collab Home · Apr 1, 2025</div></div>'+
+      '<div class="r"><div class="k">Term</div><div class="v">24 months · ends Mar 31, 2027</div></div>'+
+      '<div class="r"><div class="k">Base rent</div><div class="v">$2,795 / month</div></div>'+
+      '<div class="r"><div class="k">Folder</div><div class="v">Leases / 3110 College Ave / Unit 2</div></div>'+
+    '</div>';
+}};
+
+/* ---------------- reschedule + ask-questions (fridge) ---------------- */
+var SLOTS=[
+  {m:'AUG',d:'9', short:'Sat, Aug 9', day:'Saturday, Aug 9, 2026', time:'1:00 – 3:00 PM'},
+  {m:'AUG',d:'11',short:'Mon, Aug 11',day:'Monday, Aug 11, 2026', time:'9:00 – 11:00 AM'},
+  {m:'AUG',d:'11',short:'Mon, Aug 11',day:'Monday, Aug 11, 2026', time:'3:00 – 5:00 PM'},
+  {m:'AUG',d:'12',short:'Tue, Aug 12',day:'Tuesday, Aug 12, 2026', time:'10:00 AM – 12:00 PM'}
+];
+var curSlot=0;
+SRC.reschedule={em:'📅',bg:'#e9effb',title:'Reschedule visit',html:function(){
+  return '<div class="sheet-src">Colby found open slots with Cool Bay Appliance</div>'+
+    SLOTS.map(function(s,i){
+      return '<div class="slot'+(i===curSlot?' cur':'')+'" onclick="pickSlot('+i+')">'+
+        '<div class="cal"><div class="m">'+s.m+'</div><div class="d">'+s.d+'</div></div>'+
+        '<div class="si"><b>'+s.short+'</b><span>'+s.time+' · Cool Bay Appliance</span></div>'+
+        (i===curSlot?'<div class="curtag">CURRENT</div>':'<div class="pick">Select</div>')+
+      '</div>';
+    }).join('')+
+    '<div style="font-size:11px;color:var(--muted-2);text-align:center;margin-top:6px">Colby will confirm the new time with Tomás &amp; the vendor.</div>';
+}};
+function pickSlot(i){
+  curSlot=i; var s=SLOTS[i];
+  var set=function(id,v){var e=document.getElementById(id); if(e)e.textContent=v;};
+  set('apptM',s.m); set('apptD',s.d); set('apptTime',s.time); set('apptDay',s.day);
+  closeSrc();
+  toast('Appointment rescheduled','Now '+s.short+', '+s.time+' · Colby notified Tomás &amp; Cool Bay');
+}
+function qopt(icon,text,who){
+  return '<div class="qopt" onclick="sendQuestion(\''+who+'\')"><div class="qi">'+icon+'</div>'+
+    '<div class="qt">'+text+'<small>Send to '+(who==='tenant'?'Tomás · SMS':'Cool Bay · email')+'</small></div></div>';
+}
+SRC.askq={em:'💬',bg:'#e4f5f5',title:'Ask a question',html:function(){
+  return '<div class="sheet-src">Colby will send it &amp; share the reply with you</div>'+
+    '<div class="srclabel" style="margin:2px 2px 9px">Ask the tenant · Tomás</div>'+
+    qopt('🧊','Is the freezer also warm, or just the fridge section?','tenant')+
+    qopt('🔌','Have you checked it\'s plugged in and the dial isn\'t at 0?','tenant')+
+    qopt('🏠','Will someone be home during the Aug 9 window?','tenant')+
+    '<div class="srclabel" style="margin:15px 2px 9px">Ask the vendor · Cool Bay</div>'+
+    qopt('🧰','Can you bring a compressor relay &amp; start capacitor just in case?','vendor')+
+    qopt('💵','What\'s the trip fee if the unit turns out to be unrepairable?','vendor');
+}};
+function sendQuestion(who){
+  closeSrc();
+  toast('Question sent','Colby asked '+(who==='tenant'?'Tomás':'Cool Bay')+' and will share the reply');
+}
+
+/* ---------------- Buildium full task record + history ---------------- */
+function act(o){
+  return '<div class="actitem"><div class="aline"></div>'+
+    '<div class="aav" style="background:'+o.bg+'">'+o.av+'</div>'+
+    '<div class="ac"><div class="aw"><b>'+o.who+'</b> '+o.action+'</div>'+
+      (o.box?'<div class="abox">'+o.box+'</div>':'')+
+      '<div class="amt">'+o.time+'</div></div></div>';
+}
+SRC.buildium={em:'🏢',bg:'#e8eef7',title:'Buildium · Task record',html:function(){
+  var CO='var(--colby)', PN='#64748B', BC='var(--ai)';
+  return '<div style="display:flex;align-items:center;gap:8px;margin:-2px 0 13px">'+
+      '<div style="width:24px;height:24px;border-radius:6px;background:#153D58;color:#fff;font-weight:900;font-family:Georgia,serif;display:grid;place-items:center;font-size:14px">b</div>'+
+      '<div style="font-size:11px;color:var(--muted-2);font-weight:600">Maintenance › Tasks › <b style="color:#153D58">#4821</b></div></div>'+
+    '<div style="display:flex;align-items:flex-start;gap:10px">'+
+      '<div style="flex:1;min-width:0"><div class="brtitle">Broken faucet — bedroom bathroom</div>'+
+      '<div class="brsub">Resident request · #4821 · 3110 College Ave, Unit 2</div></div>'+
+      '<span class="brstatus">● Completed</span></div>'+
+    '<div class="brtabs"><div class="brtab">Summary</div><div class="brtab on">Updates</div><div class="brtab">Files</div></div>'+
+
+    '<div class="srclabel" style="margin:0 2px 8px">Task details</div>'+
+    '<div class="kv" style="margin-bottom:18px">'+
+      '<div class="r"><div class="k">Property</div><div class="v">3110 College Avenue · Unit 2</div></div>'+
+      '<div class="r"><div class="k">Category</div><div class="v">Maintenance › Plumbing › Faucet</div></div>'+
+      '<div class="r"><div class="k">Priority</div><div class="v">Normal</div></div>'+
+      '<div class="r"><div class="k">Requested by</div><div class="v">Priya Natarajan (Resident)</div></div>'+
+      '<div class="r"><div class="k">Assigned to</div><div class="v">Bay City Plumbing · Luis R.</div></div>'+
+      '<div class="r"><div class="k">Work order</div><div class="v">WO-4821 · $142.00 · paid</div></div>'+
+      '<div class="r"><div class="k">Created</div><div class="v">Aug 3, 2026 · 6:42 PM</div></div>'+
+      '<div class="r"><div class="k">Last updated</div><div class="v">Aug 5, 2026 · 1:20 PM</div></div>'+
+    '</div>'+
+
+    '<div class="srclabel" style="margin:0 2px 12px">Updates · Activity feed · 9 entries</div>'+
+    '<div class="actfeed">'+
+      act({av:'Co',bg:CO,who:'Colby (AI)',action:'changed status <span class="tag amber">In progress</span> → <span class="tag green">Completed</span> and closed the work order.',time:'Aug 5, 2026 · 1:20 PM'})+
+      act({av:'BC',bg:BC,who:'Bay City Plumbing',action:'attached invoice <b>#BCP‑2087</b> — $142.00 (paid).',time:'Aug 5, 2026 · 1:12 PM'})+
+      act({av:'PN',bg:PN,who:'Priya Natarajan',action:'confirmed the repair and left a <b>5★ rating</b>.',box:'“Works perfectly now, thanks for the fast fix!”',time:'Aug 5, 2026 · 12:05 PM'})+
+      act({av:'BC',bg:BC,who:'Bay City Plumbing (Luis R.)',action:'logged a work session: replaced worn cartridge · 1.0 hr.',time:'Aug 5, 2026 · 11:40 AM'})+
+      act({av:'Co',bg:CO,who:'Colby (AI)',action:'assigned <b>Bay City Plumbing</b> and scheduled the visit for Aug 5, 10:00 AM.',time:'Aug 4, 2026 · 9:05 AM'})+
+      act({av:'Co',bg:CO,who:'Colby (AI)',action:'changed status <span class="tag grey">New</span> → <span class="tag amber">In progress</span>.',time:'Aug 3, 2026 · 6:48 PM'})+
+      act({av:'Co',bg:CO,who:'Colby (AI)',action:'created work order <b>WO‑4821</b> · Category: Plumbing › Faucet.',time:'Aug 3, 2026 · 6:47 PM'})+
+      act({av:'PN',bg:PN,who:'Priya Natarajan',action:'attached a photo.',box:'🖼 faucet_leak.jpg<img src="'+FAUCET_IMG+'" style="width:92px;height:57px;object-fit:cover;border-radius:7px;display:block;margin-top:6px">',time:'Aug 3, 2026 · 6:45 PM'})+
+      act({av:'PN',bg:PN,who:'Priya Natarajan',action:'submitted a resident request via Google Voice.',box:'“Hi, the faucet in my bedroom bathroom is broken — the water won\'t shut off all the way and it\'s dripping pretty fast. Can someone come fix it?”',time:'Aug 3, 2026 · 6:42 PM'})+
+    '</div>'+
+    '<div class="spacer"></div>'+
+    '<button class="btn ghost" onclick="toast(\'Opened in Buildium\',\'Deep-linked to task #4821 in your Buildium account\')">Open in Buildium ↗</button>';
+}};
+
+/* ---------------- "ask Colby for more quotes" flow ---------------- */
+function askQuotes(){
+  toast('Request sent to Colby','Gathering quotes from nearby vendors…');
+  setTimeout(function(){ document.getElementById('colbyNotif').classList.add('show'); }, 1900);
+}
+function openQuotes(){
+  document.getElementById('colbyNotif').classList.remove('show');
+  openSrc('quotes');
+}
+function quoteCard(q){
+  return '<div class="quote">'+
+    '<div class="qh"><div class="qav" style="background:'+q.c+'">'+q.in+'</div>'+
+      '<div class="qn"><b>'+q.n+'</b><span>'+q.meta+'</span></div>'+
+      '<div class="qp"><b>'+q.price+'</b><span>'+q.per+'</span></div></div>'+
+    '<div class="qmeta">'+q.tags+'</div>'+
+    '<button class="qbtn '+(q.primary?'p':'g')+'" onclick="dispatchVendor(\''+q.n+'\')">'+q.btn+'</button>'+
+  '</div>';
+}
+function dispatchVendor(name){ closeSrc(); toast('Dispatch requested','Colby is confirming '+name+' for Unit 5 &amp; updating the work order'); }
+SRC.quotes={em:'✨',bg:'var(--ai-soft)',title:'Colby · 3 new quotes',html:function(){
+  return '<div class="sheet-src">Gathered for WO‑4852 · Unit 5 water heater · 2214 Dwight Way</div>'+
+    '<div style="background:var(--ai-soft);border:1px solid #c7ecdd;border-radius:12px;padding:11px 13px;font-size:12px;line-height:1.5;color:#0a7d57;margin-bottom:13px"><b>Colby\'s take:</b> Bay City can arrive soonest at $265. EastBay is $55 cheaper but not until tomorrow morning.</div>'+
+    quoteCard({c:'var(--brand)',in:'BC',n:'Bay City Plumbing',meta:'4.8★ · 128 jobs · licensed',price:'$265',per:'flat rate',tags:'<span class="tag blue">PREFERRED</span><span class="tag green">TODAY 9:30 AM</span>',btn:'Dispatch Bay City',primary:true})+
+    quoteCard({c:'var(--maven)',in:'RR',n:'Reliable Rooter',meta:'4.6★ · 74 jobs · licensed',price:'$240',per:'flat rate',tags:'<span class="tag grey">TODAY 11:00 AM</span>',btn:'Dispatch Reliable',primary:false})+
+    quoteCard({c:'var(--ai)',in:'EB',n:'EastBay Water Heaters',meta:'4.7★ · water-heater specialist',price:'$210',per:'flat rate',tags:'<span class="tag green">LOWEST PRICE</span><span class="tag amber">TMR 8:00 AM</span>',btn:'Dispatch EastBay',primary:false});
+}};
+
+/* ---------------- clock ---------------- */
+function tick(){
+  var d=new Date();
+  var h=d.getHours(),m=d.getMinutes();
+  var ap=h>=12?'':'';
+  h=h%12; if(h===0)h=12;
+  document.getElementById('clock').textContent=h+':'+(m<10?'0':'')+m;
+}
+tick();setInterval(tick,15000);
+
+/* ---------------- presentation size toggle ---------------- */
+function toggleFill(){
+  var on=document.body.classList.toggle('fill');
+  updateFsBtn();
+  try{
+    if(on){ var el=document.documentElement; if(el.requestFullscreen) el.requestFullscreen(); }
+    else if(document.fullscreenElement && document.exitFullscreen){ document.exitFullscreen(); }
+  }catch(e){}
+}
+function updateFsBtn(){
+  var on=document.body.classList.contains('fill');
+  var l=document.getElementById('fsLbl'); if(l) l.textContent = on?'Framed view':'Fill screen';
+}
+/* real phones & very small windows start full-bleed */
+if(window.innerWidth<=600){ document.body.classList.add('fill'); }
+/* pressing Esc to leave browser full-screen returns to the framed view on desktop */
+document.addEventListener('fullscreenchange',function(){
+  if(!document.fullscreenElement && window.innerWidth>600){ document.body.classList.remove('fill'); updateFsBtn(); }
+});
+updateFsBtn();
+
+/* init */
+refreshChannelUI();
+renderRecips();
+setBar('home');
+</script>
+</body>
+</html>
