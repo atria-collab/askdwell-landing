@@ -545,6 +545,18 @@ body{
 .selrow .sl{font-size:12px;color:var(--muted-2);font-weight:700}
 .selrow .sv{font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px}
 .selrow .sv svg{width:15px;height:15px;stroke:var(--muted-2)}
+#propRow,#periodRow{cursor:pointer}
+#propRow:active,#periodRow:active{transform:scale(.995)}
+.selrow .dropchev{transition:.2s}
+.selrow.open .dropchev{transform:rotate(180deg)}
+.dropmenu{display:none;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin:-3px 0 9px;overflow:hidden}
+.dropmenu.open{display:block;animation:fade .15s ease}
+.dropopt{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;border-bottom:1px solid var(--line-2)}
+.dropopt:last-child{border-bottom:none}
+.dropopt:hover{background:var(--surface-2)}
+.dropopt.sel{color:var(--brand);font-weight:800}
+.dropopt .dchk{width:16px;height:16px;stroke:var(--brand);fill:none;opacity:0;flex:none}
+.dropopt.sel .dchk{opacity:1}
 
 /* report output */
 .report{animation:fade .4s ease}
@@ -1109,8 +1121,10 @@ body.fill #fsBtn{background:rgba(11,27,43,.55);border-color:rgba(255,255,255,.14
               </div>
 
               <div class="lbl" style="font-size:11px;font-weight:700;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin:16px 2px 10px">Scope</div>
-              <div class="selrow"><div class="sl">Property</div><div class="sv"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 5l8 6.5M6 10.5V19h12v-8.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 3110 College Avenue</div></div>
-              <div class="selrow"><div class="sl">Period</div><div class="sv"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="16" rx="2" stroke-width="2"/><path d="M4 9h16M8 3v4M16 3v4" stroke-width="2" stroke-linecap="round"/></svg> July 2026</div></div>
+              <div class="selrow" id="propRow" onclick="toggleDrop('prop')"><div class="sl">Property</div><div class="sv"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 5l8 6.5M6 10.5V19h12v-8.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> <span id="propVal">3110 College Avenue</span> <svg class="dropchev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+              <div class="dropmenu" id="propMenu"></div>
+              <div class="selrow" id="periodRow" onclick="toggleDrop('period')"><div class="sl">Period</div><div class="sv"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="16" rx="2" stroke-width="2"/><path d="M4 9h16M8 3v4M16 3v4" stroke-width="2" stroke-linecap="round"/></svg> <span id="periodVal">July 2026</span> <svg class="dropchev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+              <div class="dropmenu" id="periodMenu"></div>
               <div class="selrow"><div class="sl">Source data</div><div class="sv" style="color:var(--ai)"><svg viewBox="0 0 24 24" fill="none" style="stroke:var(--ai)"><path d="M5 12l5 5L20 7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Buildium (live)</div></div>
 
               <div class="spacer"></div>
@@ -1588,6 +1602,7 @@ function pickReport(t){
   event.currentTarget.classList.add('on');
 }
 function generateReport(){
+  closeDrops();
   var out=document.getElementById('reportOutput');
   document.getElementById('reportForm').style.display='none';
   out.style.display='block';
@@ -1598,57 +1613,136 @@ function generateReport(){
   document.getElementById('body').scrollTop=0;
   setTimeout(renderReport,1400);
 }
+/* ---- scope dropdowns ---- */
+var rptProperty='3110 College Avenue', rptPeriod='July 2026';
+var PROP_OPTS=['3110 College Avenue','2214 Dwight Way','All properties'];
+var PERIOD_OPTS=['August 2026 (MTD)','July 2026','June 2026','Q2 2026 (Apr–Jun)','Year to date 2026'];
+function closeDrops(){
+  ['propMenu','periodMenu'].forEach(function(id){var m=document.getElementById(id);if(m)m.classList.remove('open');});
+  ['propRow','periodRow'].forEach(function(id){var r=document.getElementById(id);if(r)r.classList.remove('open');});
+}
+function toggleDrop(which){
+  var isProp=which==='prop';
+  var menu=document.getElementById(isProp?'propMenu':'periodMenu');
+  var row=document.getElementById(isProp?'propRow':'periodRow');
+  var open=!menu.classList.contains('open');
+  closeDrops();
+  if(!open) return;
+  var opts=isProp?PROP_OPTS:PERIOD_OPTS;
+  var cur=isProp?rptProperty:rptPeriod;
+  menu.innerHTML=opts.map(function(o){
+    return '<div class="dropopt'+(o===cur?' sel':'')+'" onclick="pickScope(event,\''+which+'\',\''+o.replace(/'/g,"\\'")+'\')">'+o+
+      '<svg class="dchk" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  }).join('');
+  menu.classList.add('open'); row.classList.add('open');
+}
+function pickScope(e,which,val){
+  e.stopPropagation();
+  if(which==='prop'){ rptProperty=val; document.getElementById('propVal').textContent=val; }
+  else { rptPeriod=val; document.getElementById('periodVal').textContent=val; }
+  closeDrops();
+}
+
+/* ---- rent-roll data per property ---- */
+var RENTROLL={
+  '3110 College Avenue':{addr:'3110 College Avenue, Berkeley CA',rows:[
+    {u:'#1',n:'Tomás Rivera',t:'Lease ends Nov 2026',amt:2650,st:'paid'},
+    {u:'#2',n:'Priya Natarajan',t:'Lease ends Mar 2027',amt:2795,st:'paid'},
+    {u:'#3',n:'Aisha Okafor',t:'Lease ends Aug 2026',amt:2500,st:'paid'},
+    {u:'#4',n:'Marco Delgado',t:'Lease ends Jun 2027',amt:3150,st:'paid'},
+    {u:'#5',n:'Sam Kowalski',t:'Month-to-month',amt:2600,st:'due'},
+    {u:'#6',n:'Vacant',t:'Turnover in progress',amt:2900,st:'vac'}
+  ]},
+  '2214 Dwight Way':{addr:'2214 Dwight Way, Berkeley CA',rows:[
+    {u:'#1',n:'K. Osei',t:'Lease ends Oct 2026',amt:2450,st:'paid'},
+    {u:'#2',n:'Wei Zhang',t:'Lease ends Feb 2027',amt:2700,st:'paid'},
+    {u:'#3',n:'L. Petrova',t:'Lease ends Sep 2026',amt:2550,st:'late'},
+    {u:'#4',n:'Bianca Rossi',t:'Lease ends Jan 2027',amt:2800,st:'paid'},
+    {u:'#5',n:'Marcus Lee',t:'Lease ends Dec 2026',amt:2750,st:'paid'},
+    {u:'#6',n:'D. Nguyen',t:'Month-to-month',amt:2600,st:'paid'}
+  ]}
+};
+function fmt(n){return n.toLocaleString('en-US');}
+function pct1(a,b){return Math.round(a/b*1000)/10;}
+function statOf(ds){var s=0,c=0,o=0,occ=0,vac=0;ds.rows.forEach(function(r){if(r.st==='vac'){vac+=r.amt;return;}occ++;s+=r.amt;if(r.st==='paid')c+=r.amt;else o+=r.amt;});return{sched:s,col:c,out:o,occ:occ,vac:vac,units:ds.rows.length};}
+
 function renderReport(){
-  var rows=[
-    {u:'#1',n:'Tomás Rivera',t:'Lease ends Nov 2026',amt:'2,650',st:'paid'},
-    {u:'#2',n:'Priya Natarajan',t:'Lease ends Mar 2027',amt:'2,795',st:'paid'},
-    {u:'#3',n:'A. Okafor',t:'Lease ends Aug 2026',amt:'2,500',st:'paid'},
-    {u:'#4',n:'J. & M. Delgado',t:'Lease ends Jun 2027',amt:'3,150',st:'paid'},
-    {u:'#5',n:'S. Kowalski',t:'Month-to-month',amt:'2,600',st:'due'},
-    {u:'#6',n:'Vacant',t:'Turnover in progress',amt:'2,900',st:'vac'}
-  ];
+  var out=document.getElementById('reportOutput');
+  if(rptProperty==='All properties'){ out.innerHTML=portfolioHTML(); document.getElementById('body').scrollTop=0; return; }
+  var ds=RENTROLL[rptProperty]||RENTROLL['3110 College Avenue'];
+  var S=statOf(ds);
   var pillTxt={paid:'Paid',due:'Due',late:'Late',vac:'Vacant'};
   var body='';
-  for(var i=0;i<rows.length;i++){
-    var r=rows[i];
+  ds.rows.forEach(function(r){
     body+='<div class="rr"><div class="u">'+r.u+'</div>'+
       '<div class="nm"><b>'+r.n+'</b><span>'+r.t+'</span></div>'+
-      '<div class="amt">'+(r.st==='vac'?'—':'$'+r.amt)+'</div>'+
+      '<div class="amt">'+(r.st==='vac'?'—':'$'+fmt(r.amt))+'</div>'+
       '<div class="stt"><span class="pill '+r.st+'">'+pillTxt[r.st]+'</span></div></div>';
-  }
-  var out=document.getElementById('reportOutput');
+  });
   out.innerHTML=
   '<div class="pad report">'+
     '<div class="rpthead">'+
       '<div class="rt"><div class="ri"><svg viewBox="0 0 24 24" fill="none"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
-      '<div><b>Rent Roll — July 2026</b><span>3110 College Avenue, Berkeley CA · 6 units</span></div></div>'+
+      '<div><b>Rent Roll — '+esc(rptPeriod)+'</b><span>'+ds.addr+' · '+ds.rows.length+' units</span></div></div>'+
       '<div class="rptkpi">'+
-        '<div class="k"><div class="v">$13,695</div><div class="l">Scheduled rent</div></div>'+
-        '<div class="k"><div class="v">$11,095</div><div class="l">Collected</div></div>'+
-        '<div class="k"><div class="v">83.3%</div><div class="l">Occupied</div></div>'+
+        '<div class="k"><div class="v">$'+fmt(S.sched)+'</div><div class="l">Scheduled rent</div></div>'+
+        '<div class="k"><div class="v">$'+fmt(S.col)+'</div><div class="l">Collected</div></div>'+
+        '<div class="k"><div class="v">'+pct1(S.occ,S.units)+'%</div><div class="l">Occupied</div></div>'+
       '</div>'+
     '</div>'+
     '<div class="rtable">'+
       '<div class="rr head"><div class="u">Unit</div><div class="nm">Tenant</div><div class="amt">Rent</div><div class="stt">Status</div></div>'+
       body+
-      '<div class="rr total"><div class="u"></div><div class="nm"><b>Total billed (5 occupied)</b></div><div class="amt">$13,695</div><div class="stt"></div></div>'+
+      '<div class="rr total"><div class="u"></div><div class="nm"><b>Total billed ('+S.occ+' occupied)</b></div><div class="amt">$'+fmt(S.sched)+'</div><div class="stt"></div></div>'+
     '</div>'+
-
     '<div class="card" style="padding:15px;margin-top:14px">'+
-      '<div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px">Collections this period</div>'+
+      '<div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px">Collections · '+esc(rptPeriod)+'</div>'+
       '<div class="barwrap">'+
-        bar('Collected','var(--ai)',81,'81.0%')+
-        bar('Outstanding','var(--warn)',19,'19.0%')+
+        bar('Collected','var(--ai)',pct1(S.col,S.sched),pct1(S.col,S.sched)+'%')+
+        bar('Outstanding','var(--warn)',pct1(S.out,S.sched),pct1(S.out,S.sched)+'%')+
       '</div>'+
-      '<div style="border-top:1px solid var(--line-2);margin-top:4px;padding-top:12px;display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Outstanding balance (Unit 5)</span><b style="color:#b3730a">$2,600</b></div>'+
-      '<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:8px"><span class="muted">Vacancy loss (Unit 6, market $2,900)</span><b>$2,900</b></div>'+
+      '<div style="border-top:1px solid var(--line-2);margin-top:4px;padding-top:12px;display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Outstanding balance</span><b style="color:#b3730a">$'+fmt(S.out)+'</b></div>'+
+      (S.vac?'<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:8px"><span class="muted">Vacancy loss (market $'+fmt(S.vac)+')</span><b>$'+fmt(S.vac)+'</b></div>':'')+
     '</div>'+
-
     '<div class="spacer"></div>'+
     '<button class="btn ghost" onclick="toast(\'Export ready\',\'Rent roll saved as PDF &amp; shared to the owner\\\'s portal\')"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12M7 10l5 5 5-5M5 21h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Export PDF &amp; send to owner</button>'+
     '<div class="note">Generated by Bobby from live Buildium data · sample figures for demo</div>'+
   '</div>';
   document.getElementById('body').scrollTop=0;
+}
+function portfolioHTML(){
+  var a=RENTROLL['3110 College Avenue'],b=RENTROLL['2214 Dwight Way'];
+  var A=statOf(a),B=statOf(b);
+  var sched=A.sched+B.sched,col=A.col+B.col,out=A.out+B.out,units=A.units+B.units,occ=A.occ+B.occ;
+  function prow(name,S){return '<div class="rr"><div class="nm"><b>'+name+'</b><span>'+S.units+' units · '+pct1(S.occ,S.units)+'% occupied</span></div><div class="amt">$'+fmt(S.col)+'</div><div class="stt"><span class="pill paid">Collected</span></div></div>';}
+  return '<div class="pad report">'+
+    '<div class="rpthead">'+
+      '<div class="rt"><div class="ri"><svg viewBox="0 0 24 24" fill="none"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+      '<div><b>Portfolio Rent Roll — '+esc(rptPeriod)+'</b><span>All properties · '+units+' units · 2 buildings</span></div></div>'+
+      '<div class="rptkpi">'+
+        '<div class="k"><div class="v">$'+fmt(sched)+'</div><div class="l">Scheduled rent</div></div>'+
+        '<div class="k"><div class="v">$'+fmt(col)+'</div><div class="l">Collected</div></div>'+
+        '<div class="k"><div class="v">'+pct1(occ,units)+'%</div><div class="l">Occupied</div></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="rtable">'+
+      '<div class="rr head"><div class="nm">Property</div><div class="amt">Collected</div><div class="stt"></div></div>'+
+      prow('3110 College Avenue',A)+
+      prow('2214 Dwight Way',B)+
+      '<div class="rr total"><div class="nm"><b>Portfolio total</b></div><div class="amt">$'+fmt(col)+'</div><div class="stt"></div></div>'+
+    '</div>'+
+    '<div class="card" style="padding:15px;margin-top:14px">'+
+      '<div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px">Portfolio collections · '+esc(rptPeriod)+'</div>'+
+      '<div class="barwrap">'+
+        bar('Collected','var(--ai)',pct1(col,sched),pct1(col,sched)+'%')+
+        bar('Outstanding','var(--warn)',pct1(out,sched),pct1(out,sched)+'%')+
+      '</div>'+
+      '<div style="border-top:1px solid var(--line-2);margin-top:4px;padding-top:12px;display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Outstanding balance</span><b style="color:#b3730a">$'+fmt(out)+'</b></div>'+
+    '</div>'+
+    '<div class="spacer"></div>'+
+    '<button class="btn ghost" onclick="toast(\'Export ready\',\'Portfolio rent roll saved as PDF\')"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12M7 10l5 5 5-5M5 21h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Export PDF &amp; send to owner</button>'+
+    '<div class="note">Generated by Bobby from live Buildium data · sample figures for demo</div>'+
+  '</div>';
 }
 function bar(label,color,pct,val){
   return '<div class="barrow"><div class="bl">'+label+'</div><div class="bt"><div class="fill" style="width:'+pct+'%;background:'+color+'"></div></div><div class="bv">'+val+'</div></div>';
