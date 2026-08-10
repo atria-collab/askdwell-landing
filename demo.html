@@ -823,6 +823,8 @@ body.fill .land-tagline{font-size:12px}
 .adlogo .adhalo{position:absolute;inset:-7px;border-radius:26px;background:conic-gradient(from 0deg,#2f6bff,#12c7a0,#a855f7,#2f6bff);filter:blur(10px);opacity:.4;animation:adrot 6s linear infinite}
 .adlogo .adglow{position:absolute;inset:4px;border-radius:20px;background:linear-gradient(135deg,#2f6bff,#12c7a0);box-shadow:0 14px 30px rgba(47,107,255,.4);animation:adbreathe 3.4s ease-in-out infinite}
 .adlogo svg{position:relative;width:42px;height:42px}
+.adlogo.sm{width:46px;height:46px;flex:none}
+.adlogo.sm svg{width:26px;height:26px}
 .adlogo .hp{stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;stroke-dasharray:64;stroke-dashoffset:64;animation:addraw 3.6s ease-in-out infinite}
 .adlogo .hp2{animation-delay:.18s}
 .adlogo .addot{fill:#fff;transform-origin:12px 14px;animation:adpulse 3.6s ease-in-out infinite}
@@ -2844,20 +2846,20 @@ SRC.tier1_credit={em:'🏢',bg:'#e8eef7',title:'Buildium · Resident ledger',htm
     '<button class="btn ghost" onclick="closeSrc();toast(\'Task closed\',\'Task #'+t.no+' completed · ledger updated in Buildium\')">Done</button>';
 }};
 var AGENTS={
-  colby:{name:'Colby',role:'Tenant assistant',color:'var(--colby)',in:'Co',phone:'(510) 900-0298',note:'Tenants text Colby 24/7 for maintenance, questions & updates.',thread:[
+  colby:{name:'Colby',role:'Tenant assistant',color:'var(--colby)',in:'Co',phone:'(510) 900-0298',note:'Tenants text Colby 24/7 for maintenance, questions & updates.',sample:"Hi Colby, my bathroom faucet is leaking. Can someone take a look this week?",edited:"Hi Colby — the bathroom faucet in my unit has been dripping for a couple of days now. Could you please schedule someone to take a look this week? Mornings work best for me. Thank you!",thread:[
     {who:'them',av:'PN',name:'Priya · 3110 College #2',text:'Hi, my kitchen sink is draining slowly again.',tm:'9:02 AM'},
     {who:'me',text:'Hi Priya! Sorry about that — I can send a plumber out. Does tomorrow 10am–12pm work? No charge to you. 🙏',tm:'9:02 AM'},
     {who:'them',name:'Priya',text:'Yes that works, thank you!',tm:'9:05 AM'}
   ]},
-  maven:{name:'Maven',role:'Staff & ops',color:'var(--maven)',in:'Ma',phone:'(510) 900-0342',note:'Your staff text Maven for portfolio-wide info & work orders.',thread:[
+  maven:{name:'Maven',role:'Staff & ops',color:'var(--maven)',in:'Ma',phone:'(510) 900-0342',note:'Your staff text Maven for portfolio-wide info & work orders.',sample:"Maven, how many open work orders are there right now?",edited:"Hi Maven — could you give me a quick rundown of every open work order across the portfolio right now, grouped by priority? Thanks!",thread:[
     {who:'them',av:'DW',name:'Dana (staff)',text:'Maven, how many open work orders across the portfolio right now?',tm:'8:30 AM'},
     {who:'me',text:'7 open work orders: 1 emergency (2214 Dwight #5), 2 high, 4 normal. Want the full list?',tm:'8:30 AM'}
   ]},
-  bobby:{name:'Bobby',role:'Owner reports',color:'var(--bobby)',in:'Bo',phone:'(510) 900-0355',note:'Owners text Bobby for reports, approvals & financials.',thread:[
+  bobby:{name:'Bobby',role:'Owner reports',color:'var(--bobby)',in:'Bo',phone:'(510) 900-0355',note:'Owners text Bobby for reports, approvals & financials.',sample:"Bobby, send me the August rent roll for 3110 College Ave.",edited:"Hi Bobby — could you please send me the August rent roll for 3110 College Ave, including billed vs. collected and occupancy? Thank you!",thread:[
     {who:'them',av:'RO',name:'Owner · 3110 College LLC',text:'Bobby, can you send me the July rent roll for College Ave?',tm:'4:10 PM'},
     {who:'me',text:'On it — July rent roll for 3110 College Avenue: $13,695 billed, $11,095 collected (81%). PDF sent to your owner portal & email. 📄',tm:'4:10 PM'}
   ]},
-  ava:{name:'Ava',role:'Leasing',color:'var(--ava)',in:'Av',phone:'(510) 399-1918',note:'Prospects text Ava to ask about listings & book tours.',thread:[
+  ava:{name:'Ava',role:'Leasing',color:'var(--ava)',in:'Av',phone:'(510) 399-1918',note:'Prospects text Ava to ask about listings & book tours.',sample:"Ava, is the 1BR at 3110 College still available? Can I tour this weekend?",edited:"Hi Ava — I'm interested in the 1BR at 3110 College Ave. Is it still available, and could I book a tour this weekend (Saturday preferred)? Thanks!",thread:[
     {who:'them',av:'??',name:'New lead · (415) 555-0173',text:'Hi, is the 1BR at 3110 College Ave still available? Can I tour this weekend?',tm:'11:20 AM'},
     {who:'me',text:'Hi! Yes — Unit 4 is available at $2,395/mo. I have Sat 1pm or Sun 11am open. Which works? I can text you the listing & photos too. 🏡',tm:'11:20 AM'},
     {who:'them',name:'New lead',text:'Saturday 1pm please!',tm:'11:24 AM'}
@@ -2884,9 +2886,37 @@ function openAgent(key){
     '<div class="thread">'+thread+'</div>'+
     '<div style="background:var(--ai-soft);border:1px solid #c7ecdd;border-radius:11px;padding:10px 12px;font-size:11.5px;color:#0a7d57;margin-top:12px;line-height:1.5">'+a.note+' Texts to <b>'+a.phone+'</b> are answered automatically.</div>'+
     '<div class="spacer"></div>'+
-    '<button class="btn ghost" onclick="toast(\'Opening messages\',\'Text '+a.name+' at '+a.phone+'\')"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke-width="2" stroke-linejoin="round"/></svg> Text '+a.name+'</button>';
+    '<button class="btn ghost" onclick="openAgentCompose()"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke-width="2" stroke-linejoin="round"/></svg> Text '+a.name+'</button>';
   document.getElementById('srcBody').scrollTop=0;
   document.getElementById('srcModal').classList.add('show');
+}
+function openAgentCompose(){
+  var a=AGENTS[curAgent];
+  document.getElementById('srcTitle').innerHTML='<span class="si" style="background:'+a.color+';color:#fff">'+a.in+'</span>Text '+a.name;
+  document.getElementById('srcBody').innerHTML=
+    '<div class="ucback" onclick="openAgent(\''+curAgent+'\')">‹ Back to '+a.name+'</div>'+
+    '<div class="sheet-src">To '+a.name+' · '+a.role+' · '+a.phone+'</div>'+
+    '<div class="srclabel" style="margin:0 2px 8px">Your message</div>'+
+    '<textarea id="agentMsg" style="width:100%;border:1px solid var(--line);border-radius:13px;padding:12px 13px;font-family:var(--font);font-size:13.5px;line-height:1.5;min-height:98px;resize:vertical;outline:none;background:#fff;box-sizing:border-box">'+a.sample+'</textarea>'+
+    '<div class="aihelp" onclick="agentAIEdit()" style="margin-top:12px">'+
+      '<div class="adlogo sm" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></div>'+
+      '<div><b>Ask AskDwell to edit this message</b><span>Tap the logo — AI rewrites it clearly &amp; politely</span></div>'+
+    '</div>'+
+    '<div class="spacer"></div>'+
+    '<button class="btn" onclick="agentSend()"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke-width="2" stroke-linejoin="round"/></svg> Send to '+a.name+'</button>';
+  document.getElementById('srcBody').scrollTop=0;
+}
+function agentAIEdit(){
+  var a=AGENTS[curAgent]; var ta=document.getElementById('agentMsg'); if(!ta) return;
+  var base=(ta.value||'').trim();
+  var out=a.edited || (base+' — thank you!');
+  ta.value=''; var i=0;
+  var timer=setInterval(function(){ ta.value=out.slice(0,i); i+=2; if(i>out.length){ clearInterval(timer); ta.value=out; } },12);
+  toast('AskDwell polished your message','Review &amp; edit before sending');
+}
+function agentSend(){
+  var a=AGENTS[curAgent]; closeSrc();
+  toast('Message sent to '+a.name, 'Texted '+a.phone+' · demo (no real message sent)');
 }
 SRC.assign_task={em:'🗂️',bg:'#e9effb',title:'Assign · Collab Tasks',html:function(){
   var t=UNCLAIMED[curUnclaimed];
