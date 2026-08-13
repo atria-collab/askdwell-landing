@@ -1372,7 +1372,7 @@ textarea.askq-input,textarea.land-reply{resize:none;line-height:1.4;max-height:1
             </div>
 
             <div class="pad" style="padding-top:8px">
-              <button class="btn" onclick="openSrc('reschedule')"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5v6h6M20 19v-6h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 00-13-2M5 13a7 7 0 0013 2" stroke-width="2" stroke-linecap="round"/></svg> Reschedule appointment</button>
+              <button class="btn" onclick="reschedCtx='fridge';openSrc('reschedule')"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5v6h6M20 19v-6h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 00-13-2M5 13a7 7 0 0013 2" stroke-width="2" stroke-linecap="round"/></svg> Reschedule appointment</button>
               <div class="spacer"></div>
               <button class="btn ghost" onclick="openSrc('askq')"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 00-9 9c0 1.6.4 3 1.2 4.3L3 21l4.7-1.2A9 9 0 1012 3z" stroke-width="2" stroke-linejoin="round"/><path d="M9.6 9.4a2.4 2.4 0 014 .1c.6 1-.1 1.9-.9 2.4-.5.4-.9.8-.9 1.6M12 16.5h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Ask additional questions</button>
             </div>
@@ -4382,48 +4382,73 @@ SRC.emergency_full={em:'🚨',bg:'#fceeee',title:'Emergency repair · WO-4852',h
     '<button class="btn ghost" onclick="closeSrc();askQuotes()">Ask Colby to get more quotes</button>';
 }};
 
-/* ---------------- reschedule + ask-questions (fridge) ---------------- */
-var SLOTS=[
+/* ---------------- reschedule + ask-questions ---------------- */
+/* Fridge slots (3110 College · Tomás Rivera · Cool Bay Appliance) */
+var SLOTS_FRIDGE=[
   {m:'AUG',d:'9', short:'Sat, Aug 9', day:'Saturday, Aug 9, 2026', time:'1:00 – 3:00 PM'},
   {m:'AUG',d:'11',short:'Mon, Aug 11',day:'Monday, Aug 11, 2026', time:'9:00 – 11:00 AM'},
   {m:'AUG',d:'11',short:'Mon, Aug 11',day:'Monday, Aug 11, 2026', time:'3:00 – 5:00 PM'},
   {m:'AUG',d:'12',short:'Tue, Aug 12',day:'Tuesday, Aug 12, 2026', time:'10:00 AM – 12:00 PM'}
 ];
+/* Water-heater slots (2214 Dwight · Marcus Lee) — emergency, near-term windows */
+var SLOTS_WH=[
+  {m:'AUG',d:'13',short:'Today',   day:'Today, Aug 13, 2026',    time:'2:00 – 4:00 PM'},
+  {m:'AUG',d:'13',short:'Today',   day:'Today, Aug 13, 2026',    time:'4:00 – 6:00 PM'},
+  {m:'AUG',d:'14',short:'Tomorrow',day:'Tomorrow, Aug 14, 2026', time:'8:00 – 10:00 AM'}
+];
+var SLOTS=SLOTS_FRIDGE; /* kept for compatibility */
+var reschedCtx='fridge';
 var curSlot=0;
+function reschedSlots(){ return reschedCtx==='wh'?SLOTS_WH:SLOTS_FRIDGE; }
+function reschedInfo(){
+  if(reschedCtx==='wh'){
+    var q=selectedQuote||QUOTES[0];
+    return {vendor:q.n, vin:q.in, tenant:'Marcus Lee', tenantInit:'ML', unit:'Unit 5',
+      loc:'2214 Dwight Way', item:'water-heater repair at 2214 Dwight, Unit 5',
+      label:'Water heater · 2214 Dwight Way · Unit 5', tech:''};
+  }
+  return {vendor:'Cool Bay Appliance', vin:'CB', tenant:'Tomás Rivera', tenantInit:'TR', unit:'Unit 1',
+    loc:'3110 College Ave', item:'fridge repair at 3110 College, Unit 1',
+    label:'Refrigerator · 3110 College Ave · Unit 1', tech:'Ken Alvarez'};
+}
 SRC.reschedule={em:'📅',bg:'#e9effb',title:'Reschedule visit',html:function(){
-  return '<div class="sheet-src">Colby found open slots with Cool Bay Appliance</div>'+
-    SLOTS.map(function(s,i){
+  var info=reschedInfo(); var slots=reschedSlots(); if(curSlot>=slots.length) curSlot=0;
+  return '<div class="sheet-src">Colby found open windows with '+info.vendor+'</div>'+
+    slots.map(function(s,i){
       return '<div class="slot'+(i===curSlot?' cur':'')+'" onclick="pickSlot('+i+')">'+
         '<div class="cal"><div class="m">'+s.m+'</div><div class="d">'+s.d+'</div></div>'+
-        '<div class="si"><b>'+s.short+'</b><span>'+s.time+' · Cool Bay Appliance</span></div>'+
+        '<div class="si"><b>'+s.short+', '+s.time.split(' – ')[0]+'</b><span>'+s.time+' · '+info.vendor+'</span></div>'+
         (i===curSlot?'<div class="curtag">CURRENT</div>':'<div class="pick">Select</div>')+
       '</div>';
     }).join('')+
-    '<div style="font-size:11px;color:var(--muted-2);text-align:center;margin-top:6px">Colby will confirm the new time with Tomás &amp; the vendor.</div>';
+    '<div style="font-size:11px;color:var(--muted-2);text-align:center;margin-top:6px">Colby will confirm the new time with '+info.tenant+' &amp; '+info.vendor+'.</div>';
 }};
 function pickSlot(i){
-  curSlot=i; var s=SLOTS[i];
-  var set=function(id,v){var e=document.getElementById(id); if(e)e.textContent=v;};
-  set('apptM',s.m); set('apptD',s.d); set('apptTime',s.time); set('apptDay',s.day);
-  set('apptM2',s.m); set('apptD2',s.d); set('apptTime2',s.time); set('apptDay2',s.day);
+  var slots=reschedSlots(); curSlot=i; var s=slots[i]; var info=reschedInfo();
+  if(reschedCtx!=='wh'){
+    var set=function(id,v){var e=document.getElementById(id); if(e)e.textContent=v;};
+    set('apptM',s.m); set('apptD',s.d); set('apptTime',s.time); set('apptDay',s.day);
+    set('apptM2',s.m); set('apptD2',s.d); set('apptTime2',s.time); set('apptDay2',s.day);
+  }
   closeSrc();
-  toast('Appointment rescheduled','Now '+s.short+', '+s.time+' · Colby is confirming with Tomás &amp; Cool Bay');
-  setTimeout(function(){ showColbyNotif('New time confirmed','Tomás &amp; Cool Bay both agreed · tap', function(){ openSrc('reschedule_confirmed'); }); }, 1900);
+  toast('Appointment rescheduled','Now '+s.short+', '+s.time+' · Colby is confirming with '+info.tenant+' &amp; '+info.vendor);
+  setTimeout(function(){ showColbyNotif('New time confirmed', info.tenant+' &amp; '+info.vendor+' both agreed · tap', function(){ openSrc('reschedule_confirmed'); }); }, 1900);
 }
 SRC.reschedule_confirmed={em:'✅',bg:'#e4f7ee',title:'New time confirmed',html:function(){
-  var s=SLOTS[curSlot]||SLOTS[0];
-  return '<div class="sheet-src">🔒 Confirmed via Colby · Refrigerator · 3110 College Ave · Unit 1</div>'+
+  var info=reschedInfo(); var slots=reschedSlots(); var s=slots[curSlot]||slots[0];
+  var vendorLine=info.vendor+(info.tech?' · '+info.tech:'');
+  return '<div class="sheet-src">🔒 Confirmed via Colby · '+info.label+'</div>'+
     '<div class="kv" style="margin:0 0 12px">'+
       '<div class="r"><div class="k">New appointment</div><div class="v">'+s.day+' · '+s.time+'</div></div>'+
-      '<div class="r"><div class="k">Vendor</div><div class="v">Cool Bay Appliance · Ken Alvarez</div></div>'+
-      '<div class="r"><div class="k">Tenant</div><div class="v">Tomás Rivera · Unit 1</div></div>'+
+      '<div class="r"><div class="k">Vendor</div><div class="v">'+vendorLine+'</div></div>'+
+      '<div class="r"><div class="k">Tenant</div><div class="v">'+info.tenant+' · '+info.unit+'</div></div>'+
       '<div class="r"><div class="k">Status</div><div class="v"><span class="st"><span class="dotk" style="background:var(--ok)"></span> Confirmed by all parties</span></div></div>'+
     '</div>'+
     '<div class="srclabel" style="margin:2px 2px 8px">How everyone agreed</div>'+
     '<div class="thread">'+
-      '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Hi both — can we move the fridge repair at 3110 College, Unit 1 to <b>'+s.short+', '+s.time+'</b>?<div class="tm">Now</div></div></div>'+
-      '<div class="msg them"><div class="av" style="background:var(--ai)">CB</div><div class="bubble"><div class="who">Cool Bay Appliance</div>Works for us — Ken will be there in that window. 👍<div class="tm">Now</div></div></div>'+
-      '<div class="msg them"><div class="av">TR</div><div class="bubble"><div class="who">Tomás Rivera · Unit 1</div>That time works, I\'ll be home. Thanks!<div class="tm">Now</div></div></div>'+
+      '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Hi both — can we move the '+info.item+' to <b>'+s.short+', '+s.time+'</b>?<div class="tm">Now</div></div></div>'+
+      '<div class="msg them"><div class="av" style="background:var(--ai)">'+info.vin+'</div><div class="bubble"><div class="who">'+info.vendor+'</div>Works for us — we\'ll be there in that window. 👍<div class="tm">Now</div></div></div>'+
+      '<div class="msg them"><div class="av">'+info.tenantInit+'</div><div class="bubble"><div class="who">'+info.tenant+' · '+info.unit+'</div>That time works, I\'ll be home. Thanks!<div class="tm">Now</div></div></div>'+
       '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Perfect — locked in. I\'ve updated the work order and calendar for everyone.<div class="tm">Now</div></div></div>'+
     '</div>'+
     '<div class="spacer"></div>'+
@@ -4699,6 +4724,8 @@ SRC.vendor_confirm={em:'✅',bg:'#e4f7ee',title:'Vendor confirmed',html:function
       '<div class="r"><div class="k">Arrival</div><div class="v">'+when+'</div></div>'+
       '<div class="r"><div class="k">Status</div><div class="v"><span class="st"><span class="dotk" style="background:var(--ok)"></span> Confirmed &amp; scheduled</span></div></div>'+
     '</div>'+
+    '<button class="btn ghost" onclick="reschedCtx=\'wh\';curSlot=0;openSrc(\'reschedule\')"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5v6h6M20 19v-6h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 00-13-2M5 13a7 7 0 0013 2" stroke-width="2" stroke-linecap="round"/></svg> Reschedule appointment</button>'+
+    '<div class="spacer"></div>'+
     '<button class="btn" onclick="closeSrc();openTaskList(\'emergency\')">Done</button>';
 }};
 /* ===== standard AI-edit helper (used under every compose text box) ===== */
@@ -4830,7 +4857,7 @@ function mvTenant(){
     mvSchedMsg('me','ML',null,'Marcus Lee','Sounds good, thank you!','7:25 AM')+
   '</div>');
   mvPush('ai','✅ Locked in — Marcus is confirmed for the '+q.arrive+' window and will be home. I\'ll keep everyone in sync.','7:27 AM');
-  mvCard('<div style="margin:2px 0 6px"><button class="btn ghost" id="mvCalBtn" onclick="mvAddCal()"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="16" rx="2" stroke-width="2"/><path d="M4 9h16M8 3v4M16 3v4M12 13v4M10 15h4" stroke-width="2" stroke-linecap="round"/></svg> Add to calendar</button></div>');
+  mvCard('<div style="margin:2px 0 6px"><button class="btn ghost" id="mvCalBtn" onclick="mvAddCal()"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="16" rx="2" stroke-width="2"/><path d="M4 9h16M8 3v4M16 3v4M12 13v4M10 15h4" stroke-width="2" stroke-linecap="round"/></svg> Add to calendar</button><div class="spacer"></div><button class="btn ghost" onclick="reschedCtx=\'wh\';curSlot=0;openSrc(\'reschedule\')"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5v6h6M20 19v-6h-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 11a7 7 0 00-13-2M5 13a7 7 0 0013 2" stroke-width="2" stroke-linecap="round"/></svg> Reschedule appointment</button></div>');
   mvChips([{t:'Great — keep me posted', go:mvAfterTenant}]);
 }
 function mvAddCal(){
