@@ -942,13 +942,14 @@ body.fill .toast{left:318px}
 .land-scancard{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-sm);margin:2px 0 13px;overflow:hidden}
 .land-scancard .sources-scan{padding:6px 14px}
 .land-compose{position:sticky;bottom:0;display:flex;flex-direction:column;align-items:stretch;background:var(--bg);padding:10px 0 6px;margin-top:4px}
-.land-compose-row{display:flex;align-items:center;gap:8px}
-.land-reply{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-family:var(--font);font-size:13.5px;color:var(--ink);background:#fff;outline:none;box-shadow:0 6px 18px rgba(15,27,43,.06)}
+.land-compose-row{display:flex;align-items:flex-end;gap:8px}
+.land-reply{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-family:var(--font);font-size:13.5px;color:var(--ink);background:#fff;outline:none;box-shadow:0 6px 18px rgba(15,27,43,.06);resize:none;line-height:1.4;max-height:120px;overflow-y:auto}
 .land-reply:focus{border-color:var(--brand);box-shadow:0 6px 18px rgba(37,99,235,.14)}
 .land-reply-go{flex:none;border:none;background:var(--brand);color:#fff;border-radius:11px;width:38px;height:38px;padding:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 5px 14px rgba(37,99,235,.3)}
 .land-reply-go svg{width:16px;height:16px;stroke:#fff}
-.askq-compose{display:flex;align-items:center;gap:8px;margin:4px 0 6px}
+.askq-compose{display:flex;align-items:flex-end;gap:8px;margin:4px 0 6px}
 .askq-input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;font-family:var(--font);font-size:13px;color:var(--ink);background:#fff;outline:none}
+textarea.askq-input,textarea.land-reply{resize:none;line-height:1.4;max-height:120px;overflow-y:auto;display:block}
 .askq-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 .askq-go{flex:none;border:none;background:var(--brand);color:#fff;border-radius:11px;width:38px;height:38px;padding:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 5px 14px rgba(37,99,235,.3)}
 .askq-go svg{width:16px;height:16px;stroke:#fff}
@@ -1050,7 +1051,7 @@ body.fill .toast{left:318px}
                 <div class="land-thread thread" id="landThread" style="display:none"></div>
                 <div class="land-compose" id="landCompose" style="display:none">
                   <div class="land-compose-row">
-                    <input class="land-reply" id="landReply" placeholder="Add more detail or a follow-up…" onkeydown="if(event.key==='Enter')landReplySend()">
+                    <textarea class="land-reply" id="landReply" rows="1" placeholder="Add more detail or a follow-up…" oninput="autoGrow(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();landReplySend()}"></textarea>
                     <button class="land-reply-go" onclick="landReplySend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                   </div>
                   <div class="aihelp" onclick="aiEditField('landReply','')" style="margin:8px 0 2px"><div class="adlogo sm" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></div><div><b>Ask AskDwell to edit this message</b><span>Tap the logo — AI rewrites it clearly &amp; politely</span></div></div>
@@ -1510,7 +1511,7 @@ body.fill .toast{left:318px}
           <div class="pad">
             <div class="thread" id="mavenThread" style="margin-top:6px"></div>
             <div class="srclabel" style="margin:8px 2px 8px">Message Maven</div>
-            <div class="askq-compose"><input id="mvReply" class="askq-input" placeholder="Message Maven…" onkeydown="if(event.key==='Enter')mvUserSend()"><button class="askq-go" onclick="mvUserSend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+            <div class="askq-compose"><textarea id="mvReply" class="askq-input" rows="1" placeholder="Message Maven…" oninput="autoGrow(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mvUserSend()}"></textarea><button class="askq-go" onclick="mvUserSend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
             <div class="aihelp" onclick="aiEditField('mvReply','')" style="margin:2px 0 6px"><div class="adlogo sm" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></div><div><b>Ask AskDwell to edit this message</b><span>Tap the logo — AI rewrites it clearly &amp; politely</span></div></div>
             <div class="spacer"></div>
           </div>
@@ -1563,20 +1564,20 @@ body.fill .toast{left:318px}
 
       <!-- bottom nav -->
       <div class="tabbar" id="tabbar" style="display:none">
-        <button class="tab on" data-tab="home" onclick="showScreen('home')">
+        <button class="tab on" data-tab="home" onclick="goToLanding()">
           <svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5M6 10.5V19h12v-8.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Home</span>
         </button>
         <button class="tab" data-tab="ask" onclick="openAskAI()">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2" stroke-linecap="round"/></svg><span>Ask AI</span>
         </button>
-        <button class="tab" data-tab="repairs" onclick="showScreen('repairs')">
+        <button class="tab" data-tab="tasklist" onclick="openTaskList('emergency')">
           <span class="ndot"></span>
           <svg viewBox="0 0 24 24"><path d="M12 2l9 16H3l9-16z" stroke-linejoin="round"/><path d="M12 9v4M12 16h.01" stroke-linecap="round"/></svg><span>Repairs</span>
         </button>
-        <button class="tab" data-tab="messages" onclick="showScreen('messages')">
+        <button class="tab" data-tab="groupchat" onclick="openGroupChat()">
           <svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z" stroke-linejoin="round"/></svg><span>Messages</span>
         </button>
-        <button class="tab" data-tab="reports" onclick="showScreen('reports')">
+        <button class="tab" data-tab="reportshub" onclick="openReportsHub()">
           <svg viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 8h6M9 12h6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Reports</span>
         </button>
       </div>
@@ -1640,7 +1641,7 @@ function resetLandingChat(){ var land=document.querySelector('.screen[data-scree
 function landReplySend(){
   var el=document.getElementById('landReply'); if(!el) return;
   var v=(el.value||'').trim(); if(!v) return;
-  el.value=''; clarClearChips(); clarStopTyping();
+  el.value=''; autoGrow(el); clarClearChips(); clarStopTyping();
   clarPush('me','DW', esc(v), clarT());
   clarTyping();
   setTimeout(function(){
@@ -1875,7 +1876,7 @@ function renderReportsHub(){
     '<div style="padding:16px 18px 2px">'+
       '<div style="font-size:15px;font-weight:800;letter-spacing:-.2px">What report do you need?</div>'+
       '<div class="muted" style="font-size:12px;margin:3px 0 11px">Ask Bobby in plain language — he pulls live data from Buildium.</div>'+
-      '<div class="askq-compose"><input id="rhInput" class="askq-input" placeholder="e.g. Rent roll for 3110 College, or delinquency across all properties…" onkeydown="if(event.key===\'Enter\')reportsHubAsk()"><button class="askq-go" onclick="reportsHubAsk()" aria-label="Ask"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
+      '<div class="askq-compose"><textarea id="rhInput" class="askq-input" rows="1" placeholder="e.g. Rent roll for 3110 College, or delinquency across all properties…" oninput="autoGrow(this)" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();reportsHubAsk()}"></textarea><button class="askq-go" onclick="reportsHubAsk()" aria-label="Ask"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
       aiHelpHTML('rhInput','')+
       '<div class="thread" id="rhThread" style="display:none;margin-top:12px"></div>'+
     '</div>'+
@@ -1885,8 +1886,8 @@ function renderReportsHub(){
 var rhProp='3110 College Avenue';
 function reportsHubAsk(){
   var el=document.getElementById('rhInput'); var v=el?(el.value||'').trim():''; if(!v){ if(el) el.focus(); return; }
-  if(rrAwaitInstr){ rrAwaitInstr=false; el.value=''; clarHostId='rhThread'; rrAns.instr=v; clarPush('me','DW', esc(v)); clarTyping(); setTimeout(function(){ clarStopTyping(); rrGenerate(); }, 700); return; }
-  el.value=''; clarHostId='rhThread'; clarTi=0;
+  if(rrAwaitInstr){ rrAwaitInstr=false; el.value=''; autoGrow(el); clarHostId='rhThread'; rrAns.instr=v; clarPush('me','DW', esc(v)); clarTyping(); setTimeout(function(){ clarStopTyping(); rrGenerate(); }, 700); return; }
+  el.value=''; autoGrow(el); clarHostId='rhThread'; clarTi=0;
   var t=document.getElementById('rhThread'); if(t){ t.style.display='block'; }
   var type=detectRptType(v);
   var prop=/all propert|portfolio|every propert/i.test(v)?'All properties':(/2214|dwight/i.test(v)?'2214 Dwight Way':(/2521|regent/i.test(v)?'2521 Regent Street':(/3110|college/i.test(v)?'3110 College Avenue':null)));
@@ -1908,7 +1909,7 @@ function reportsHubAsk(){
 /* rent roll → ask one question at a time (property → period → tenant → monthly) */
 var rrAns={}, rrAwaitInstr=false;
 function rrPick(merge,label,next){ clarClearChips(); clarPush('me','DW', esc(label)); for(var k in merge) rrAns[k]=merge[k]; clarTyping(); setTimeout(function(){ clarStopTyping(); next(); }, 650); }
-function rhTypeInto(text){ var el=document.getElementById('rhInput'); if(!el) return; el.focus(); el.value=''; var i=0; var timer=setInterval(function(){ el.value=text.slice(0,i); i++; if(i>text.length){ clearInterval(timer); el.value=text; } }, 26); }
+function rhTypeInto(text){ var el=document.getElementById('rhInput'); if(!el) return; el.focus(); el.value=''; var i=0; var timer=setInterval(function(){ el.value=text.slice(0,i); i++; autoGrow(el); if(i>text.length){ clearInterval(timer); el.value=text; autoGrow(el); } }, 26); }
 function rrAskInstr(){
   clarPush('ai','Co','Any <b>special instructions</b> for this rent roll? I\'ve suggested one in the box below — hit <b>return</b> to include it, or edit it first.');
   rrAwaitInstr=true;
@@ -4447,7 +4448,7 @@ SRC.askq={em:'💬',bg:'#e4f5f5',title:'Ask a question',html:function(){
     if(q.who==='tenant') tenant+=row; else vendor+=row;
   });
   return '<div class="sheet-src">Colby will send it &amp; share the reply with you</div>'+
-    '<div class="askq-compose"><input id="askqInput" class="askq-input" placeholder="Type your own question…" onkeydown="if(event.key===\'Enter\')askCustomQuestion()"><button class="askq-go" onclick="askCustomQuestion()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
+    '<div class="askq-compose"><textarea id="askqInput" class="askq-input" rows="1" placeholder="Type your own question…" oninput="autoGrow(this)" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();askCustomQuestion()}"></textarea><button class="askq-go" onclick="askCustomQuestion()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
     '<div class="aihelp" onclick="askqAIEdit()" style="margin:2px 0 6px">'+
       '<div class="adlogo sm" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></div>'+
       '<div><b>Ask AskDwell to refine your question</b><span>Tap the logo — AI rewrites it clearly &amp; politely</span></div>'+
@@ -4489,7 +4490,7 @@ SRC.qreply={em:'💬',bg:'#e4f5f5',title:'Reply shared with you',html:function()
       '<div class="msg them"><div class="av">'+av+'</div><div class="bubble"><div class="who">'+name+'</div>'+q.reply+'<div class="tm">11:52 AM</div></div></div>'+
     '</div>'+
     '<div class="srclabel" style="margin:6px 2px 8px">Ask a follow-up · '+name+'</div>'+
-    '<div class="askq-compose"><input id="qrReply" class="askq-input" placeholder="Type a follow-up question…" onkeydown="if(event.key===\'Enter\')qrSend()"><button class="askq-go" onclick="qrSend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
+    '<div class="askq-compose"><textarea id="qrReply" class="askq-input" rows="1" placeholder="Type a follow-up question…" oninput="autoGrow(this)" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();qrSend()}"></textarea><button class="askq-go" onclick="qrSend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
     aiHelpHTML('qrReply','')+
     '<div style="background:var(--ai-soft);border:1px solid #c7ecdd;border-radius:11px;padding:10px 12px;font-size:11.5px;color:#0a7d57;margin-top:4px;line-height:1.5">Colby shared this reply with you automatically. Send a follow-up and Colby keeps everyone in sync.</div>'+
     '<div class="spacer"></div>'+
@@ -4498,7 +4499,7 @@ SRC.qreply={em:'💬',bg:'#e4f5f5',title:'Reply shared with you',html:function()
 function qrSend(){
   var el=document.getElementById('qrReply'); var v=el?(el.value||'').trim():'';
   if(!v){ if(el) el.focus(); return; }
-  el.value='';
+  el.value=''; autoGrow(el);
   var q=lastQ||{who:'tenant'};
   var name=q.who==='tenant'?'Tomás Rivera':'Cool Bay Appliance';
   var av=q.who==='tenant'?'TR':'CB';
@@ -4689,7 +4690,7 @@ SRC.vendor_confirm={em:'✅',bg:'#e4f7ee',title:'Vendor confirmed',html:function
       '<div class="msg me"><div class="av">Co</div><div class="bubble"><div class="who">Colby (AskDwell)</div>Perfect, thank you! I\'ve locked it in and let Marcus (tenant) know to expect you.<div class="tm">Now</div></div></div>'+
     '</div>'+
     '<div class="srclabel" style="margin:6px 2px 8px">Message '+q.n+'</div>'+
-    '<div class="askq-compose"><input id="vcReply" class="askq-input" placeholder="Send a message to the vendor…" onkeydown="if(event.key===\'Enter\')vcSend()"><button class="askq-go" onclick="vcSend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
+    '<div class="askq-compose"><textarea id="vcReply" class="askq-input" rows="1" placeholder="Send a message to the vendor…" oninput="autoGrow(this)" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();vcSend()}"></textarea><button class="askq-go" onclick="vcSend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+
     aiHelpHTML('vcReply','vendor')+
     '<div class="kv" style="margin:12px 0">'+
       '<div class="r"><div class="k">Vendor</div><div class="v">'+q.n+'</div></div>'+
@@ -4706,6 +4707,7 @@ function aiHelpHTML(id,frame){
     '<div><b>Ask AskDwell to edit this message</b><span>Tap the logo — AI rewrites it clearly &amp; politely</span></div>'+
   '</div>';
 }
+function autoGrow(el){ if(!el) return; el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
 function aiPolishText(s){
   s=(s||'').replace(/\s+/g,' ').trim(); if(!s) return s;
   s=s.charAt(0).toUpperCase()+s.slice(1);
@@ -4720,13 +4722,13 @@ function aiEditField(id,frame){
   var out=aiPolishText(base);
   if(frame==='vendor'){ var q=selectedQuote||QUOTES[0]; out='Hi '+q.n+' — '+out.charAt(0).toLowerCase()+out.slice(1)+' Thank you!'; }
   el.value=''; var i=0;
-  var timer=setInterval(function(){ el.value=out.slice(0,i); i+=2; if(i>out.length){ clearInterval(timer); el.value=out; } },12);
+  var timer=setInterval(function(){ el.value=out.slice(0,i); i+=2; autoGrow(el); if(i>out.length){ clearInterval(timer); el.value=out; autoGrow(el); } },12);
   toast('AskDwell polished your text','Review &amp; edit before sending');
 }
 function vcSend(){
   var el=document.getElementById('vcReply'); var v=el?(el.value||'').trim():'';
   if(!v){ if(el) el.focus(); return; }
-  el.value='';
+  el.value=''; autoGrow(el);
   var q=selectedQuote||QUOTES[0];
   var t=document.getElementById('vcThread');
   if(t){
@@ -4763,7 +4765,7 @@ function mvChips(chips){ mvClearChips(); var t=mvEl(); if(!t) return; var w=docu
 function mvClearChips(){ var c=document.getElementById('mvChips'); if(c) c.remove(); }
 function mvUserSend(){
   var el=document.getElementById('mvReply'); var v=el?(el.value||'').trim():''; if(!v){ if(el) el.focus(); return; }
-  el.value=''; mvPush('me', esc(v));
+  el.value=''; autoGrow(el); mvPush('me', esc(v));
   if(mvPendingRemind){ mvPendingRemind=false; mvRemindReply(); return; }
   mvTyping(); setTimeout(function(){ mvStop(); mvPush('ai','Got it — I\'m on it and will keep you posted.'); }, 900);
 }
@@ -4861,7 +4863,7 @@ function mvPayInvoice(){
 function mvTypeInto(text,done){
   var el=document.getElementById('mvReply'); if(!el){ if(done) done(); return; }
   el.value=''; el.focus(); var i=0;
-  var timer=setInterval(function(){ el.value=text.slice(0,i); i++; mvScroll(); if(i>text.length){ clearInterval(timer); el.value=text; if(done) done(); } }, 26);
+  var timer=setInterval(function(){ el.value=text.slice(0,i); i++; autoGrow(el); mvScroll(); if(i>text.length){ clearInterval(timer); el.value=text; autoGrow(el); if(done) done(); } }, 26);
 }
 function mvAutoRemind(){
   var q=mvSel||QUOTES[0];
@@ -5137,12 +5139,12 @@ function renderGroupChat(){
       '<button class="btn ghost" style="width:auto;padding:8px 11px;margin:0;flex:none;font-size:12px" onclick="gcNewGroup()"><svg viewBox="0 0 24 24" fill="none" style="width:15px;height:15px"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg> New</button>'+
     '</div>'+
     '<div class="thread" id="gcThread" style="padding:14px 16px 4px">'+thread+'</div>'+
-    '<div style="padding:0 16px 8px"><div class="askq-compose"><input id="gcInput" class="askq-input" placeholder="Message the group…" onkeydown="if(event.key===\'Enter\')gcSend()"><button class="askq-go" onclick="gcSend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+aiHelpHTML('gcInput','')+'</div>';
+    '<div style="padding:0 16px 8px"><div class="askq-compose"><textarea id="gcInput" class="askq-input" rows="1" placeholder="Message the group…" oninput="autoGrow(this)" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();gcSend()}"></textarea><button class="askq-go" onclick="gcSend()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'+aiHelpHTML('gcInput','')+'</div>';
   var b=document.getElementById('body'); if(b) b.scrollTop=b.scrollHeight;
 }
 function gcSend(){
   var el=document.getElementById('gcInput'); var v=el?(el.value||'').trim():''; if(!v){ if(el) el.focus(); return; }
-  el.value='';
+  el.value=''; autoGrow(el);
   var g=GROUPS[activeGroup];
   g.thread.push({from:'Dana Whitfield', text:esc(v), tm:'Now'});
   var t=document.getElementById('gcThread'); if(t){ var d=document.createElement('div'); d.innerHTML=gcMsgHTML(g.thread[g.thread.length-1]); while(d.firstChild) t.appendChild(d.firstChild); }
