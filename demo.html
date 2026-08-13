@@ -1631,7 +1631,8 @@ function landingAsk(){
   if(/\b(2521|regent|unclaim|stuff|things?|situation|something|not sure|help me|going on|whats? up)\b/.test(q)){ runClarifyDemo(el.value); return; }
   if(/\breport\b/.test(q) || /\b(3110|college)\b/.test(q) || /rent ?roll|delinquen|owner statement|occupancy|vacan/.test(q)){ runReportDemo(el.value); return; }
   if(/financ|income|balance|statement/.test(q)){ showScreen('reports'); return; }
-  if(/repair|emergenc|maintenance|work ?order|leak|broke|fix|plumb|appliance/.test(q)){ showScreen('repairs'); return; }
+  if(/emergenc/.test(q)){ openTaskList('emergency'); return; }
+  if(/repair|maintenance|work ?order|leak|broke|fix|plumb|appliance/.test(q)){ showScreen('repairs'); return; }
   if(/messag|send|notif|reach|announce|text tenant|email tenant|contact/.test(q)){ showScreen('messages'); return; }
   if(/search|find|look ?up|drive|gmail|buildium|voice|ask ai/.test(q)){ openAskAI(); return; }
   openAsk(true);
@@ -4698,7 +4699,7 @@ SRC.vendor_confirm={em:'✅',bg:'#e4f7ee',title:'Vendor confirmed',html:function
       '<div class="r"><div class="k">Arrival</div><div class="v">'+when+'</div></div>'+
       '<div class="r"><div class="k">Status</div><div class="v"><span class="st"><span class="dotk" style="background:var(--ok)"></span> Confirmed &amp; scheduled</span></div></div>'+
     '</div>'+
-    '<button class="btn" onclick="closeSrc();showScreen(\'repairs\')">Done</button>';
+    '<button class="btn" onclick="closeSrc();openTaskList(\'emergency\')">Done</button>';
 }};
 /* ===== standard AI-edit helper (used under every compose text box) ===== */
 function aiHelpHTML(id,frame){
