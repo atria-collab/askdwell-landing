@@ -839,6 +839,23 @@ body.fill .menubtn,body.fill .land-menu,body.fill .sb-x{display:none}
 /* keep the bottom-sheet outcome, toast & notifications clear of the persistent 300px sidebar */
 body.fill #srcModal{left:300px}
 body.fill .toast{left:318px}
+/* real phones / narrow screens: full-bleed, sidebar becomes a drawer (no persistent 300px panel) */
+@media (max-width:640px){
+  body.fill .screenwrap{padding-left:0}
+  body.fill .sidebar{transform:translateX(-101%);width:84%;max-width:326px;box-shadow:2px 0 26px rgba(11,27,43,.2);border-right:none;border-radius:0 34px 34px 0;overflow:hidden}
+  body.fill .sidebar.open{transform:translateX(0)}
+  body.fill .sb-scrim{display:block}
+  body.fill .menubtn{display:grid}
+  body.fill .land-menu{display:inline-flex}
+  body.fill .sb-x{display:block}
+  body.fill .land-center{width:100%;min-width:0;max-width:none;margin:0}
+  body.fill .land.chatting .land-center{width:100%;max-width:none}
+  body.fill .land-hero{max-width:none;margin:0}
+  body.fill .land{padding:22px 20px 30px}
+  body.fill .land-tagline{font-size:11px;margin-left:40px}
+  body.fill #srcModal{left:0}
+  body.fill .toast{left:18px}
+}
 /* animated AskDwell logo */
 .adlogo{position:relative;width:76px;height:76px;flex:none;display:grid;place-items:center;animation:adfloat 4.2s ease-in-out infinite}
 .adlogo .adhalo{position:absolute;inset:-7px;border-radius:26px;background:conic-gradient(from 0deg,#2f6bff,#12c7a0,#a855f7,#2f6bff);filter:blur(10px);opacity:.4;animation:adrot 6s linear infinite}
