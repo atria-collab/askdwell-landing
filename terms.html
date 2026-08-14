@@ -52,6 +52,39 @@ footer{border-top:1px solid var(--line);padding:46px 0 28px;background:var(--bg2
 .footer-social svg{width:17px;height:17px;display:block}
 .copyright{border-top:1px solid var(--line);margin-top:28px;padding-top:18px;font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
 .copyright a{color:var(--sub);text-decoration:none}
+
+/* ===== LIGHT THEME — matches askdwell.ai homepage ===== */
+:root{
+  --bg:#F1F4F8;--bg2:#EAF0F6;--panel:#FFFFFF;--panel2:#F8FAFC;
+  --line:#D8E0E8;--line2:#C7D2DE;--orange:#2F67F6;--orange2:#21C7B7;
+  --amber:#4D84FF;--white:#0C1C2C;--ink:#142536;--sub:#647384;--muted:#8B98A7;--green:#19B98A;
+}
+html,body{background:var(--bg);color:var(--ink);}
+body{
+  background:
+    radial-gradient(55% 42% at 92% 2%,rgba(47,103,246,.08),transparent 70%),
+    radial-gradient(45% 38% at 5% 18%,rgba(33,199,183,.07),transparent 72%),
+    var(--bg);
+}
+.legal-page h1,.legal-page h2,.logo,.footer-brand-logo{color:#0B1B2B!important;}
+h1 .grad{
+  background:linear-gradient(120deg,#2F67F6 0%,#20C9B7 85%);
+  -webkit-background-clip:text;background-clip:text;color:transparent!important;
+}
+nav{background:rgba(241,244,248,.90);}
+nav.scrolled{
+  background:rgba(241,244,248,.92)!important;
+  border-bottom:1px solid var(--line)!important;
+  box-shadow:0 5px 20px rgba(10,31,49,.06);
+}
+.navlinks a{color:#607080!important;}
+.navlinks a:hover{color:#0B1B2B!important;}
+.legal-back{color:#2F67F6!important;}
+.legal-page li::before{color:#2F67F6!important;}
+.legal-page a{color:#2F67F6!important;}
+.footer-brand-logo .mk{background:linear-gradient(135deg,var(--orange),var(--orange2))!important;box-shadow:0 6px 18px rgba(47,103,246,.4)!important;}
+.footer-social a:hover{color:#0B1B2B!important;border-color:#2F67F6!important;}
+footer{background:rgba(234,240,246,.78)!important;}
 </style>
 </head>
 <body>
