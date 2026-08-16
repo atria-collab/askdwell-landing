@@ -3728,7 +3728,8 @@ var UNCLAIMED=[
   {no:'1607233',recTier:1,desc:'Bedroom window won\'t lock',unit:'Unit 3',tenant:'J. Alvarez',date:'Aug 7, 2026',cat:'General › Doors & windows',pri:'Normal',full:'The latch on the bedroom window is broken and it won\'t lock. Concerned about security since we\'re on the ground floor.'},
   {no:'1607198',recTier:2,desc:'Garbage disposal jammed',unit:'Unit 1',tenant:'P. Mensah',date:'Aug 6, 2026',cat:'Appliance',pri:'Normal',full:'The garbage disposal hums but won\'t spin, and the kitchen sink is now backing up on that side.'},
   {no:'1607041',recTier:4,desc:'Hallway light out',unit:'Unit 5',tenant:'R. Kim',date:'Aug 4, 2026',cat:'Electrical',pri:'Low',full:'The shared hallway light on the 2nd floor has been out for a few days — it gets very dark at night.'},
-  {no:'1606922',recTier:5,desc:'Slow bathroom drain',unit:'Unit 2',tenant:'T. Bauer',date:'Aug 2, 2026',cat:'Plumbing',pri:'Low',full:'The bathroom sink drains very slowly. Not fully clogged yet, but it keeps getting worse.'}
+  {no:'1606922',recTier:5,desc:'Slow bathroom drain',unit:'Unit 2',tenant:'T. Bauer',date:'Aug 2, 2026',cat:'Plumbing',pri:'Low',full:'The bathroom sink drains very slowly. Not fully clogged yet, but it keeps getting worse.'},
+  {no:'1607370',recTier:3,desc:'Stairwell light out',unit:'Unit 4',tenant:'M. Chen',date:'Aug 1, 2026',cat:'Electrical',pri:'Normal',full:'The 3rd-floor stairwell light fixture has been out for several days — the stairs are dark at night and it feels unsafe. Any handy resident could swap the fixture.'}
 ];
 var EMERGENCIES=[
   {no:'4852',t:'Water heater leaking — no hot water',meta:'2214 Dwight Way · Unit 5 · Marcus Lee · Reported today 7:12 AM',live:true},
@@ -4131,8 +4132,10 @@ function tlP(state,title,desc,time){
     '<div class="content"><b>'+title+'</b>'+(desc?'<p>'+desc+'</p>':'')+(time?'<div class="tm">'+time+'</div>':'')+'</div></div>';
 }
 function showTier(n){
+  if(n!==3) t3Active=false;
   if(n===1){ t1Credit=40; return showTier1(); }
   if(n===2) return showTier2();
+  if(n===3){ t3Active=true; t3SelCP=null; t3ClaimSel=0; t4Approved=false; t4Mode='cp'; t4cFee=65; t4vCPFee=75; t4vVendorMax=300; T3_PROPS=['2521 Regent Street']; return showTier3(); }
   if(n===4){ tier4CP=0; t4DeclinedCP=null; t4Approved=false; t4Mode='cp'; t4vCPFee=75; t4vVendorMax=300; t4cFee=65; return showTier4(); }
   if(n===5){ t5Approved=false; t5VendorMax=250; t5Sel={v:'Rooter Pros',price:'$140'}; t5TenantFee=45; t5FeeProposed=45; t5FeeAgreed=null; t5ApprovedCap=250; t5RateStars=0; t5RateReview=''; t5RateDone=false; return showTier5(); }
   toast('Tier '+n,'The Tier '+n+' flow is coming soon');
@@ -4724,7 +4727,7 @@ var TIER4_CPS=[
 var tier4CP=0, t4DeclinedCP=null, t4Mode='cp', t4Approved=false, t4cFee=65;
 function t4cUpdateFee(){ var el=document.getElementById('t4cFeeInput'); if(el) t4cFee=Math.max(0,parseFloat(el.value)||0); var lbl=document.getElementById('t4cPayLbl'); if(lbl) lbl.textContent=money(t4cFee); }
 function t4MethodRow(){ return '<div class="r"><div class="k">Method</div><div class="v">Petty cash or rent credit <span class="muted" style="font-size:11px">(if the CP is a current tenant)</span></div></div>'; }
-function t4c(){ return TIER4_CPS[tier4CP]; }
+function t4c(){ return (t3Active&&t3SelCP)?t3SelCP:TIER4_CPS[tier4CP]; }
 function t4cName(){ return t4c().name; }
 function t4cInit(){ return t4c().init; }
 function t4cFirst(){ return t4c().name.split(' ')[0]; }
@@ -5138,7 +5141,9 @@ SRC.tier4v_drive={em:'📁',bg:'#eef4ff',title:'Collab AP · Drive',html:functio
     row('<span style="font-size:20px">🧾</span>','paid_receipt_'+price+'.pdf','PDF · paid receipt · Aug 8, 2026')+
     row('<span style="font-size:20px">🌑</span>','hallway_dark.jpg','Image · before · Aug 8, 2026')+
     row('<span style="font-size:20px">💡</span>','hallway_light_fixed.jpg','Image · after · Aug 8, 2026')+
-    '<div style="font-size:11px;color:var(--muted-2);text-align:center;margin-top:6px">🔒 Shared drive · synced automatically by Colby</div>';
+    '<div style="font-size:11px;color:var(--muted-2);text-align:center;margin:6px 0 12px">🔒 Shared drive · synced automatically by Colby</div>'+
+    '<div style="background:var(--ai-soft);border:1px solid #c7ecdd;border-radius:11px;padding:10px 12px;font-size:12px;color:#0a7d57;margin:0 0 12px;line-height:1.5">✓ Files reviewed. Head back to the invoice to approve the payment.</div>'+
+    '<button class="btn" onclick="openSrc(\'tier4v_invoice\')"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Go back to approval page</button>';
 }};
 SRC.tier4v_pay={em:'💵',bg:'#e8eef7',title:'Payments applied',html:function(){
   var t=UNCLAIMED[curUnclaimed]; var vp=t4vSel.price; var vn=parseFloat(vp.replace(/[^0-9.]/g,''))||0;
@@ -5275,6 +5280,146 @@ SRC.tier4_pay={em:'💵',bg:'#e8eef7',title:'Payment Tracker',html:function(){
     '<div style="background:var(--surface-2);border:1px solid var(--line-2);border-radius:11px;padding:11px 13px;font-size:12px;color:var(--muted);line-height:1.5">Recorded in the independent petty-cash sheet for Accounting, exported to 1099. Colby closed the Buildium work order as <b>Completed</b> and archived the group chat.</div>';
 }};
 
+/* ============ TIER 3 · Open to CP pool (#1607370 stairwell light) ============ */
+var t3Active=false, t3SelCP=null, t3ClaimSel=0;
+var T3_PROPS=['2521 Regent Street'];
+var T3_CLAIMANTS=[
+  {name:'Nadia Powell', init:'NP', spec:'Handy · fixtures', rating:'new CP', jobs:0, dist:'on-site', avail:'available today', note:'Just claimed — auto-enrolled as CP', addr:'2521 Regent Street · Unit 7', phone:'(510) 555-0164', email:'nadia.powell@email.com', same:true, top:true},
+  {name:'Marcus Reyes', init:'MR', spec:'Electrical · General', rating:'new CP', jobs:0, dist:'1.8 mi', avail:'available tomorrow', note:'Just claimed — auto-enrolled as CP', addr:'1180 College Ave · Unit 2', phone:'(510) 555-0139', email:'marcus.reyes@email.com', same:false},
+  {name:'Grace Lin', init:'GL', spec:'Handy · general', rating:'new CP', jobs:0, dist:'3.2 mi', avail:'available today', note:'Just claimed — auto-enrolled as CP', addr:'88 Ashby Place · Unit 5', phone:'(510) 555-0155', email:'grace.lin@email.com', same:false}
+];
+function t3CompLine(){ return t4Mode==='vendor' ? (money(t4vCPFee)+' CP coordination fee · the licensed vendor is covered by Collab (up to '+money(t4vVendorMax)+')') : (money(t4cFee)+' — petty cash, or rent credit if you\'re a current tenant'); }
+function t3AnnounceMsg(){ var t=UNCLAIMED[curUnclaimed]; return '📢 New Collab task — open to claim!\n\n📋 Task: '+t.desc+' ('+t.unit+', 2521 Regent)\n🆔 Task ID: #'+t.no+'\n💵 Compensation: '+t3CompLine()+'\n🔧 What\'s needed: '+t.full+'\n\nAny resident can claim this — first to claim gets it, and you\'re automatically enrolled as a Collab Community Pro (CP). '+(t4Mode==='vendor'?'You\'ll line up a licensed vendor and coordinate the visit.':'You\'ll complete the job and send a quick completion photo.')+'\n\nReply CLAIM within 48 hours to take it on. 🙏'; }
+function t3AnnounceMsgPolished(){ var t=UNCLAIMED[curUnclaimed]; return '📢 A new Collab task is up for grabs!\n\n📋 Task: '+t.desc+' ('+t.unit+', 2521 Regent)\n🆔 Task ID: #'+t.no+'\n💵 Compensation: '+t3CompLine()+'\n🔧 What\'s needed: '+t.full+'\n\nAny resident can claim this one — the first to claim gets it, and you\'re automatically enrolled as a Collab Community Pro (CP). '+(t4Mode==='vendor'?'You\'d line up a licensed vendor and manage the visit.':'You\'d complete the job yourself and send a quick completion photo.')+'\n\nReply CLAIM within 48 hours to take it on. Thanks! 🙏'; }
+function t3MgrReplyText(){ var t=UNCLAIMED[curUnclaimed]; return 'Hi '+T1_MGR+' — posting the '+t.unit+' '+t.desc.toLowerCase()+' to the CP pool as a '+(t4Mode==='vendor'?'CP + vendor':'CP-only')+' task. Comp is '+t3CompLine()+', within the common-area repair budget (used $0 YTD). It broadcasts to residents to claim within 48 hours; if no one claims, Maven sources 3 vendor quotes for your approval. Requesting your OK to post.'; }
+function t3MgrReplyPolished(){ var t=UNCLAIMED[curUnclaimed]; return 'Hi '+T1_MGR+' — confirmed: I\'m posting the '+t.unit+' '+t.desc.toLowerCase()+' to the CP pool as a '+(t4Mode==='vendor'?'CP + vendor':'CP-only')+' task. Compensation is '+t3CompLine()+', comfortably within the common-area repair budget (at $0 year-to-date). It goes out to residents to claim within 48 hours, and if no one claims, Maven will source three vendor quotes for your approval. Requesting your sign-off to post.'; }
+function showTier3(){
+  var t=UNCLAIMED[curUnclaimed];
+  document.getElementById('srcTitle').innerHTML='<span class="si" style="background:var(--brand-soft)">📣</span>Tier 3 · Open to CP pool';
+  document.getElementById('srcBody').innerHTML=
+    '<div class="ucback" onclick="openSrc(\'assign_task\')">‹ Choose a different tier</div>'+
+    '<div class="tags" style="display:flex;gap:6px;margin-bottom:10px"><span class="tag blue">TIER 3</span><span class="tag grey">OPEN TO CP POOL</span></div>'+
+    '<div style="font-size:16px;font-weight:800;letter-spacing:-.2px">'+t.desc+'</div>'+
+    '<div class="muted" style="font-size:12px;margin:3px 0 12px">2521 Regent Street · '+t.unit+' · '+t.tenant+'</div>'+
+    '<div class="tsteps"><span class="tstep done">Reviewed</span><span class="tsep">›</span><span class="tstep on">Scope</span><span class="tsep">›</span><span class="tstep">Message</span><span class="tsep">›</span><span class="tstep">Approval</span><span class="tsep">›</span><span class="tstep">Broadcast</span></div>'+
+    '<div style="background:var(--ai-soft);border:1px solid #c7ecdd;border-radius:12px;padding:11px 13px;font-size:12px;line-height:1.5;color:#0a7d57;margin:13px 0 14px"><b>How Tier 3 works:</b> post the task to the CP pool. After manager approval, Colby announces it to residents across the properties you choose. The first to claim (within 48 hours) is auto-enrolled as a CP. If no one claims, Maven sources 3 vendor quotes for your approval.</div>'+
+    '<div class="srclabel" style="margin:0 2px 8px">What does this task require?</div>'+
+    '<div class="tiercard rec" onclick="t3SetMode(\'cp\')" style="margin-bottom:10px"><div class="tno" style="background:#ede9fe;color:#6d4bd0">1</div><div class="tc"><b>Task only requires a CP to complete</b><span>A resident claims it, completes the job, and submits a completion photo.</span><span class="twho">Flow: announce → resident claims → CP completes → photo → pay</span></div><div class="tarr">›</div></div>'+
+    '<div class="tiercard rec" onclick="t3SetMode(\'vendor\')"><div class="tno" style="background:#e8eef7;color:var(--brand)">2</div><div class="tc"><b>Task requires a CP to work with a vendor</b><span>A resident claims it, coordinates a licensed vendor, gathers quotes, and manages the visit.</span><span class="twho">Flow: announce → resident claims → CP gathers vendor quotes → coordinate → invoice → pay</span></div><div class="tarr">›</div></div>';
+  document.getElementById('srcBody').scrollTop=0;
+}
+function t3SetMode(m){ t4Mode=m; t4Approved=false; showTier3Msg(); }
+function t3CompBlock(){
+  if(t4Mode==='vendor'){
+    return '<div class="srclabel" style="margin:0 2px 8px">Compensation · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
+      '<div class="compgrid">'+
+        '<label class="comprow"><span class="k">CP · coordination fee</span><span class="cinput"><span class="cpre">$</span><input id="t3vCP" type="number" min="0" step="5" value="'+t4vCPFee+'" oninput="t3UpdateComp()"></span></label>'+
+        '<label class="comprow"><span class="k">Vendor · up to</span><span class="cinput"><span class="cpre">$</span><input id="t3vVM" type="number" min="0" step="10" value="'+t4vVendorMax+'" oninput="t3UpdateComp()"></span></label>'+
+      '</div>'+
+      '<div class="srclabel" style="margin:12px 2px 8px">Payment summary</div>'+
+      '<div class="kv" style="margin-bottom:6px" id="t3PaySummary">'+t4vPayRows()+'</div>'+
+      '<div style="font-size:11px;color:var(--muted-2);margin:4px 2px 12px">CP paid via petty cash or rent credit (if a current tenant); vendor via petty cash.</div>';
+  }
+  return '<div class="srclabel" style="margin:0 2px 8px">Compensation · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
+    '<div class="compgrid"><label class="comprow"><span class="k">CP · amount</span><span class="cinput"><span class="cpre">$</span><input id="t3cFee" type="number" min="0" step="5" value="'+t4cFee+'" oninput="t3UpdateComp()"></span></label></div>'+
+    '<div class="srclabel" style="margin:12px 2px 8px">Payment method</div>'+
+    '<div class="kv" style="margin-bottom:6px">'+t4MethodRow()+'</div>'+
+    '<div style="font-size:11px;color:var(--muted-2);margin:4px 2px 12px">Paid to whoever claims &amp; completes the task.</div>';
+}
+function t3UpdateComp(){ var f=document.getElementById('t3cFee'); if(f) t4cFee=Math.max(0,parseFloat(f.value)||0); var cp=document.getElementById('t3vCP'); if(cp) t4vCPFee=Math.max(0,parseFloat(cp.value)||0); var vm=document.getElementById('t3vVM'); if(vm) t4vVendorMax=Math.max(0,parseFloat(vm.value)||0); var s=document.getElementById('t3PaySummary'); if(s) s.innerHTML=t4vPayRows(); var tm=document.getElementById('t3Msg'); if(tm){ tm.value=t3AnnounceMsg(); autoGrowBig(tm,620); } }
+function showTier3Msg(){
+  var t=UNCLAIMED[curUnclaimed];
+  document.getElementById('srcTitle').innerHTML='<span class="si" style="background:var(--brand-soft)">📣</span>Tier 3 · Announcement';
+  document.getElementById('srcBody').innerHTML=
+    '<div class="ucback" onclick="showTier3()">‹ Back to scope</div>'+
+    '<div class="tags" style="display:flex;gap:6px;margin-bottom:10px"><span class="tag blue">TIER 3</span><span class="tag grey">'+(t4Mode==='vendor'?'CP + VENDOR':'CP ONLY')+'</span></div>'+
+    '<div style="font-size:16px;font-weight:800;letter-spacing:-.2px">'+t.desc+'</div>'+
+    '<div class="muted" style="font-size:12px;margin:3px 0 12px">2521 Regent Street · '+t.unit+' · '+t.tenant+'</div>'+
+    '<div class="tsteps"><span class="tstep done">Reviewed</span><span class="tsep">›</span><span class="tstep done">Scope</span><span class="tsep">›</span><span class="tstep on">Message</span><span class="tsep">›</span><span class="tstep">Approval</span><span class="tsep">›</span><span class="tstep">Broadcast</span></div>'+
+    '<div style="margin:12px 0 2px"></div>'+
+    t3CompBlock()+
+    '<div class="srclabel" style="margin:6px 2px 8px">Announcement Colby will post · to residents · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
+    '<div class="msg me" style="margin-bottom:6px"><div class="av">Co</div><div class="bubble" style="background:none;box-shadow:none;padding:0;max-width:100%;width:100%"><div class="who" style="color:var(--muted-2);margin-bottom:6px">Colby (AskDwell) · draft</div><textarea id="t3Msg" class="editmsg tall" oninput="autoGrowBig(this,620)">'+t3AnnounceMsg()+'</textarea></div></div>'+
+    aiHelpHTML('t3Msg','tier3')+
+    '<button class="btn" onclick="assignTier3()"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Assign Tier 3 &amp; get manager approval</button>';
+  document.getElementById('srcBody').scrollTop=0;
+  var el=document.getElementById('t3Msg'); if(el) autoGrowBig(el,620);
+}
+function assignTier3(){ closeSrc(); if(!t4Approved){ toast('Submitted for approval','Colby sent the Tier 3 plan to '+T1_MGR+' for sign-off'); setTimeout(function(){ showColbyNotif('Manager requested more info', T1_MGR+' needs one detail before approving · tap', function(){ openSrc('tier3_mgr_info'); }); }, 2000); return; } openSrc('tier3_properties'); }
+SRC.tier3_mgr_info={em:'📝',bg:'#fff4e6',title:'Manager needs info',html:function(){
+  var t=UNCLAIMED[curUnclaimed];
+  var q=t4Mode==='vendor'?'Before I approve posting this to the CP pool — the comp is a '+money(t4vCPFee)+' CP fee plus the vendor up to '+money(t4vVendorMax)+'; is that within '+t.unit+'\'s repair budget, and are we OK auto-enrolling whoever claims as a CP?':'Before I approve posting this to the CP pool — is the '+money(t4cFee)+' comp (petty cash or rent credit) within '+t.unit+'\'s common-area budget, and are we OK auto-enrolling whoever claims as a CP?';
+  return '<div class="sheet-src">Tier 3 approval · Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
+    '<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:800;letter-spacing:-.2px">'+T1_MGR+' asked for more detail</div><div class="muted" style="font-size:12px;margin-top:3px">Portfolio Manager · reviewing the CP-pool post</div></div><span class="brstatus" style="color:#b3730a;background:var(--warn-soft)">● Awaiting your reply</span></div>'+
+    '<div class="tsteps" style="margin:11px 0 4px"><span class="tstep done">Submitted</span><span class="tsep">›</span><span class="tstep on">Manager review</span><span class="tsep">›</span><span class="tstep">Approved</span><span class="tsep">›</span><span class="tstep">Broadcast</span></div>'+
+    '<div class="srclabel" style="margin:13px 2px 8px">Message from your manager</div>'+
+    '<div class="thread" style="margin-bottom:12px"><div class="msg them"><div class="av">DR</div><div class="bubble"><div class="who">'+T1_MGR+' · Portfolio Manager</div>Thanks for routing this. '+q+' Add a note and resend. 🙏<div class="tm">now</div></div></div></div>'+
+    '<div class="srclabel" style="margin:2px 2px 8px">AI-suggested reply · <span style="color:var(--brand)">editable</span></div>'+
+    '<div class="msg me" style="margin-bottom:6px"><div class="av">Co</div><div class="bubble" style="background:none;box-shadow:none;padding:0;max-width:100%;width:100%"><div class="who" style="color:var(--muted-2);margin-bottom:6px">Drafted by AskDwell · reply to '+T1_MGR+'</div><textarea id="t3MgrReply" class="editmsg mgr" oninput="autoGrowBig(this,220)">'+t3MgrReplyText()+'</textarea></div></div>'+
+    aiHelpHTML('t3MgrReply','tier3mgr')+
+    '<button class="btn" onclick="tier3Resubmit()"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Resubmit with this info</button>';
+}};
+function tier3Resubmit(){ var el=document.getElementById('t3MgrReply'); var v=el?(el.value||'').trim():''; if(!v){ if(el) el.focus(); toast('Add a note first','Include the detail your manager asked for'); return; } t4Approved=true; closeSrc(); toast('Resubmitted to '+T1_MGR,'Colby sent your details for approval'); setTimeout(function(){ showColbyNotif('Tier 3 approved ✅', T1_MGR+' signed off · enter properties · tap', function(){ openSrc('tier3_approved'); }); }, 2000); }
+SRC.tier3_approved={em:'✅',bg:'#e4f7ef',title:'Approved by manager',html:function(){
+  var t=UNCLAIMED[curUnclaimed];
+  return '<div class="sheet-src">Tier 3 approval · Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
+    '<div class="done-banner" style="margin:0 0 14px"><div class="p"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b>Tier 3 approved</b><span>'+T1_MGR+' signed off · ready to broadcast to the CP pool</span></div></div>'+
+    '<div class="tsteps" style="margin:2px 0 4px"><span class="tstep done">Submitted</span><span class="tsep">›</span><span class="tstep done">Manager review</span><span class="tsep">›</span><span class="tstep done">Approved</span><span class="tsep">›</span><span class="tstep on">Broadcast</span></div>'+
+    '<div class="srclabel" style="margin:13px 2px 8px">Manager sign-off</div>'+
+    '<div class="thread" style="margin-bottom:12px"><div class="msg them"><div class="av">DR</div><div class="bubble"><div class="who">'+T1_MGR+' · Portfolio Manager</div>Approved ✅ — go ahead and post it to the CP pool. Choose the properties to announce to.<div class="tm">now</div></div></div></div>'+
+    '<div style="display:flex;align-items:center;gap:9px;background:#eef4ff;border:1px solid #d4e4fb;border-radius:11px;padding:10px 12px;font-size:12px;color:#1749c4;margin:0 0 14px;line-height:1.5"><span style="font-size:15px">📧</span><div>The 24-hour notice for in-unit repair has been sent to the tenant by email.</div></div>'+
+    '<button class="btn" onclick="openSrc(\'tier3_properties\')"><svg viewBox="0 0 24 24" fill="none"><path d="M13 5l7 7-7 7M4 12h16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Enter property addresses</button>';
+}};
+function t3PropsHTML(){ return T3_PROPS.map(function(pr,i){ return '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><span style="flex:none;font-size:16px">📍</span><input class="askq-input" style="flex:1" value="'+esc(pr)+'" oninput="T3_PROPS['+i+']=this.value" placeholder="Property address"><button onclick="t3RemoveProp('+i+')" style="flex:none;width:34px;height:34px;border-radius:9px;border:1px solid var(--line-2);background:#fff;color:#c0392b;font-size:18px;cursor:pointer;'+(T3_PROPS.length<=1?'opacity:.35;pointer-events:none':'')+'">×</button></div>'; }).join(''); }
+function renderT3Props(){ var c=document.getElementById('t3PropList'); if(c) c.innerHTML=t3PropsHTML(); }
+function t3AddProp(){ T3_PROPS.push(''); renderT3Props(); }
+function t3RemoveProp(i){ if(T3_PROPS.length<=1) return; T3_PROPS.splice(i,1); renderT3Props(); }
+SRC.tier3_properties={em:'🏢',bg:'#e9effb',title:'Broadcast to properties',html:function(){
+  var t=UNCLAIMED[curUnclaimed];
+  return '<div class="sheet-src">Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
+    '<div style="font-size:16px;font-weight:800;letter-spacing:-.2px">Which properties should hear about this?</div>'+
+    '<div class="muted" style="font-size:12px;margin:3px 0 12px">Colby announces the task to all residents at the properties you list — first to claim within 48 hours gets it.</div>'+
+    '<div class="tsteps" style="margin:2px 0 12px"><span class="tstep done">Approved</span><span class="tsep">›</span><span class="tstep on">Broadcast</span><span class="tsep">›</span><span class="tstep">Claim</span><span class="tsep">›</span><span class="tstep">Repair</span></div>'+
+    '<div class="srclabel" style="margin:0 2px 8px">Property addresses · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
+    '<div id="t3PropList">'+t3PropsHTML()+'</div>'+
+    '<button class="btn ghost" style="margin-bottom:14px" onclick="t3AddProp()"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke-width="2.2" stroke-linecap="round"/></svg> Add another property</button>'+
+    '<button class="btn" onclick="t3SendAnnounce()"><svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M6 11l6-6 6 6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Send announcement to tenants</button>';
+}};
+function t3SendAnnounce(){ var clean=T3_PROPS.map(function(s){return (s||'').trim();}).filter(Boolean); if(!clean.length){ toast('Add a property','Enter at least one property address'); return; } T3_PROPS=clean; closeSrc(); toast('Announcement sent','Colby notified residents at '+clean.length+' propert'+(clean.length>1?'ies':'y')); setTimeout(function(){ openSrc('tier3_broadcast'); }, 900); }
+SRC.tier3_broadcast={em:'📣',bg:'#e4f7ef',title:'Announcement sent',html:function(){
+  var t=UNCLAIMED[curUnclaimed];
+  return '<div class="sheet-src">Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
+    '<div class="done-banner" style="margin:0 0 14px"><div class="p"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b>Announcement sent to residents</b><span>'+T3_PROPS.length+' propert'+(T3_PROPS.length>1?'ies':'y')+' · 48-hour claim window</span></div></div>'+
+    '<div class="tsteps" style="margin:2px 0 12px"><span class="tstep done">Approved</span><span class="tsep">›</span><span class="tstep done">Broadcast</span><span class="tsep">›</span><span class="tstep on">Claim</span><span class="tsep">›</span><span class="tstep">Repair</span></div>'+
+    '<div class="srclabel" style="margin:0 2px 8px">Announced to</div>'+
+    '<div class="kv" style="margin-bottom:14px">'+T3_PROPS.map(function(pr){ return '<div class="r"><div class="k">📍 Property</div><div class="v">'+esc(pr)+'</div></div>'; }).join('')+'<div class="r"><div class="k">Window</div><div class="v">48 hours to claim</div></div><div class="r"><div class="k">Channel</div><div class="v">SMS + email + resident app</div></div></div>'+
+    '<div style="background:var(--surface-2);border:1px solid var(--line-2);border-radius:11px;padding:11px 13px;font-size:12px;color:var(--muted);line-height:1.5">Colby texted &amp; emailed every resident at these properties. The first to claim is auto-enrolled as a CP. Maven is monitoring the 48-hour window.</div>'+
+    '<div class="srclabel" style="margin:16px 2px 8px">▶ Demo · choose an outcome</div>'+
+    '<button class="btn" onclick="t3DemoClaim()"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> 3 residents claim the task</button>'+
+    '<div class="spacer"></div>'+
+    '<button class="btn ghost" onclick="t3DemoNoClaim()"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5M12 16h.01M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> No one claims within 48 hours</button>';
+}};
+function t3DemoClaim(){ closeSrc(); toast('3 residents claimed it','Maven collected the claimants for you'); setTimeout(function(){ showColbyNotif('Maven · 3 residents claimed the task','Review the CPs &amp; pick one · tap', function(){ openSrc('tier3_claimants'); }); }, 2000); }
+SRC.tier3_claimants={em:'🙋',bg:'#e9effb',title:'3 residents claimed',html:function(){
+  var t=UNCLAIMED[curUnclaimed];
+  return '<div class="sheet-src">Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
+    '<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:4px"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:800;letter-spacing:-.2px">Maven collected 3 claimants</div><div class="muted" style="font-size:12px;margin-top:3px">Each is auto-enrolled as a CP on claim · '+t.unit+'</div></div><span class="brstatus" style="color:#b3730a;background:var(--warn-soft)">● Pick one</span></div>'+
+    '<div class="tsteps" style="margin:11px 0 12px"><span class="tstep done">Broadcast</span><span class="tsep">›</span><span class="tstep on">Claim</span><span class="tsep">›</span><span class="tstep">Assign</span><span class="tsep">›</span><span class="tstep">Repair</span></div>'+
+    '<div style="display:flex;align-items:flex-start;gap:9px;background:#eef1ff;border:1px solid #d7ddf7;border-radius:11px;padding:10px 12px;font-size:12px;color:#3b3170;margin:0 0 12px;line-height:1.5"><span style="font-size:15px">📣</span><div>Three residents claimed within the 48-hour window. Maven pulled their contact details — a resident who <b>lives in the same property</b> as the repair is highlighted (fastest access). Tap one to assign.</div></div>'+
+    T3_CLAIMANTS.map(function(c,i){ return '<div class="tiercard'+(c.same?' rec':'')+'" onclick="selectT3Claimant('+i+')" style="margin-bottom:10px"><div class="tno" style="width:auto;min-width:40px;padding:0 8px;background:'+(c.same?'#e4f7ef':'#ede9fe')+';color:'+(c.same?'#0a8f63':'#6d4bd0')+'">'+c.init+'</div><div class="tc"><b>'+c.name+(c.same?' <span class="trec" style="background:#e4f7ef;color:#0a8f63">SAME PROPERTY</span>':'')+'</b><span>'+c.spec+' · new CP · '+c.avail+'</span><span class="twho" style="white-space:normal;line-height:1.5">🏠 '+c.addr+'<br>📱 '+c.phone+' · ✉️ '+c.email+'</span></div><div class="tarr">›</div></div>'; }).join('');
+}};
+function selectT3Claimant(i){ t3ClaimSel=i; t3SelCP=T3_CLAIMANTS[i]; closeSrc(); toast(t3SelCP.name+' assigned','Auto-enrolled as CP · notifying them now'); setTimeout(function(){ showColbyNotif(t3SelCP.name+' accepted the task','Group chat opened · tap to view', t4OnAccept); }, 1600); }
+function t3DemoNoClaim(){ closeSrc(); t5TenantFee=0; t5FeeProposed=0; t5FeeAgreed=0; t5Approved=false; t5RateStars=0; t5RateReview=''; t5RateDone=false;
+  if(t4Mode==='cp'){
+    t5ApprovedCap=t4cFee; t5VendorMax=t4cFee; T3V_QUOTES=t3cpQuotes(); t5Sel={v:T3V_QUOTES[0].v,price:T3V_QUOTES[0].price};
+    toast('No claims in 48 hours','Maven is sourcing vendor quotes for you');
+    setTimeout(function(){ showColbyNotif('Maven · no one claimed in 48h','3 vendor quotes ready · tap to review', function(){ openSrc('tier3v_quotes'); }); }, 2000);
+  } else {
+    t5VendorMax=(t4vVendorMax||300); t5ApprovedCap=t5VendorMax; t5Sel={v:'Rooter Pros',price:'$140'};
+    toast('No claims in 48 hours','Maven is sourcing vendor quotes for you');
+    setTimeout(function(){ showColbyNotif('Maven · no one claimed in 48h','3 vendor quotes ready · tap to review &amp; approve', function(){ openSrc('tier5_quotes'); }); }, 2000);
+  }
+}
 /* ============ TIER 5 · Manager self-repair (#1606922 bathroom drain) ============ */
 /* ============ TIER 5 · Manager-led (vendor + Collab-manager approval) ============ */
 var T5QUOTES=[
@@ -5425,7 +5570,7 @@ function tier5PreResubmit(){
 }
 SRC.tier5_quotes={em:'📄',bg:'#e9effb',title:'3 vendor quotes',html:function(){
   var t=UNCLAIMED[curUnclaimed];
-  var reqText='Hi — we\'ve got a slow-draining bathroom sink at 2521 Regent, '+t.unit+' (Task #'+t.no+'). Looks like a hair &amp; debris clog in the P-trap. Could you send a quote and your earliest availability? Licensed &amp; itemized, please. 🙏';
+  var reqText='Hi — we\'ve got a '+t.desc.toLowerCase()+' at 2521 Regent, '+t.unit+' (Task #'+t.no+'). Could you send a quote and your earliest availability? Licensed &amp; itemized, please. 🙏';
   var quoteChip=function(q){ return '<div style="margin-top:8px;font-size:12px;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:8px;padding:6px 10px;display:inline-block">Quote: '+q.price+' · '+q.eta+'</div>'; };
   var convo=function(q){
     return '<div class="srclabel" style="margin:15px 2px 7px">'+q.v+' · 1:1 with Maven</div>'+
@@ -5437,7 +5582,7 @@ SRC.tier5_quotes={em:'📄',bg:'#e9effb',title:'3 vendor quotes',html:function()
   return '<div class="sheet-src">Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
     '<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:4px"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:800;letter-spacing:-.2px">Maven collected 3 quotes</div><div class="muted" style="font-size:12px;margin-top:3px">Reached out to each vendor 1:1 · '+t.unit+'</div></div><span class="brstatus" style="color:#b3730a;background:var(--warn-soft)">● Pick one</span></div>'+
     '<div class="tsteps" style="margin:11px 0 12px"><span class="tstep done">Message</span><span class="tsep">›</span><span class="tstep on">Quotes</span><span class="tsep">›</span><span class="tstep">Approve</span><span class="tsep">›</span><span class="tstep">Schedule</span><span class="tsep">›</span><span class="tstep">Pay</span></div>'+
-    '<div style="display:flex;align-items:flex-start;gap:9px;background:#eef1ff;border:1px solid #d7ddf7;border-radius:11px;padding:10px 12px;font-size:12px;color:#3b3170;margin:0 0 4px;line-height:1.5"><span style="font-size:15px">📣</span><div>Maven messaged all three licensed plumbers one-on-one with the task details and gathered their quotes below. Review the threads, then pick the best one for the <b>Collab manager to approve</b>.</div></div>'+
+    '<div style="display:flex;align-items:flex-start;gap:9px;background:#eef1ff;border:1px solid #d7ddf7;border-radius:11px;padding:10px 12px;font-size:12px;color:#3b3170;margin:0 0 4px;line-height:1.5"><span style="font-size:15px">📣</span><div>Maven messaged all three licensed vendors one-on-one with the task details and gathered their quotes below. Review the threads, then pick the best one for the <b>Collab manager to approve</b>.</div></div>'+
     convo(T5QUOTES[0])+convo(T5QUOTES[1])+convo(T5QUOTES[2])+
     '<div class="srclabel" style="margin:18px 2px 8px">Maven · the 3 quotes side by side</div>'+
     '<div class="msg them" style="margin-bottom:10px"><div class="av" style="background:var(--maven)">Ma</div><div class="bubble"><div class="who">Maven</div>All three are licensed &amp; itemized. My pick is <b>Rooter Pros at $140</b> — best value and the earliest slot. Heads up: <b>Delta Drain at $285</b> is above the approved '+money(t5ApprovedCap)+', so it\'d need '+T1_MGR+'\'s re-approval. Tap a quote to submit it. 👇<div class="tm">Aug 4 · 3:10 PM</div></div></div>'+
@@ -5457,7 +5602,54 @@ function selectT5Quote(i){
     setTimeout(function(){ showColbyNotif('Quote confirmed ✅', q.v+' is within the approved budget · tap to coordinate', function(){ openSrc('tier5_approved'); }); }, 1600);
   }
 }
-function t5MgrCapLine(){ var pn=parseFloat((t5Sel.price||'').replace(/[^0-9.]/g,''))||0; return pn>t5ApprovedCap ? ('It\'s '+money(pn-t5ApprovedCap)+' above the pre-approved '+money(t5ApprovedCap)+', but it\'s the strongest option — includes a hydro-jet and a 90-day guarantee, and it\'s the only crew that can come this week. Requesting the exception.') : ('It\'s within the pre-approved '+money(t5ApprovedCap)+' budget.'); }
+/* ---- Tier 3 · CP-only no-claim → vendor quotes (approved amount = CP repair fee) ---- */
+var T3V_QUOTES=[];
+function t3cpQuotes(){
+  var base=t4cFee||65;
+  var b1=Math.max(5, Math.round((base*0.78)/5)*5);
+  var b2=Math.max(b1+5, Math.round((base*0.93)/5)*5); if(b2>=base) b2=Math.max(b1+5, base-5);
+  var ab=Math.round((base*1.55)/5)*5; if(ab<=base) ab=base+25;
+  return [
+    {v:'Handy Pros', av:'HP', price:'$'+b1, rate:'★ 4.7 · licensed', eta:'Can come Wed, Aug 6', rec:true, t:'2:20 PM', reply:'Happy to help — flat $'+b1+' to swap the fixture, parts &amp; labor included. Earliest is Wed, Aug 6. 👍'},
+    {v:'Bright Spark Electric', av:'BS', price:'$'+b2, rate:'★ 4.8 · licensed', eta:'Available Thu, Aug 7', t:'2:35 PM', reply:'We can do $'+b2+' — a quick fixture &amp; wiring check, then the swap. Available Thu, Aug 7.'},
+    {v:'City Volt Services', av:'CV', price:'$'+ab, rate:'★ 4.6 · licensed', eta:'Available Fri, Aug 8', t:'3:00 PM', reply:'Our quote is $'+ab+' — full fixture replacement with a 1-year warranty on the unit. Soonest is Fri, Aug 8.'}
+  ];
+}
+SRC.tier3v_quotes={em:'📄',bg:'#e9effb',title:'3 vendor quotes',html:function(){
+  var t=UNCLAIMED[curUnclaimed]; var Q=T3V_QUOTES;
+  var reqText='Hi — we\'ve got a '+t.desc.toLowerCase()+' at 2521 Regent, '+t.unit+' (Task #'+t.no+'). Could you send a quote and your earliest availability? Licensed &amp; itemized, please. 🙏';
+  var quoteChip=function(q){ return '<div style="margin-top:8px;font-size:12px;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:8px;padding:6px 10px;display:inline-block">Quote: '+q.price+' · '+q.eta+'</div>'; };
+  var convo=function(q){ return '<div class="srclabel" style="margin:15px 2px 7px">'+q.v+' · 1:1 with Maven</div>'+
+    '<div class="thread" style="margin-bottom:2px">'+
+      '<div class="msg me"><div class="av" style="background:var(--maven)">Ma</div><div class="bubble"><div class="who">Maven → '+q.v+'</div>'+reqText+'<div class="tm">Aug 3 · 2:10 PM</div></div></div>'+
+      '<div class="msg them"><div class="av">'+q.av+'</div><div class="bubble"><div class="who">'+q.v+' · '+q.rate+'</div>'+q.reply+quoteChip(q)+'<div class="tm">Aug 3 · '+q.t+'</div></div></div>'+
+    '</div>'; };
+  var rec=Q.filter(function(q){return q.rec;})[0]||Q[0];
+  var over=Q.filter(function(q){ return (parseFloat((q.price||'').replace(/[^0-9.]/g,''))||0)>t5ApprovedCap; })[0];
+  return '<div class="sheet-src">Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
+    '<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:4px"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:800;letter-spacing:-.2px">Maven collected 3 quotes</div><div class="muted" style="font-size:12px;margin-top:3px">No one claimed in 48h · '+t.unit+'</div></div><span class="brstatus" style="color:#b3730a;background:var(--warn-soft)">● Pick one</span></div>'+
+    '<div class="tsteps" style="margin:11px 0 12px"><span class="tstep done">Broadcast</span><span class="tsep">›</span><span class="tstep on">Quotes</span><span class="tsep">›</span><span class="tstep">Approve</span><span class="tsep">›</span><span class="tstep">Schedule</span><span class="tsep">›</span><span class="tstep">Pay</span></div>'+
+    '<div style="display:flex;align-items:flex-start;gap:9px;background:#eef1ff;border:1px solid #d7ddf7;border-radius:11px;padding:10px 12px;font-size:12px;color:#3b3170;margin:0 0 4px;line-height:1.5"><span style="font-size:15px">📣</span><div>No resident claimed within 48 hours, so Maven sourced 3 licensed vendors. Quotes at or under the pre-approved <b>'+money(t5ApprovedCap)+'</b> repair budget are ready to schedule; anything above needs the <b>Collab manager\'s re-approval</b>.</div></div>'+
+    convo(Q[0])+convo(Q[1])+convo(Q[2])+
+    '<div class="srclabel" style="margin:18px 2px 8px">Maven · the 3 quotes side by side</div>'+
+    '<div class="msg them" style="margin-bottom:10px"><div class="av" style="background:var(--maven)">Ma</div><div class="bubble"><div class="who">Maven</div>All three are licensed &amp; itemized. My pick is <b>'+rec.v+' at '+rec.price+'</b> — best value, within the pre-approved '+money(t5ApprovedCap)+'.'+(over?(' Heads up: <b>'+over.v+' at '+over.price+'</b> is above the approved '+money(t5ApprovedCap)+', so it\'d need '+T1_MGR+'\'s re-approval.'):'')+' Tap a quote to submit. 👇<div class="tm">Aug 3 · 3:10 PM</div></div></div>'+
+    '<div class="srclabel" style="margin:2px 2px 10px">Quotes · tap to submit</div>'+
+    Q.map(function(q,i){ var pn=parseFloat((q.price||'').replace(/[^0-9.]/g,''))||0; var ov=pn>t5ApprovedCap; return '<div class="tiercard'+(q.rec?' rec':'')+'" onclick="selectT3vQuote('+i+')"><div class="tno" style="width:auto;min-width:38px;padding:0 9px;background:'+(ov?'#fdecec':'#eef2f8')+';color:'+(ov?'#c0392b':'var(--ink)')+';font-size:13px">'+q.price+'</div><div class="tc"><b>'+q.v+(q.rec?' <span class="trec">BEST VALUE</span>':'')+(ov?' <span class="trec" style="background:#fdecec;color:#c0392b">OVER BUDGET</span>':'')+'</b><span>'+q.rate+' · '+q.eta+'</span><span class="twho">'+(ov?('Above the approved '+money(t5ApprovedCap)+' · needs '+T1_MGR+'\'s re-approval'):'At/under budget · tap to schedule')+'</span></div><div class="tarr">›</div></div>'; }).join('');
+}};
+function selectT3vQuote(i){
+  var q=T3V_QUOTES[i]; t5Sel={v:q.v,price:q.price};
+  var pn=parseFloat(q.price.replace(/[^0-9.]/g,''))||0;
+  closeSrc();
+  if(pn>t5ApprovedCap){
+    toast('Above the approved amount', q.v+' ('+q.price+') exceeds the approved '+money(t5ApprovedCap)+' · routing to '+T1_MGR);
+    setTimeout(function(){ showColbyNotif('Collab manager needs info', q.v+' is above the approved '+money(t5ApprovedCap)+' · tap', function(){ openSrc('tier5_mgr_info'); }); }, 1600);
+  } else {
+    t5Approved=true;
+    toast('Quote selected', q.v+' ('+q.price+') is within the approved '+money(t5ApprovedCap)+' · no re-approval needed');
+    setTimeout(function(){ showColbyNotif('Quote confirmed ✅', q.v+' is within budget · tap to coordinate', function(){ openSrc('tier5_approved'); }); }, 1600);
+  }
+}
+function t5MgrCapLine(){ var pn=parseFloat((t5Sel.price||'').replace(/[^0-9.]/g,''))||0; return pn>t5ApprovedCap ? ('It\'s '+money(pn-t5ApprovedCap)+' above the pre-approved '+money(t5ApprovedCap)+', but it\'s the strongest option — includes a longer warranty and it\'s the soonest available crew. Requesting the exception.') : ('It\'s within the pre-approved '+money(t5ApprovedCap)+' budget.'); }
 function t5MgrFeeLine(){ var t=UNCLAIMED[curUnclaimed]; return t5TenantFee>0 ? (' '+t.tenant+' has already agreed to the '+money(t5TenantFee)+' resident repair fee.') : ' There\'s no resident fee — this is building-covered.'; }
 function t5MgrReplyText(){ var t=UNCLAIMED[curUnclaimed]; return 'Hi Dana — for the '+t.unit+' slow drain I\'m recommending '+t5Sel.v+' at '+t5Sel.price+' — the best of 3 licensed, itemized quotes. '+t5MgrCapLine()+t5MgrFeeLine(); }
 function t5MgrReplyPolished(){ var t=UNCLAIMED[curUnclaimed]; return 'Hi Dana — confirmed: I\'m recommending '+t5Sel.v+' at '+t5Sel.price+', the strongest of three licensed, itemized quotes. '+t5MgrCapLine()+t5MgrFeeLine(); }
@@ -6134,7 +6326,7 @@ function aiEditField(id,frame){
   var el=document.getElementById(id); if(!el) return;
   var base=(el.value||'').trim();
   if(!base){ el.focus(); toast('Type something first','Then tap the logo and AskDwell will polish it'); return; }
-  var RICH={tier1:T1_MSG_POLISHED,tier1mgr:T1_MGR_REPLY_POLISHED,tier2:T2_MSG_POLISHED,tier2mgr:t2MgrReplyPolished,tier2plan:t2PlanMsgPolished,tier4cp:t4CpMsgPolished,tier4mgr:t4MgrReplyPolished,tier5:t5MsgPolished,tier5mgr:t5MgrReplyPolished,tier5premgr:t5PreReplyPolished,tier5submgr:t5PreSubmitPolished,tier5fee:t5FeeNotePolished};
+  var RICH={tier1:T1_MSG_POLISHED,tier1mgr:T1_MGR_REPLY_POLISHED,tier2:T2_MSG_POLISHED,tier2mgr:t2MgrReplyPolished,tier2plan:t2PlanMsgPolished,tier4cp:t4CpMsgPolished,tier4mgr:t4MgrReplyPolished,tier5:t5MsgPolished,tier5mgr:t5MgrReplyPolished,tier5premgr:t5PreReplyPolished,tier5submgr:t5PreSubmitPolished,tier5fee:t5FeeNotePolished,tier3:t3AnnounceMsgPolished,tier3mgr:t3MgrReplyPolished};
   if(RICH[frame]){
     var full=typeof RICH[frame]==='function'?RICH[frame]():RICH[frame]; var isMgr=/mgr$/.test(frame);
     el.value=''; var j=0;
@@ -6341,6 +6533,7 @@ var TASK_DATA={
     tasks:[
       {ref:'#1607233',desc:"Bedroom window won't lock",unit:'Unit 3',tenant:'J. Alvarez',date:'Aug 7, 2026',prop:'2521 Regent Street',sev:'md',cat:'DOORS & WINDOWS',src:0,recTier:1,tierName:'Tenant self-repair'},
       {ref:'#1607198',desc:'Garbage disposal jammed',unit:'Unit 1',tenant:'P. Mensah',date:'Aug 6, 2026',prop:'2521 Regent Street',sev:'md',cat:'APPLIANCE',src:1,recTier:2,tierName:'Tenant + vendor'},
+      {ref:'#1607370',desc:'Stairwell light out',unit:'Unit 4',tenant:'M. Chen',date:'Aug 1, 2026',prop:'2521 Regent Street',sev:'md',cat:'ELECTRICAL',src:4,recTier:3,tierName:'Open to CP pool'},
       {ref:'#1607041',desc:'Hallway light out',unit:'Unit 5',tenant:'R. Kim',date:'Aug 4, 2026',prop:'2521 Regent Street',sev:'lo',cat:'ELECTRICAL',src:2,recTier:4,tierName:'Assign a specific CP'},
       {ref:'#1606922',desc:'Slow bathroom drain',unit:'Unit 2',tenant:'T. Bauer',date:'Aug 2, 2026',prop:'2521 Regent Street',sev:'lo',cat:'PLUMBING',src:3,recTier:5,tierName:'Manager self-repair'}
     ],
