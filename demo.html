@@ -6311,7 +6311,34 @@ function aiHelpHTML(id,frame){
   return '<div class="aihelp" onclick="aiEditField(\''+id+'\',\''+(frame||'')+'\')" style="margin:2px 0 8px">'+
     '<div class="adlogo sm" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></div>'+
     '<div><b>Ask AskDwell to edit this message</b><span>Tap the logo — AI rewrites it clearly &amp; politely</span></div>'+
-  '</div>';
+  '</div>'+
+  uploadHTML(id,'Attach files or photos');
+}
+function uploadHTML(id,label){
+  return '<div class="srclabel" style="margin:12px 2px 8px">'+(label||'Attach files or photos')+' · optional</div>'+
+    '<input type="file" id="'+id+'_file" multiple accept="image/*,application/pdf,.doc,.docx,.heic,.txt" style="display:none" onchange="onUploadPick(\''+id+'\',this)">'+
+    '<div onclick="var e=document.getElementById(\''+id+'_file\');if(e)e.click()" style="display:flex;align-items:center;gap:11px;border:1.5px dashed var(--line-2);border-radius:12px;padding:13px 14px;cursor:pointer;background:#fbfcfe;margin-bottom:8px">'+
+      '<div style="width:36px;height:36px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:none"><svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M12 16V4M7 9l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>'+
+      '<div style="flex:1;min-width:0"><b style="font-size:13px">Upload files or photos</b><div style="font-size:11px;color:var(--muted)">Tap to browse — images, PDFs, docs</div></div>'+
+      '<span style="color:var(--muted-2);font-size:18px">＋</span>'+
+    '</div>'+
+    '<div id="'+id+'_list"></div>';
+}
+function onUploadPick(id,input){
+  var list=document.getElementById(id+'_list'); if(!list) return;
+  var files=input.files||[]; var n=0;
+  for(var i=0;i<files.length;i++){ (function(f){ n++;
+    var isImg=/^image\//.test(f.type);
+    var kb=Math.max(1,Math.round((f.size||0)/1024));
+    var size=kb>1024?((kb/1024).toFixed(1)+' MB'):(kb+' KB');
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:10px;border:1px solid var(--line-2);border-radius:11px;padding:9px 11px;margin-bottom:8px;background:#fff';
+    row.innerHTML='<div class="upthumb" style="width:34px;height:34px;border-radius:8px;overflow:hidden;flex:none;background:#eef2f7;display:grid;place-items:center;font-size:16px">'+(isImg?'🖼':'📄')+'</div><div style="flex:1;min-width:0"><b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</b><div style="font-size:11px;color:var(--muted)">'+(isImg?'Image':'File')+' · '+size+'</div></div><span onclick="this.parentNode.remove()" style="color:var(--muted-2);font-size:16px;cursor:pointer;flex:none">×</span>';
+    if(isImg && window.FileReader){ try{ var r=new FileReader(); r.onload=function(e){ var th=row.querySelector('.upthumb'); if(th) th.innerHTML='<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover" alt="">'; }; r.readAsDataURL(f); }catch(err){} }
+    list.appendChild(row);
+  })(files[i]); }
+  if(n) toast('Attached '+n+' file'+(n>1?'s':''),'They\'ll be sent with your reply');
+  try{ input.value=''; }catch(e){}
 }
 function autoGrow(el){ if(!el) return; el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
 function autoGrowBig(el,cap){ if(!el) return; cap=cap||360; el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,cap)+'px'; }
