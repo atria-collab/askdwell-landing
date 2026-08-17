@@ -4696,8 +4696,42 @@ SRC.tier2_credit={em:'🏢',bg:'#e8eef7',title:'Payments applied',html:function(
       '<div class="lrow hl"><div class="ld"><b>Aug 8</b><span>Rent credit — Tier 2 self-coordination (Task #'+t.no+')</span></div><div class="la" style="color:var(--ok)">−'+tenStr+'</div><div class="lb">−'+tenStr+'</div></div>'+
       '<div class="lrow ltot"><div class="ld"><b>Current balance</b></div><div class="la"></div><div class="lb">'+tenStr+' CR</div></div>'+
     '</div>'+
-    '<div style="background:var(--surface-2);border:1px solid var(--line-2);border-radius:11px;padding:11px 13px;font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5">Colby notified '+t.tenant+' the '+tenStr+' credit was applied, logged the '+vendStr+' vendor cash payment in the Payment Tracker, and closed the Buildium work order as <b>Completed</b>.</div>';
+    '<div style="background:var(--surface-2);border:1px solid var(--line-2);border-radius:11px;padding:11px 13px;font-size:12px;color:var(--muted);margin:12px 0 14px;line-height:1.5">Colby notified '+t.tenant+' the '+tenStr+' credit was applied, logged the '+vendStr+' vendor cash payment in the Payment Tracker, and closed the Buildium work order as <b>Completed</b>.</div>'+
+    '<div style="display:flex;align-items:center;gap:10px;background:#fff9e8;border:1px solid #f6e2ad;border-radius:11px;padding:11px 13px;margin:0 0 10px"><span style="font-size:20px">⭐</span><div style="flex:1;font-size:12px;color:#8a6d1a;line-height:1.4"><b>One last step — rate '+t.tenant+'</b><br>They coordinated the vendor as a CP. Your rating adds to their Collab CP profile.</div></div>'+
+    '<button class="btn" onclick="openSrc(\'tier2_rate\')"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6.9 7.6.6-5.8 4.9 1.8 7.4L12 18l-6.4 4.3 1.8-7.4L1.6 9.5l7.6-.6z" stroke-width="1.6" stroke-linejoin="round"/></svg> Rate '+t.tenant+'</button>';
 }};
+var t2RateStars=0, t2RateReview='', t2RateDone=false;
+function t2StarRow(){ var s=''; for(var k=1;k<=5;k++){ s+='<span onclick="t2SetStars('+k+')" style="font-size:38px;cursor:pointer;color:'+(k<=t2RateStars?'#f5a623':'#d3d8e0')+';line-height:1;padding:0 3px">★</span>'; } return s; }
+function t2SetStars(n){ t2RateStars=n; var r=document.getElementById('t2StarRow'); if(r) r.innerHTML=t2StarRow(); var l=document.getElementById('t2StarLbl'); if(l) l.textContent=T1_RATE_LBL[n]; }
+function t2StarsInline(){ var s=''; for(var k=1;k<=5;k++){ s+='<span style="color:'+(k<=t2RateStars?'#f5a623':'#d3d8e0')+';font-size:17px">★</span>'; } return s; }
+SRC.tier2_rate={em:'⭐',bg:'#fff9e8',title:'Rate the coordination',html:function(){
+  var t=UNCLAIMED[curUnclaimed];
+  if(t2RateDone){
+    return '<div class="sheet-src">Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
+      '<div class="done-banner" style="margin:0 0 14px"><div class="p"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b>You rated '+t.tenant+' ★ '+t2RateStars.toFixed(1)+'</b><span>Saved to their Collab CP profile</span></div></div>'+
+      '<div class="srclabel" style="margin:0 2px 8px">Your review</div>'+
+      '<div class="thread" style="margin-bottom:12px"><div class="msg me"><div class="av" style="background:var(--maven)">You</div><div class="bubble"><div class="who">You → '+t.tenant+' (CP)</div>'+t2StarsInline()+(t2RateReview?'<br>'+esc(t2RateReview):'')+'<div class="tm">now</div></div></div></div>'+
+      '<div style="background:var(--surface-2);border:1px solid var(--line-2);border-radius:11px;padding:11px 13px;font-size:12px;color:var(--muted);line-height:1.5">Colby logged your ★ '+t2RateStars.toFixed(1)+' rating to '+t.tenant+'\'s Collab CP profile and the Buildium task record.</div>'+
+      '<div class="spacer"></div>'+
+      '<button class="btn ghost" onclick="closeSrc();toast(\'Task closed\',\'Task #'+t.no+' completed · logged in Buildium\')"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Done</button>';
+  }
+  return '<div class="ucback" onclick="openSrc(\'tier2_credit\')">‹ Back</div>'+
+    '<div class="sheet-src">Task #'+t.no+' · '+t.desc+' · '+t.unit+'</div>'+
+    '<div style="font-size:16px;font-weight:800;letter-spacing:-.2px;text-align:center;margin-top:4px">How was '+t.tenant+'\'s coordination?</div>'+
+    '<div class="muted" style="font-size:12px;text-align:center;margin:3px 0 4px">They arranged '+t2Sel.v+' &amp; managed the repair · rate their work for their Collab CP profile</div>'+
+    '<div id="t2StarRow" style="text-align:center;padding:12px 0 2px">'+t2StarRow()+'</div>'+
+    '<div id="t2StarLbl" style="text-align:center;font-size:13px;font-weight:700;color:var(--brand);margin-bottom:16px">'+T1_RATE_LBL[t2RateStars]+'</div>'+
+    '<div class="srclabel" style="margin:2px 2px 8px">Review · optional</div>'+
+    '<textarea id="t2RateReview" class="askq-input" rows="3" placeholder="Add a note about '+t.tenant+'\'s coordination…" style="width:100%;min-height:70px;margin-bottom:14px" oninput="autoGrow(this)">'+esc(t2RateReview)+'</textarea>'+
+    '<button class="btn" id="t2RateSubmit" onclick="t2SubmitRating()"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6.9 7.6.6-5.8 4.9 1.8 7.4L12 18l-6.4 4.3 1.8-7.4L1.6 9.5l7.6-.6z" stroke-width="1.6" stroke-linejoin="round"/></svg> Submit rating</button>';
+}};
+function t2SubmitRating(){
+  if(!t2RateStars){ toast('Pick a rating','Tap the stars to rate '+UNCLAIMED[curUnclaimed].tenant); return; }
+  var rv=document.getElementById('t2RateReview'); t2RateReview=rv?(rv.value||'').trim():'';
+  t2RateDone=true;
+  toast('Rating submitted','You rated '+UNCLAIMED[curUnclaimed].tenant+' ★ '+t2RateStars.toFixed(1));
+  openSrc('tier2_rate');
+}
 
 SRC.tier2_drive={em:'📁',bg:'#eef4ff',title:'Collab AP · Drive',html:function(){
   var t=UNCLAIMED[curUnclaimed];
@@ -6279,15 +6313,7 @@ SRC.rating={em:'⭐',bg:'#fff8e6',title:'Tenant rating',html:function(){
     '<div style="background:var(--surface-2);border:1px solid var(--line-2);border-radius:11px;padding:11px 13px;font-size:12px;color:var(--muted);margin:14px 0;line-height:1.5">'+(r.note||'')+'</div>'+
     '<button class="btn" onclick="closeSrc()">Done</button>';
 }};
-function t2Pay(){
-  openSrc('tier2_credit');
-  var t=UNCLAIMED[curUnclaimed];
-  fireRating({ src:'Rating · Task #'+t.no+' · '+t.unit, headline:t.tenant+' rated '+t2Sel.v, sub:'Vendor · '+t.desc, num:'5.0', stars:5,
-    rateeLabel:t2Sel.v, quote:'Quick and professional — cleared the disposal jam and left everything clean. Thank you!',
-    raterInit:'PM', rater:t.tenant, raterSub:t.unit+' · rated Aug 8 · via Resident App',
-    ntitle:t.tenant+' rated '+t2Sel.v+' ★ 5.0', nsub:'Tenant left a review · tap to view',
-    note:'Colby logged the rating to '+t2Sel.v+'\'s vendor profile and the Buildium task record.' });
-}
+function t2Pay(){ t2RateStars=0; t2RateReview=''; t2RateDone=false; openSrc('tier2_credit'); }
 function t4Pay(){
   openSrc('tier4_pay');
   var t=UNCLAIMED[curUnclaimed];
