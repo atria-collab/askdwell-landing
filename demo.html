@@ -1187,7 +1187,7 @@ textarea.askq-input,textarea.land-reply{resize:none;line-height:1.4;max-height:1
 
           <div id="askSuggests" class="suggests">
             <div class="lbl">Recently accomplished</div>
-            <div class="sug feat" data-search="rent roll rentroll 3110 college q1 q2 2026 collections income report" onclick="openSrc('rentroll_h1')">
+            <div class="sug feat" data-search="rent roll rentroll 3110 college q1 q2 2026 collections income report" onclick="runReportDemo('3110 College rent roll for Q1 and Q2, 2026')">
               <div class="q"><svg viewBox="0 0 24 24" fill="none"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="t"><em>3110 College</em> rent roll for Q1 and Q2, 2026<span class="sdate">📅 Jul 1, 2026</span></div>
               <div class="arr">→</div>
@@ -1796,6 +1796,7 @@ function detectRptType(q){
   return null;
 }
 function runReportDemo(raw){
+  rrOccInclude=false;
   showScreen('landing'); askMode='clarify'; clarTi=0; clarHostId='landThread';
   var land=document.querySelector('.screen[data-screen="landing"] .land'); if(land) land.classList.add('chatting');
   var li=document.getElementById('landInput'); if(li) li.value='';
@@ -1807,22 +1808,103 @@ function runReportDemo(raw){
   var type=detectRptType(raw);
   setTimeout(function(){
     clarStopTyping();
-    if(type){
+    if(type==='rr'){
+      clarRRStart(true);
+    } else if(type){
       clarPush('ai','Co','Sure — I can pull that from Buildium. To confirm, generate the <b>'+esc(RPT_LABEL[type])+'</b> for <b>3110 College Avenue</b> ('+esc(rptPeriod)+')?', clarT());
       clarChips([{t:'✓ Confirm & generate', go:function(){ clarReportGenerate(type); }},{t:'Change report', alt:true, go:clarReportAskType}]);
     } else {
-      clarPush('ai','Co','Happy to help. I can pull that for <b>3110 College Avenue</b> — which report would you like?', clarT());
-      clarReportTypeChips();
+      clarPush('ai','Co','Happy to help — what kind of help do you need with <b>3110 College Avenue</b> today?', clarT());
+      clarHelpChips();
     }
   }, 950);
 }
 function clarReportTypeChips(){
   clarChips([
-    {t:'Rent roll', go:function(){ clarReportConfirm('rr'); }},
+    {t:'Rent roll', go:function(){ clarRRStart(); }},
     {t:'Delinquency', go:function(){ clarReportConfirm('deliq'); }},
     {t:'Owner statement', go:function(){ clarReportConfirm('owner'); }},
     {t:'Occupancy', go:function(){ clarReportConfirm('occ'); }}
   ]);
+}
+/* ---- Landing: "what kind of help?" gate ---- */
+function clarHelpChips(){
+  clarChips([
+    {t:'📊 Reports & data', go:clarHelpReports},
+    {t:'🔧 Maintenance', go:function(){ clarHelpOther('maintenance'); }},
+    {t:'🏠 Leasing & tenants', go:function(){ clarHelpOther('leasing'); }}
+  ]);
+}
+function clarHelpReports(){
+  clarClearChips(); clarPush('me','DW','Reports', clarT()); clarTyping();
+  setTimeout(function(){ clarStopTyping(); clarPush('ai','Co','Great — which <b>report</b> would you like for <b>3110 College Avenue</b>?', clarT()); clarReportTypeChips(); }, 650);
+}
+function clarHelpOther(kind){
+  var lbl = kind==='maintenance' ? 'Maintenance' : 'Leasing & tenants';
+  clarClearChips(); clarPush('me','DW', lbl, clarT()); clarTyping();
+  setTimeout(function(){
+    clarStopTyping();
+    var msg = kind==='maintenance'
+      ? 'I can help with maintenance at <b>3110 College Avenue</b> — open work orders, unclaimed tasks, or a new request. For this demo, let\'s pull a report — which one?'
+      : 'I can help with leasing at <b>3110 College Avenue</b> — renewals, delinquencies, or tenant questions. For this demo, let\'s pull a report — which one?';
+    clarPush('ai','Co', msg, clarT()); clarReportTypeChips();
+  }, 700);
+}
+/* ---- Landing: guided rent-roll questions (mirrors the Reports section) ---- */
+function clarRRStart(noEcho){
+  clarClearChips();
+  if(!noEcho) clarPush('me','DW','Rent roll', clarT());
+  rrAns={property:'3110 College Avenue',propertyLabel:'3110 College Ave'}; rrOccInclude=false;
+  clarTyping();
+  setTimeout(function(){ clarStopTyping(); clarRRPeriod(); }, 650);
+}
+function clarRRPeriod(){
+  clarPush('ai','Co','Great — a rent roll for <b>3110 College Avenue</b>. Which <b>period</b>?', clarT());
+  clarChips([
+    {t:'This month', go:function(){ clarRRPick({period:'August 2026',periodLabel:'This month (Aug 2026)'},'This month'); }},
+    {t:'Last month', go:function(){ clarRRPick({period:'July 2026',periodLabel:'Last month (Jul 2026)'},'Last month'); }},
+    {t:'Q2 2026', go:function(){ clarRRPick({period:'Q2 2026 (Apr–Jun)',periodLabel:'Q2 2026'},'Q2 2026'); }},
+    {t:'Year to date', alt:true, go:function(){ clarRRPick({period:'Year to date 2026',periodLabel:'Year to date'},'Year to date'); }}
+  ]);
+}
+function clarRRPick(merge,label){
+  clarClearChips(); clarPush('me','DW', esc(label), clarT());
+  for(var k in merge) rrAns[k]=merge[k];
+  clarTyping(); setTimeout(function(){ clarStopTyping(); clarRRMonthly(); }, 650);
+}
+function clarRRMonthly(){
+  clarPush('ai','Co','Should I <b>break it down by month</b>?', clarT());
+  clarChips([
+    {t:'Yes, monthly', go:function(){ clarRRMonthlyPick('Monthly breakdown','Yes, by month'); }},
+    {t:'No, single summary', alt:true, go:function(){ clarRRMonthlyPick('Single summary','No, single summary'); }}
+  ]);
+}
+function clarRRMonthlyPick(val,label){
+  clarClearChips(); clarPush('me','DW', esc(label), clarT()); rrAns.monthly=val;
+  clarTyping(); setTimeout(function(){ clarStopTyping(); clarRRInstr(); }, 650);
+}
+function clarRRInstr(){
+  clarPush('ai','Co','Any <b>special instructions</b>? I can add the average monthly occupancy rate for the period, or keep it a standard rent roll.', clarT());
+  clarChips([
+    {t:'➕ Add avg monthly occupancy', go:function(){ clarRRInstrPick('show average monthly occupancy rate during the specified period','Add avg monthly occupancy'); }},
+    {t:'Standard rent roll', alt:true, go:function(){ clarRRInstrPick('','No extra instructions'); }}
+  ]);
+}
+function clarRRInstrPick(instr,label){
+  clarClearChips(); clarPush('me','DW', esc(label), clarT()); rrAns.instr=instr;
+  clarTyping(); setTimeout(function(){ clarStopTyping(); clarRRConfirm(); }, 650);
+}
+function clarRRConfirm(){
+  clarPush('ai','Co','Got it — generate the <b>Rent roll</b> for <b>3110 College Avenue</b> ('+esc(rrAns.periodLabel||rrAns.period)+')?', clarT());
+  clarChips([
+    {t:'✓ Confirm & generate', go:clarRRGenerate},
+    {t:'Change report', alt:true, go:clarReportAskType}
+  ]);
+}
+function clarRRGenerate(){
+  if(rrAns.period) rptPeriod=rrAns.period;
+  rrOccInclude = !!(rrAns.instr && /occupanc/i.test(rrAns.instr));
+  clarReportGenerate('rr');
 }
 function clarReportAskType(){
   clarClearChips();
@@ -1841,6 +1923,7 @@ function clarReportConfirm(type){
   }, 750);
 }
 function clarReportGenerate(type){
+  if(type!=='rr') rrOccInclude=false;
   clarClearChips();
   clarPush('me','DW','Confirm', clarT());
   var label=RPT_LABEL[type]||'report';
@@ -1888,7 +1971,7 @@ function renderReportsHub(){
   var host=document.getElementById('reportsHubBody'); if(!host) return;
   var cards=RECENT_REPORTS.map(function(r){
     var shortp=r.prop.replace(' Street','').replace(' Avenue',' Ave');
-    return '<div class="uctask" onclick="openReportSheet(\''+r.type+'\',\''+r.prop+'\')">'+
+    return '<div class="uctask" onclick="rrOccInclude=false;openReportSheet(\''+r.type+'\',\''+r.prop+'\')">'+
       '<div class="uct"><span class="ucno" style="background:#e9effb;color:var(--brand)">'+r.em+' '+r.title+'</span></div>'+
       '<b>'+shortp+'</b>'+
       '<div class="ucmeta">'+r.period+' · generated '+r.date+', 2026 · by Bobby</div>'+
@@ -1929,7 +2012,7 @@ function reportsHubAsk(){
   }, 900);
 }
 /* rent roll → ask one question at a time (property → period → tenant → monthly) */
-var rrAns={}, rrAwaitInstr=false;
+var rrAns={}, rrAwaitInstr=false, rrOccInclude=false;
 function rrPick(merge,label,next){ clarClearChips(); clarPush('me','DW', esc(label)); for(var k in merge) rrAns[k]=merge[k]; clarTyping(); setTimeout(function(){ clarStopTyping(); next(); }, 650); }
 function rhTypeInto(text){ var el=document.getElementById('rhInput'); if(!el) return; el.focus(); el.value=''; var i=0; var timer=setInterval(function(){ el.value=text.slice(0,i); i++; autoGrow(el); if(i>text.length){ clearInterval(timer); el.value=text; autoGrow(el); } }, 26); }
 function rrAskInstr(){
@@ -1987,6 +2070,7 @@ function rrGenerate(){
   card.innerHTML='<div class="sources-scan">'+scanRow('rb','🏢','Buildium','Rent ledgers & leases')+scanRow('rd','📁','Google Drive','Prior rent rolls')+'</div>';
   t.appendChild(card); scrollClar();
   ['rb','rd'].forEach(function(id,idx){ setTimeout(function(){ var r=document.getElementById('scan-'+id); if(r){ r.classList.add('done'); var s=r.querySelector('.spin'); if(s) s.style.display='none'; } scrollClar(); }, 500+idx*430); });
+  rrOccInclude = !!(rrAns.instr && /occupanc/i.test(rrAns.instr));
   setTimeout(function(){ rhProp=rrAns.property; rptPeriod=rrAns.period; rhDone('rr'); }, 500+2*430+500);
 }
 function rhTypeChips(){
@@ -3193,6 +3277,47 @@ function reportHTML(type,prop){
   if(prop==='All properties') return portfolioHTML();
   return rentRollHTML(prop);
 }
+function rrOccMonths(){
+  var p=(rrAns.period||rptPeriod||'').toString();
+  function idx(mn){ return MON3.indexOf(mn.charAt(0).toUpperCase()+mn.slice(1,3).toLowerCase()); }
+  var out=[];
+  var mrange=p.match(/([A-Za-z]{3})[A-Za-z]*\s+\d+\s*[–-]\s*([A-Za-z]{3})[A-Za-z]*\s+\d+/);
+  if(mrange){ var a=idx(mrange[1]), b=idx(mrange[2]); if(a>=0&&b>=0&&b>=a){ for(var i=a;i<=b;i++) out.push(MON3[i]); } }
+  else if(/Q1/i.test(p)) out=['Jan','Feb','Mar'];
+  else if(/Q2/i.test(p)) out=['Apr','May','Jun'];
+  else if(/Q3/i.test(p)) out=['Jul','Aug','Sep'];
+  else if(/Q4/i.test(p)) out=['Oct','Nov','Dec'];
+  else if(/year to date|ytd/i.test(p)) out=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+  else { var sm=p.match(/([A-Za-z]{3,9})\s*\d{4}/); if(sm){ var mi=idx(sm[1]); if(mi>=0) out=[MON3[mi]]; } }
+  if(!out.length) out=['Mar','Apr','May','Jun','Jul','Aug'];
+  return out;
+}
+function rrOccSection(ds,S){
+  var units=S.units, cur=S.occ, months=rrOccMonths();
+  var seq=[];
+  for(var i=0;i<months.length;i++){
+    var back=months.length-1-i;                 // 0 for the most recent month
+    seq.push(back===0 ? cur : Math.min(units, cur + (back%2?1:0)));
+  }
+  var rows='', sumPct=0;
+  months.forEach(function(m,i){
+    var oc=seq[i], p=pct1(oc,units); sumPct+=p;
+    rows+='<div style="display:flex;align-items:center;gap:10px;margin:7px 0">'+
+      '<span style="width:34px;font-size:12px;color:var(--muted)">'+m+'</span>'+
+      '<div style="flex:1;height:8px;border-radius:6px;background:var(--line-2);overflow:hidden"><div style="height:100%;width:'+p+'%;background:var(--ai)"></div></div>'+
+      '<span style="width:86px;text-align:right;font-size:12px;font-variant-numeric:tabular-nums">'+oc+'/'+units+' · '+p+'%</span></div>';
+  });
+  var avg=Math.round(sumPct/months.length*10)/10;
+  return '<div class="card" style="padding:15px;margin-top:14px">'+
+    '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">'+
+      '<div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px">Avg monthly occupancy · '+esc(rptPeriod)+'</div>'+
+      '<div style="font-size:20px;font-weight:800;color:var(--ai)">'+avg+'%</div>'+
+    '</div>'+
+    rows+
+    '<div style="border-top:1px solid var(--line-2);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-size:12.5px"><span class="muted">Average across '+months.length+' month'+(months.length>1?'s':'')+'</span><b>'+avg+'% occupied</b></div>'+
+    '<div class="muted" style="font-size:11px;margin-top:8px;line-height:1.4">Added per your instruction: “show average monthly occupancy rate during the specified period.”</div>'+
+  '</div>';
+}
 function rentRollHTML(prop){
   var ds=RENTROLL[prop]||RENTROLL['3110 College Avenue'];
   var S=statOf(ds);
@@ -3219,6 +3344,7 @@ function rentRollHTML(prop){
       body+
       '<div class="rr total"><div class="u"></div><div class="nm"><b>Total billed ('+S.occ+' occupied)</b></div><div class="amt">$'+fmt(S.sched)+'</div><div class="stt"></div></div>'+
     '</div>'+
+    (rrOccInclude?rrOccSection(ds,S):'')+
     '<div class="card" style="padding:15px;margin-top:14px">'+
       '<div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px">Collections · '+esc(rptPeriod)+'</div>'+
       '<div class="barwrap">'+
