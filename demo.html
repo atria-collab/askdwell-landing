@@ -1646,6 +1646,7 @@ var current='landing';
 var navStack=[];
 var repairEntry='list';
 function landingAsk(){
+  clarAI={name:'Colby (AskDwell)',av:'Co'};
   var el=document.getElementById('landInput');
   var q=(el&&el.value?el.value:'').toLowerCase().trim();
   if(!q){ openAsk(true); return; }
@@ -1680,14 +1681,15 @@ function goToLanding(){ resetLandingChat(); showScreen('landing'); }
 /* ============ Clarification demo — inline on the landing page ============ */
 var CLAR_TMS=['9:04 AM','9:04 AM','9:05 AM','9:05 AM','9:05 AM','9:05 AM','9:06 AM'], clarTi=0;
 var clarHostId='landThread';
+var clarAI={name:'Colby (AskDwell)',av:'Co'};
 function clarT(){ var s=CLAR_TMS[Math.min(clarTi,CLAR_TMS.length-1)]; clarTi++; return s; }
 function scrollClar(){ var b=document.getElementById('body'); if(b) b.scrollTop=b.scrollHeight; }
 function landThreadEl(){ return document.getElementById(clarHostId); }
 function clarPush(side,av,html,tm){
   var t=landThreadEl(); if(!t) return;
-  var who = side==='ai' ? 'Colby (AskDwell)' : 'You';
+  var who = side==='ai' ? clarAI.name : 'You';
   var cls = side==='ai' ? 'them' : 'me';
-  var avatar = side==='ai' ? '<div class="av">Co</div>' : '<div class="av">'+(av||'DW')+'</div>';
+  var avatar = side==='ai' ? '<div class="av">'+clarAI.av+'</div>' : '<div class="av">'+(av||'DW')+'</div>';
   var div=document.createElement('div'); div.className='msg '+cls;
   div.innerHTML=avatar+'<div class="bubble"><div class="who">'+who+'</div>'+html+'<div class="tm">'+(tm||clarT())+'</div></div>';
   t.appendChild(div); scrollClar();
@@ -1796,6 +1798,7 @@ function detectRptType(q){
   return null;
 }
 function runReportDemo(raw){
+  clarAI={name:'Colby (AskDwell)',av:'Co'};
   rrOccInclude=false;
   showScreen('landing'); askMode='clarify'; clarTi=0; clarHostId='landThread';
   var land=document.querySelector('.screen[data-screen="landing"] .land'); if(land) land.classList.add('chatting');
@@ -1990,6 +1993,7 @@ function renderReportsHub(){
 }
 var rhProp='3110 College Avenue';
 function reportsHubAsk(){
+  clarAI={name:'Bobby (AskDwell)',av:'Bo'};
   var el=document.getElementById('rhInput'); var v=el?(el.value||'').trim():''; if(!v){ if(el) el.focus(); return; }
   if(rrAwaitInstr){ rrAwaitInstr=false; el.value=''; autoGrow(el); clarHostId='rhThread'; rrAns.instr=v; clarPush('me','DW', esc(v)); clarTyping(); setTimeout(function(){ clarStopTyping(); rrGenerate(); }, 700); return; }
   el.value=''; autoGrow(el); clarHostId='rhThread'; clarTi=0;
