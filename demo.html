@@ -3985,33 +3985,30 @@ function saveTenantLedger(){ toast('Ledger saved','Tenant ledger PDF saved to yo
 function openBuildiumLedger(){ toast('Opening Buildium…','Redirecting to the full tenant ledger for Unit 5'); }
 var unclaimedProp='2521 Regent Street';
 var UNCLAIMED_PROPS=['2521 Regent Street','3110 College Avenue','2214 Dwight Way'];
-function ucCount(pr){ return pr==='2521 Regent Street'?UNCLAIMED.length:0; }
+function ucCount(pr){ return taskCount('unclaimed',pr); }
 function toggleUcMenu(e){ if(e) e.stopPropagation(); var m=document.getElementById('ucMenu'), b=document.getElementById('ucFilterBtn'); if(m) m.classList.toggle('open'); if(b) b.classList.toggle('open'); }
 function pickUnclaimedProp(e,pr){ if(e) e.stopPropagation(); unclaimedProp=pr; openSrc('unclaimed'); }
 SRC.unclaimed={em:'📋',bg:'#eef1f6',title:'Unclaimed tasks',html:function(){
-  var tasks = unclaimedProp==='2521 Regent Street' ? UNCLAIMED : [];
+  var cfg=TASK_DATA.unclaimed;
+  var tasks=cfg.tasks.filter(function(t){return t.prop===unclaimedProp;});
   var menu = UNCLAIMED_PROPS.map(function(pr){ return '<div class="ucmenu-item'+(pr===unclaimedProp?' sel':'')+'" onclick="pickUnclaimedProp(event,\''+pr+'\')"><span>'+pr+'</span><span class="cnt">'+ucCount(pr)+' unclaimed</span></div>'; }).join('');
   return '<div class="sheet-src">'+tasks.length+' unclaimed tasks · '+esc(unclaimedProp)+'</div>'+
     '<div style="position:relative;margin:0 0 12px">'+
       '<div class="ucfilter" id="ucFilterBtn" onclick="toggleUcMenu(event)"><span style="display:flex;align-items:center;gap:8px;min-width:0"><svg viewBox="0 0 24 24" fill="none" style="width:16px;height:16px;stroke:var(--muted-2);flex:none"><path d="M4 11.5 12 5l8 6.5M6 10.5V19h12v-8.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Property: '+esc(unclaimedProp)+'</span><svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
       '<div class="ucmenu" id="ucMenu">'+menu+'</div>'+
     '</div>'+
-    (tasks.length ? tasks.map(function(t,i){
-      return '<div class="uctask" onclick="showUnclaimed('+i+')">'+
-        '<div class="uct"><span class="ucno">#'+t.no+'</span><span class="uctag">UNCLAIMED</span></div>'+
-        '<b>'+t.desc+'</b>'+
-        '<div class="ucmeta">'+t.unit+' · '+t.tenant+' · reported '+t.date+'</div>'+
-        '<div class="ucarr">›</div></div>';
-    }).join('') : '<div style="text-align:center;padding:26px 14px;color:var(--muted);font-size:12.5px">No unclaimed tasks at '+esc(unclaimedProp)+'. 🎉</div>');
+    (tasks.length ? tasks.map(function(t){ return tlRepcard('unclaimed', t); }).join('')
+      : '<div style="text-align:center;padding:26px 14px;color:var(--muted);font-size:12.5px">No unclaimed tasks at '+esc(unclaimedProp)+'. 🎉</div>');
 }};
 function showUnclaimed(i){
   curUnclaimed=i;
   var t=UNCLAIMED[i];
   document.getElementById('srcTitle').innerHTML='<span class="si" style="background:#eef1f6">📋</span>Task #'+t.no;
   document.getElementById('srcBody').innerHTML=
-    '<div class="ucback" onclick="closeSrc()">‹ All unclaimed tasks</div>'+
+    '<div class="ucback" onclick="openSrc(\'unclaimed\')">‹ All unclaimed tasks</div>'+
     '<div style="font-size:16px;font-weight:800;letter-spacing:-.2px">'+t.desc+'</div>'+
     '<div class="muted" style="font-size:12px;margin:3px 0 13px">2521 Regent Street · '+t.unit+'</div>'+
+    '<div class="tags" style="margin:0 0 12px"><span class="tag tier">TIER '+t.recTier+'</span></div>'+
     '<div class="kv" style="margin-bottom:14px">'+
       '<div class="r"><div class="k">Task #</div><div class="v">'+t.no+'</div></div>'+
       '<div class="r"><div class="k">Status</div><div class="v"><span class="tag amber">UNCLAIMED</span></div></div>'+
