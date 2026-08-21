@@ -1666,14 +1666,26 @@ function landReplySend(){
   var v=(el.value||'').trim(); if(!v) return;
   el.value=''; autoGrow(el); clarClearChips(); clarStopTyping();
   clarPush('me','DW', esc(v), clarT());
+  var q=v.toLowerCase();
+  if(regentPrivacyBlocked(q)){
+    clarTyping();
+    setTimeout(function(){
+      clarStopTyping();
+      clarPush('ai','Co','Sorry, I can only help with your own account.', clarT());
+      clarChips([
+        {t:'Check my rent balance', go:function(){ regentRentBalance(); }},
+        {t:'See all unclaimed tasks', alt:true, go:function(){ regentUnclaimed(); }}
+      ]);
+    }, 800);
+    return;
+  }
+  if(/rent balance|my balance|\bbalance\b|ledger|do i owe|how much.*(owe|due|pay)|\baccount\b/.test(q)){ regentRentBalance(true); return; }
+  if(/unclaim|\btask/.test(q) || /maintenance|work ?order|\brepair/.test(q)){ regentUnclaimed(true); return; }
   clarTyping();
   setTimeout(function(){
     clarStopTyping();
-    clarPush('ai','Co','Thanks — noted, I’ll factor that in. Want me to pull the <b>unclaimed maintenance tasks at 2521 Regent Street</b> now?', clarT());
-    clarChips([
-      {t:'✓ Confirm & search', go:function(){ clarConfirm('2521 Regent Street'); }},
-      {t:'A different property', alt:true, go:clarOtherProp}
-    ]);
+    clarPush('ai','Co','Thanks — noted. What would you like to do for <b>2521 Regent Street</b>?', clarT());
+    clarRegentChips();
   }, 800);
 }
 function goToLanding(){ resetLandingChat(); showScreen('landing'); }
@@ -1720,14 +1732,58 @@ function runClarifyDemo(raw){
   clarTyping();
   setTimeout(function(){
     clarStopTyping();
-    clarPush('ai','Co','Happy to help, Dana — that’s a bit broad, so I don’t want to guess. Could you tell me a little more about what you need for <b>2521 Regent Street</b>? You can add detail in the box below, or pick a topic:', clarT());
-    clarChips([
-      {t:'Open maintenance tasks', go:function(){ clarPickProp('2521 Regent Street','the open, unclaimed maintenance tasks'); }},
-      {t:'Unassigned work orders', go:function(){ clarPickProp('2521 Regent Street','the unassigned work orders'); }},
-      {t:'Everything needing attention', go:function(){ clarPickProp('2521 Regent Street','everything that needs attention'); }},
-      {t:'A different property', alt:true, go:clarOtherProp}
-    ]);
+    clarPush('ai','Co','Happy to help — what would you like to do for <b>2521 Regent Street</b> today? Pick an option below, or just type your question.', clarT());
+    clarRegentChips();
   }, 950);
+}
+function clarRegentChips(){
+  clarChips([
+    {t:'See all unclaimed tasks', go:function(){ regentUnclaimed(); }},
+    {t:'Check my rent balance', go:function(){ regentRentBalance(); }},
+    {t:'A different property', alt:true, go:clarOtherProp}
+  ]);
+}
+/* ---- 2521 Regent: unclaimed tasks ---- */
+function regentUnclaimed(skipEcho){
+  clarClearChips();
+  if(!skipEcho) clarPush('me','DW','See all unclaimed tasks', clarT());
+  clarTyping();
+  setTimeout(function(){ clarStopTyping(); clarRunScan('2521 Regent Street'); }, 700);
+}
+/* ---- 2521 Regent: my rent balance (Buildium tenant ledger) ---- */
+function regentRentBalance(skipEcho){
+  clarClearChips();
+  if(!skipEcho) clarPush('me','DW','Check my rent balance', clarT());
+  clarTyping();
+  setTimeout(function(){ clarStopTyping(); regentLedgerReveal(); }, 700);
+}
+function regentLedgerReveal(){
+  var t=landThreadEl(); if(!t) return;
+  clarPush('ai','Co','Pulling your tenant ledger from Buildium for <b>2521 Regent · Unit 5</b>…', clarT());
+  var card=document.createElement('div'); card.className='land-scancard';
+  card.innerHTML='<div class="sources-scan" id="scan">'+scanRow('bd','🏢','Buildium','Tenant ledger, rent & credits')+'</div>';
+  t.appendChild(card); scrollClar();
+  setTimeout(function(){ var r=document.getElementById('scan-bd'); if(r){ r.classList.add('done'); var s=r.querySelector('.spin'); if(s) s.style.display='none'; } scrollClar(); }, 550);
+  setTimeout(function(){
+    var div=document.createElement('div'); div.className='msg them';
+    div.innerHTML='<div class="av">'+clarAI.av+'</div><div class="bubble" style="max-width:88%"><div class="who">'+clarAI.name+'</div>'+
+      'Your current balance at <b>2521 Regent · Unit 5</b> is <b style="color:#1f9d63">−$150.00</b> — a <b>credit in your favor</b>, mostly from recent repair compensations. Here\'s your ledger:'+
+      '<div style="margin-top:9px"><button class="qchip" onclick="openSrc(\'tenant_ledger\')">Open tenant ledger →</button></div>'+
+      '<div class="tm">'+clarT()+'</div></div>';
+    t.appendChild(div); scrollClar();
+    setTimeout(function(){ openSrc('tenant_ledger'); }, 700);
+  }, 1150);
+}
+/* ---- 2521 Regent: privacy guardrail ---- */
+function regentPrivacyBlocked(q){
+  q=(q||'').toLowerCase();
+  if(/room\s?mate/.test(q)) return true;
+  var asksPerson=/\b(name|who|whose|phone|number|email|e-mail|contact|resident|tenant|lives|living|occupant)\b/.test(q);
+  var m=q.match(/unit\s*#?\s*(\d+)|#\s*(\d+)/);
+  var unitNum=m?parseInt(m[1]||m[2],10):null;
+  if(unitNum && unitNum!==5 && asksPerson) return true;
+  if(/\b(another|other|someone else|somebody else|neighbou?r|next door)\b/.test(q) && asksPerson) return true;
+  return false;
 }
 function clarOtherProp(){
   clarClearChips();
@@ -1781,8 +1837,8 @@ function clarAnswer(name){
   var t=landThreadEl(); if(!t) return;
   var div=document.createElement('div'); div.className='msg them';
   div.innerHTML='<div class="av">Co</div><div class="bubble" style="max-width:88%"><div class="who">Colby (AskDwell)</div>'+
-    'I found <b>4 unclaimed maintenance tasks</b> at <b>'+esc(name)+'</b>. None are assigned to a tech yet — the oldest has been open since Aug 2.'+
-    '<div style="margin-top:9px"><button class="qchip" onclick="openSrc(\'unclaimed\')">View the 4 unclaimed tasks →</button></div>'+
+    'I found <b>'+UNCLAIMED.length+' unclaimed maintenance tasks</b> at <b>'+esc(name)+'</b>. None are assigned to a tech yet — the oldest has been open since Aug 1. You can open any one to take action.'+
+    '<div style="margin-top:9px"><button class="qchip" onclick="openSrc(\'unclaimed\')">View the '+UNCLAIMED.length+' unclaimed tasks →</button></div>'+
     '<div class="tm">'+clarT()+'</div></div>';
   t.appendChild(div); scrollClar();
   setTimeout(function(){ openSrc('unclaimed'); }, 700);
@@ -3877,6 +3933,56 @@ SRC.emergency_list={em:'🚨',bg:'#fceeee',title:'Emergency tasks',html:function
         '<div class="ucarr">›</div></div>';
     }).join('');
 }};
+/* ---- Buildium tenant ledger (2521 Regent · Unit 5) ---- */
+var TENANT_LEDGER={
+  tenant:'R. Kim', unit:'Unit 5', prop:'2521 Regent Street, Berkeley CA', rent:2100, balance:-150,
+  rows:[
+    {d:'Jul 1, 2026',  desc:'Rent — July 2026',                              charge:2100, pay:0,    bal:2100},
+    {d:'Jul 3, 2026',  desc:'Payment received · bank transfer',              charge:0,    pay:2100, bal:0},
+    {d:'Jul 20, 2026', desc:'CP compensation · Tier 1 self-repair credit',   charge:0,    pay:90,   bal:-90},
+    {d:'Jul 28, 2026', desc:'CP compensation · Tier 2 coordination credit',  charge:0,    pay:60,   bal:-150},
+    {d:'Aug 1, 2026',  desc:'Rent — August 2026',                            charge:2100, pay:0,    bal:1950},
+    {d:'Aug 5, 2026',  desc:'Payment received · bank transfer',              charge:0,    pay:2100, bal:-150}
+  ]
+};
+function ledCell(v,cls){ return v>0 ? '<span'+(cls?' style="'+cls+'"':'')+'>$'+fmt(v)+'</span>' : '<span style="color:var(--muted-2)">—</span>'; }
+function ledBal(v){ return v<0 ? '<b style="color:#1f9d63">−$'+fmt(Math.abs(v))+'</b>' : '<b>$'+fmt(v)+'</b>'; }
+SRC.tenant_ledger={em:'🏢',bg:'#e9effb',title:'Tenant ledger · Unit 5',html:function(){
+  var L=TENANT_LEDGER;
+  var body=L.rows.map(function(r){
+    return '<div style="display:grid;grid-template-columns:70px 1fr 74px 74px 82px;gap:6px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line-2);font-size:12px">'+
+      '<div style="color:var(--muted)">'+r.d+'</div>'+
+      '<div style="font-weight:600">'+r.desc+'</div>'+
+      '<div style="text-align:right;font-variant-numeric:tabular-nums">'+ledCell(r.charge)+'</div>'+
+      '<div style="text-align:right;font-variant-numeric:tabular-nums">'+ledCell(r.pay,'color:#1f9d63')+'</div>'+
+      '<div style="text-align:right;font-variant-numeric:tabular-nums">'+ledBal(r.bal)+'</div></div>';
+  }).join('');
+  return '<div class="pad report">'+
+    '<div class="rpthead" style="background:linear-gradient(135deg,#1e3a5f,#2f6bb0)">'+
+      '<div class="rt"><div class="ri"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4zM4 10h16M8 15h5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+      '<div><b>Tenant Ledger — '+esc(L.tenant)+'</b><span>'+esc(L.prop)+' · '+esc(L.unit)+'</span></div></div>'+
+      '<div class="rptkpi">'+
+        '<div class="k"><div class="v" style="color:#8ff0c0">−$'+fmt(Math.abs(L.balance))+'</div><div class="l">Current balance (credit)</div></div>'+
+        '<div class="k"><div class="v">$'+fmt(L.rent)+'</div><div class="l">Monthly rent</div></div>'+
+        '<div class="k"><div class="v">Aug 5</div><div class="l">Last payment</div></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="card" style="padding:12px 14px;margin-top:14px">'+
+      '<div style="font-size:12px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Ledger activity · from Buildium</div>'+
+      '<div style="display:grid;grid-template-columns:70px 1fr 74px 74px 82px;gap:6px;padding:6px 4px;font-size:10.5px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--line-2)">'+
+        '<div>Date</div><div>Description</div><div style="text-align:right">Charge</div><div style="text-align:right">Credit</div><div style="text-align:right">Balance</div></div>'+
+      body+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:2px solid var(--line-2)"><span style="font-size:12.5px;font-weight:800">Current balance</span>'+ledBal(L.balance)+'</div>'+
+      '<div class="muted" style="font-size:11px;margin-top:8px;line-height:1.4">A negative balance is a credit in your favor. The two CP compensation credits came from repair work coordinated on your unit.</div>'+
+    '</div>'+
+    '<div class="spacer"></div>'+
+    '<button class="btn" onclick="saveTenantLedger()"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12M7 10l5 5 5-5M5 21h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Save tenant ledger (PDF)</button>'+
+    '<button class="btn ghost" onclick="openBuildiumLedger()"><svg viewBox="0 0 24 24" fill="none"><path d="M14 3h7v7M21 3l-9 9M10 5H5v14h14v-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Open full ledger in Buildium</button>'+
+    '<div class="note">Live tenant ledger from Buildium · 2521 Regent · Unit 5 · sample figures for demo</div>'+
+  '</div>';
+}};
+function saveTenantLedger(){ toast('Ledger saved','Tenant ledger PDF saved to your device'); }
+function openBuildiumLedger(){ toast('Opening Buildium…','Redirecting to the full tenant ledger for Unit 5'); }
 var unclaimedProp='2521 Regent Street';
 var UNCLAIMED_PROPS=['2521 Regent Street','3110 College Avenue','2214 Dwight Way'];
 function ucCount(pr){ return pr==='2521 Regent Street'?UNCLAIMED.length:0; }
