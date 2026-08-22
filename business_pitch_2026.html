@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="AskDwell.ai business pitch deck for UC Berkeley SkyDeck and strategic partners" />
   <title>AskDwell.ai Business Pitch Deck</title>
   <style>
@@ -101,6 +101,14 @@
     .flywheel-ring::before, .flywheel-ring::after { content: "›"; position: absolute; color: var(--teal); font-size: 25px; font-weight: 900; }
     .flywheel-ring::before { right: -7px; top: 47%; }
     .flywheel-ring::after { left: -7px; top: 47%; transform: rotate(180deg); }
+    .orbit-stop { position: absolute; z-index: 2; display: none; place-items: center; width: 24px; height: 24px; border: 2px solid white; border-radius: 50%; color: #7990a3; background: #e8eef5; box-shadow: 0 4px 12px rgba(11,27,43,.1); transform: translate(-50%,-50%); font-size: 7px; font-style: normal; font-weight: 900; transition: color .2s ease, background .2s ease, box-shadow .2s ease; }
+    .orbit-stop.s1 { left: 0; top: 50%; }
+    .orbit-stop.s2 { left: 25%; top: 6.7%; }
+    .orbit-stop.s3 { left: 75%; top: 6.7%; }
+    .orbit-stop.s4 { left: 100%; top: 50%; }
+    .orbit-stop.s5 { left: 75%; top: 93.3%; }
+    .orbit-stop.s6 { left: 25%; top: 93.3%; }
+    .orbit-stop.arrived { color: white; background: var(--teal); box-shadow: 0 0 0 6px rgba(32,201,183,.16), 0 6px 18px rgba(32,201,183,.3); }
     .flywheel-runner { position: absolute; z-index: 6; left: 16%; top: 50%; width: 14px; height: 14px; border: 3px solid white; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 7px rgba(32,201,183,.16), 0 7px 20px rgba(32,201,183,.35); transform: translate(-50%,-50%); will-change: left, top; }
     .flywheel-center { position: absolute; z-index: 3; left: 50%; top: 50%; width: 370px; min-height: 210px; padding: 18px 20px; border: 1px solid rgba(47,103,246,.24); border-radius: 34px; background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(235,244,255,.95)); box-shadow: 0 20px 55px rgba(11,27,43,.1); transform: translate(-50%,-50%); text-align: center; }
     .flywheel-center .center-label { color: var(--blue); font-size: 10px; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
@@ -272,9 +280,16 @@
     .overview .flywheel-runner { display: none; }
     .overview .nav, .overview .hint, .overview .progress { display: none; }
     @media (max-width: 920px) {
-      .slide-canvas { padding: 26px 30px 56px; }
+      html, body, .deck { height: 100%; height: 100dvh; }
+      body { overscroll-behavior: none; }
+      .slide { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+      .slide-canvas { position: relative; inset: auto; width: 100%; min-height: 100%; min-height: 100dvh; height: auto; padding: 24px 28px calc(86px + env(safe-area-inset-bottom)); grid-template-rows: auto 1fr auto; }
+      .slide-body { justify-content: flex-start; padding: 34px 0 30px; }
+      .slide-foot { align-items: flex-end; gap: 18px; margin-top: auto; padding-top: 22px; }
+      .slide-foot span:first-child { max-width: 78%; }
       .grid-2, .gtm { grid-template-columns: 1fr; gap: 22px; }
       .metrics, .ask-grid { grid-template-columns: repeat(2, 1fr); }
+      .problem-line { margin-top: 8px; }
       .model { border-left: 0; border-top: 1px solid rgba(255,255,255,.15); padding: 24px 0 0; }
       .flow { grid-template-columns: 1fr; gap: 10px; }
       .flow-card { min-height: auto; }
@@ -284,10 +299,14 @@
       .repair-step { min-height: 175px; padding: 16px; }
       .repair-step::before { position: static; width: 25px; height: 25px; margin-bottom: 8px; border-width: 2px; transform: none; }
       .repair-step > p { min-height: 0; }
-      .data-flywheel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; min-height: 0; }
-      .flywheel-ring, .flywheel-runner { display: none; }
-      .flywheel-center { position: relative; left: auto; top: auto; grid-column: 1 / -1; width: 100%; min-height: 0; padding: 15px; transform: none; }
-      .flywheel-node, .flywheel-node.n1, .flywheel-node.n2, .flywheel-node.n3, .flywheel-node.n4, .flywheel-node.n5, .flywheel-node.n6 { position: relative; inset: auto; width: auto; min-height: 74px; opacity: 1; transform: none; animation: none !important; }
+      .data-flywheel { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; min-height: 0; padding-top: 278px; }
+      .flywheel-ring { display: block; top: 126px; width: min(90%, 620px); height: 236px; }
+      .flywheel-runner { display: block; }
+      .orbit-stop { display: grid; }
+      .flywheel-center { top: 126px; width: min(410px, calc(100% - 150px)); min-height: 210px; padding: 16px 18px; }
+      .flywheel-node, .flywheel-node.n1, .flywheel-node.n2, .flywheel-node.n3, .flywheel-node.n4, .flywheel-node.n5, .flywheel-node.n6 { position: relative; inset: auto; width: auto; min-height: 78px; opacity: .44; transform: scale(.985); animation: none !important; }
+      .flywheel-node.arrived { opacity: 1; transform: translateY(-4px) scale(1); }
+      .overview .flywheel-node { opacity: 1; transform: none; }
       .footprint-layout { grid-template-columns: 1fr; }
       .berkeley-map { min-height: 280px; }
       .performance-panel { grid-template-columns: repeat(3, 1fr); grid-template-rows: auto 1fr; }
@@ -295,25 +314,86 @@
       .performance-card { grid-template-columns: 1fr; }
       .property-panel { min-height: 0; }
       .property-list { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 16px; }
+      .compare { overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
+      .compare-row { min-width: 650px; }
       .compare-row { grid-template-columns: 1.2fr repeat(3, .7fr); font-size: 11px; }
       .compare-row > div { padding: 10px; }
+      .ask-grid { margin-top: 26px; }
+      .nav { bottom: calc(12px + env(safe-area-inset-bottom)); }
+      .hint { display: none; }
     }
     @media (max-width: 620px) {
-      .slide { overflow-y: auto; }
+      .slide-canvas { padding: 18px 18px calc(82px + env(safe-area-inset-bottom)); }
+      .slide-head { min-height: 34px; gap: 10px; }
+      .brand { gap: 8px; font-size: 14px; }
+      .adlogo { width: 30px; height: 30px; }
+      .adlogo .adhalo { inset: -2px; }
+      .adlogo svg { width: 18px; height: 18px; }
+      .section-no { max-width: 52%; font-size: 8px; line-height: 1.25; letter-spacing: .1em; text-align: right; }
+      .slide-body { padding: 28px 0 24px; }
+      .slide-foot { gap: 12px; padding-top: 18px; font-size: 8px; line-height: 1.35; }
+      .slide-foot span:first-child { max-width: 72%; }
+      h1 { font-size: clamp(38px, 12vw, 52px); line-height: .99; }
+      h2, .slide-body h2[style] { font-size: clamp(30px, 9.4vw, 40px) !important; line-height: 1.04; }
+      h3 { font-size: 18px; }
+      .eyebrow { font-size: 8.5px; line-height: 1.45; letter-spacing: .14em; }
+      .lede { margin-top: 18px; font-size: 15px; line-height: 1.48; }
+      .pill-row { gap: 8px; margin-top: 22px; }
+      .pill { padding: 8px 11px; font-size: 10px; }
+      .card { padding: 18px; border-radius: 18px; }
       .agent-grid, .metrics, .proof-strip, .ask-grid { grid-template-columns: 1fr; }
-      .repair-track { grid-template-columns: 1fr; }
-      .data-flywheel { grid-template-columns: 1fr; }
+      .problem-line { margin-top: 24px; padding-left: 25px; }
+      .problem-line::before { left: 10px; }
+      .problem { grid-template-columns: 1fr; gap: 5px; margin: 8px 0; padding: 13px 14px 13px 18px; }
+      .problem::before { left: -20px; top: 20px; width: 10px; height: 10px; }
+      .data-flywheel { grid-template-columns: 1fr; gap: 9px; margin-top: 16px; padding-top: 300px; }
+      .flywheel-ring { top: 132px; width: calc(100% - 8px); height: 244px; }
+      .flywheel-center { top: 132px; width: calc(100% - 76px); min-height: 220px; padding: 14px 12px; border-radius: 27px; }
+      .flywheel-center h3 { font-size: 20px; }
+      .flywheel-center p { font-size: 9.5px; }
+      .agent-brief { padding: 5px 6px; }
+      .agent-brief span { font-size: 7px; }
+      .flywheel-node, .flywheel-node.n1, .flywheel-node.n2, .flywheel-node.n3, .flywheel-node.n4, .flywheel-node.n5, .flywheel-node.n6 { min-height: 72px; padding: 11px 12px; }
+      .flywheel-node.arrived { transform: translateY(-3px) scale(1); }
+      .repair-track { grid-template-columns: 1fr; gap: 12px; margin-top: 24px; padding: 0 0 0 34px; }
+      .repair-track::before, .repair-track::after { display: block; top: 10px; left: 12px; width: 3px; height: calc(100% - 20px); }
+      .repair-track::after { transform: scaleY(0); transform-origin: top; }
+      .slide.active .repair-track::after { animation: repairProgressMobile 13.2s ease-in-out infinite; }
+      .repair-step { min-height: 0; padding: 17px 16px; }
+      .repair-step::before { position: absolute; top: 16px; left: -35px; width: 27px; height: 27px; margin: 0; transform: none; }
+      .repair-step h3 { font-size: 18px; }
+      .repair-step > p { min-height: 0; font-size: 12px; }
+      .repair-ui { margin-top: 11px; }
+      @keyframes repairProgressMobile { 0% { transform: scaleY(.02); } 91%,100% { transform: scaleY(1); } }
       .property-list, .map-proof-strip { grid-template-columns: 1fr; }
       .performance-panel { grid-template-columns: 1fr; }
       .performance-card { grid-template-columns: 88px 1fr; }
       .agent { min-height: auto; }
-      .problem { grid-template-columns: 1fr; gap: 5px; }
-      .compare-row { grid-template-columns: 1.35fr repeat(3, .55fr); }
-      .compare-row > div { padding: 8px 5px; }
-      .overview .deck { grid-template-columns: 1fr; padding: 0; gap: 8px; }
-      .overview .slide { width: 100%; height: 100vh; aspect-ratio: auto; border-radius: 0; }
-      .overview .slide-canvas { width: 100%; height: 100%; transform: none; }
-      .hint { display: none; }
+      .compare-row { grid-template-columns: 1.35fr repeat(3, .65fr); }
+      .compare-row > div { padding: 10px 8px; }
+      .berkeley-map { min-height: 390px; }
+      .map-marker { height: 22px; padding: 2px 5px 2px 2px; font-size: 7px; }
+      .map-marker i { width: 16px; height: 16px; font-size: 7px; }
+      .map-zone { font-size: 7px; }
+      .map-north { top: 10px; right: 10px; width: 32px; height: 32px; font-size: 8px; }
+      .performance-card { min-height: 76px; padding: 12px 14px; }
+      .map-proof { min-height: 56px; }
+      .gtm { margin-top: 24px; }
+      .stair-item { padding: 17px 16px 17px 58px; }
+      .stair-item i { left: 16px; top: 16px; }
+      .model li { font-size: 12px; }
+      .ask-grid { gap: 12px; margin-top: 22px !important; }
+      .ask, .vision-slide .ask { min-height: 0; padding: 18px; border-radius: 18px; }
+      .ask h3 { margin-top: 12px; }
+      .vision-line { font-size: 15px; }
+      .cta { align-self: flex-start; margin-top: 22px; padding: 12px 16px; font-size: 12px; }
+      .nav { gap: 5px; padding: 6px 8px; }
+      .nav button { width: 40px; height: 40px; }
+      .nav .count { min-width: 58px; font-size: 10px; }
+      .progress { height: 3px; }
+      .overview .deck { display: block; height: 100dvh; padding: 8px; overflow: auto; }
+      .overview .slide { width: 100%; height: auto; min-height: 100dvh; margin-bottom: 8px; aspect-ratio: auto; border-radius: 10px; overflow: hidden; }
+      .overview .slide-canvas { position: relative; width: 100%; height: auto; min-height: 100dvh; transform: none; }
     }
     @media print {
       html, body { overflow: visible; background: white; }
@@ -323,7 +403,7 @@
       .nav, .progress, .hint { display: none !important; }
     }
     @media print { .repair-step, .flywheel-node { opacity: 1; transform: none; animation: none !important; } .repair-track::after { transform: scaleX(1); animation: none !important; } .flywheel-runner { display: none; } }
-    @media (prefers-reduced-motion: reduce) { .slide, .progress i, .adlogo, .adlogo *, .repair-step, .repair-track::after, .flywheel-node, .flywheel-runner { transition: none; animation: none !important; } .adlogo .hp { stroke-dashoffset: 0; } .repair-step, .flywheel-node { opacity: 1; transform: none; } .repair-track::after { transform: scaleX(1); } .flywheel-runner { display: none; } }
+    @media (prefers-reduced-motion: reduce) { .slide, .progress i, .adlogo, .adlogo *, .repair-step, .repair-track::after, .flywheel-node, .flywheel-runner { transition: none; animation: none !important; } .adlogo .hp { stroke-dashoffset: 0; } .repair-step, .flywheel-node { opacity: 1 !important; transform: none !important; } .repair-track::after { transform: scaleX(1); } .flywheel-runner { display: none; } }
   </style>
 </head>
 <body>
@@ -364,7 +444,7 @@
         <div class="eyebrow">Every interaction becomes a compounding data asset</div>
         <h2 style="margin-top:12px;font-size:clamp(34px,3.8vw,62px)">Real operations make every AskDwell agent better.</h2>
         <div class="data-flywheel" role="img" aria-label="Animated AskDwell property-management data flywheel from operational data capture through human correction and continuous agent improvement">
-          <div class="flywheel-ring"></div><div class="flywheel-runner"></div>
+          <div class="flywheel-ring" aria-hidden="true"><i class="orbit-stop s1">01</i><i class="orbit-stop s2">02</i><i class="orbit-stop s3">03</i><i class="orbit-stop s4">04</i><i class="orbit-stop s5">05</i><i class="orbit-stop s6">06</i></div><div class="flywheel-runner"></div>
           <div class="flywheel-center"><div class="center-label">Shared intelligence layer</div><h3>AskDwell PM Agents</h3><p>Grounded in a living knowledge graph, operating memory and property-specific SOPs.</p><div class="agent-briefs"><div class="agent-brief"><b>Colby</b><span>Tenant support + maintenance intake</span></div><div class="agent-brief"><b>Maven</b><span>Staff operations + coordinated follow-through</span></div><div class="agent-brief"><b>Bobby</b><span>Owner reporting + portfolio insights</span></div><div class="agent-brief"><b>Ava</b><span>Leasing + applicant follow-up</span></div></div><div class="flywheel-outcomes"><span class="good">✓ Success → work trace</span><span class="learn">× Correction → learning</span></div></div>
           <article class="flywheel-node n1" style="--i:0;--node-color:#2f67f6"><i>01</i><div><b>Capture</b><span>Docs, SOPs, messages, email, calls and meeting notes</span></div></article>
           <article class="flywheel-node n2" style="--i:1;--node-color:#5f73ef"><i>02</i><div><b>Distill</b><span>Entities, facts, decisions, tasks and real work traces</span></div></article>
@@ -508,8 +588,10 @@
       const next = document.getElementById('next');
       const overview = document.getElementById('overview');
       const flywheel = document.querySelector('.data-flywheel');
+      const flywheelRing = flywheel?.querySelector('.flywheel-ring');
       const flywheelRunner = flywheel?.querySelector('.flywheel-runner');
       const flywheelNodes = flywheel ? [...flywheel.querySelectorAll('.flywheel-node')] : [];
+      const flywheelStops = flywheel ? [...flywheel.querySelectorAll('.orbit-stop')] : [];
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
       const flywheelDuration = 14400;
       let flywheelStart = 0;
@@ -521,6 +603,7 @@
           slide.classList.toggle('active', i === index);
           slide.classList.toggle('before', i < index);
           slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+          if (i === index && window.innerWidth <= 920) slide.scrollTop = 0;
         });
         count.textContent = String(index + 1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
         bar.style.width = ((index + 1) / slides.length * 100) + '%';
@@ -541,6 +624,7 @@
         if (!isActive) {
           flywheelWasActive = false;
           flywheelNodes.forEach(node => node.classList.remove('arrived'));
+          flywheelStops.forEach(stop => stop.classList.remove('arrived'));
           requestAnimationFrame(animateFlywheel);
           return;
         }
@@ -550,13 +634,18 @@
         }
         const phase = ((now - flywheelStart) % flywheelDuration) / flywheelDuration;
         const angle = Math.PI + phase * Math.PI * 2;
-        flywheelRunner.style.left = (50 + 34 * Math.cos(angle)) + '%';
-        flywheelRunner.style.top = (50 + 35 * Math.sin(angle)) + '%';
+        const flywheelRect = flywheel.getBoundingClientRect();
+        const ringRect = flywheelRing.getBoundingClientRect();
+        const centerX = ringRect.left - flywheelRect.left + ringRect.width / 2;
+        const centerY = ringRect.top - flywheelRect.top + ringRect.height / 2;
+        flywheelRunner.style.left = (centerX + ringRect.width / 2 * Math.cos(angle)) + 'px';
+        flywheelRunner.style.top = (centerY + ringRect.height / 2 * Math.sin(angle)) + 'px';
         flywheelNodes.forEach((node, i) => {
           const stop = i / flywheelNodes.length;
           const rawDistance = Math.abs(phase - stop);
           const distance = Math.min(rawDistance, 1 - rawDistance);
           node.classList.toggle('arrived', distance < .046);
+          flywheelStops[i]?.classList.toggle('arrived', distance < .046);
         });
         requestAnimationFrame(animateFlywheel);
       }
@@ -574,12 +663,21 @@
         if (e.key === 'Escape' && overviewMode) toggleOverview(false);
       });
       let touchX = null;
-      window.addEventListener('touchstart', e => touchX = e.changedTouches[0].clientX, {passive:true});
+      let touchY = null;
+      let touchInteractive = false;
+      window.addEventListener('touchstart', e => {
+        touchX = e.changedTouches[0].clientX;
+        touchY = e.changedTouches[0].clientY;
+        touchInteractive = Boolean(e.target.closest?.('.compare, .berkeley-map'));
+      }, {passive:true});
       window.addEventListener('touchend', e => {
         if (touchX === null) return;
         const dx = e.changedTouches[0].clientX - touchX;
-        if (Math.abs(dx) > 55) go(dx < 0 ? 1 : -1);
+        const dy = e.changedTouches[0].clientY - touchY;
+        if (!touchInteractive && Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.2) go(dx < 0 ? 1 : -1);
         touchX = null;
+        touchY = null;
+        touchInteractive = false;
       }, {passive:true});
       render(false);
       requestAnimationFrame(animateFlywheel);
