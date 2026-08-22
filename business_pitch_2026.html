@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AskDwell.ai business pitch deck for UC Berkeley SkyDeck and strategic partners" />
+  <title>AskDwell.ai Business Pitch Deck</title>
+  <style>
+    :root {
+      --navy: #10283d;
+      --ink: #0b1b2b;
+      --blue: #2f67f6;
+      --teal: #20c9b7;
+      --paper: #f7fafd;
+      --mist: #eaf0f6;
+      --line: #d6e0ea;
+      --slate: #526579;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: #071726; }
+    body {
+      color: var(--ink);
+      font-family: Poppins, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font: inherit; }
+    .deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: var(--paper); }
+    .slide {
+      position: absolute; inset: 0; overflow: hidden;
+      opacity: 0; visibility: hidden; transform: translateX(4%);
+      transition: opacity .38s ease, transform .48s cubic-bezier(.22,.8,.25,1), visibility .38s;
+      background: var(--paper);
+    }
+    .slide-canvas {
+      position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto;
+      padding: clamp(28px, 4vw, 70px) clamp(30px, 6.5vw, 112px) clamp(28px, 4vw, 64px);
+      transform-origin: top left;
+    }
+    .slide.active { opacity: 1; visibility: visible; transform: none; z-index: 2; }
+    .slide.before { transform: translateX(-4%); }
+    .slide.dark { color: var(--white); background: var(--navy); }
+    .slide.dark::before, .slide.cover::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(circle at 78% 18%, rgba(47,103,246,.33), transparent 27%),
+                  radial-gradient(circle at 18% 88%, rgba(32,201,183,.16), transparent 30%);
+    }
+    .slide.cover { color: var(--white); background: linear-gradient(135deg, #0b1b2b 0%, #10283d 62%, #173954 100%); }
+    .slide.accent { background: linear-gradient(140deg, #edf4ff 0%, #f8fbfd 46%, #eafbf8 100%); }
+    .slide::after { content: ""; position: absolute; inset: 12px; border: 1px solid rgba(82,101,121,.08); pointer-events: none; }
+    .slide.dark::after, .slide.cover::after { border-color: rgba(255,255,255,.08); }
+    .slide-head, .slide-body, .slide-foot { position: relative; z-index: 1; }
+    .slide-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 42px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; font-size: clamp(16px, 1.35vw, 22px); font-weight: 750; letter-spacing: -.035em; }
+    .adlogo { position: relative; width: 38px; height: 38px; flex: none; display: grid; place-items: center; animation: adfloat 4.2s ease-in-out infinite; }
+    .adlogo .adhalo { position: absolute; inset: -4px; border-radius: 14px; background: conic-gradient(from 0deg,#2f6bff,#12c7a0,#a855f7,#2f6bff); filter: blur(7px); opacity: .4; animation: adrot 6s linear infinite; }
+    .adlogo .adglow { position: absolute; inset: 3px; border-radius: 11px; background: linear-gradient(135deg,#2f6bff,#12c7a0); box-shadow: 0 8px 20px rgba(47,107,255,.34); animation: adbreathe 3.4s ease-in-out infinite; }
+    .adlogo svg { position: relative; width: 22px; height: 22px; }
+    .adlogo .hp { stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-dasharray: 64; stroke-dashoffset: 64; animation: addraw 3.6s ease-in-out infinite; }
+    .adlogo .hp2 { animation-delay: .18s; }
+    .adlogo .addot { fill: #fff; transform-origin: 12px 14px; animation: adpulse 3.6s ease-in-out infinite; }
+    @keyframes adfloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    @keyframes adbreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+    @keyframes adrot { to { transform: rotate(360deg); } }
+    @keyframes addraw { 0% { stroke-dashoffset:64; } 30% { stroke-dashoffset:0; } 82% { stroke-dashoffset:0; } 100% { stroke-dashoffset:64; } }
+    @keyframes adpulse { 0%,25%,100% { transform: scale(.72); opacity:.55; } 40%,80% { transform: scale(1); opacity:1; } }
+    .eyebrow { color: var(--blue); font-size: clamp(10px, .8vw, 13px); font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    .dark .eyebrow, .cover .eyebrow { color: #75e3d8; }
+    .section-no { color: #8190a0; font-size: 12px; font-weight: 700; letter-spacing: .14em; }
+    .dark .section-no, .cover .section-no { color: #a9bac9; }
+    .slide-body { min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+    .slide-foot { display: flex; align-items: center; justify-content: space-between; color: #8190a0; font-size: clamp(9px, .65vw, 11px); letter-spacing: .04em; }
+    .dark .slide-foot, .cover .slide-foot { color: #9eb1c2; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { max-width: 1080px; font-size: clamp(48px, 6.2vw, 100px); line-height: .96; letter-spacing: -.055em; font-weight: 700; }
+    h2 { max-width: 1040px; font-size: clamp(38px, 4.55vw, 74px); line-height: 1.01; letter-spacing: -.05em; font-weight: 700; }
+    h3 { font-size: clamp(18px, 1.55vw, 26px); line-height: 1.15; letter-spacing: -.025em; }
+    .lede { max-width: 940px; margin-top: 26px; color: var(--slate); font-size: clamp(16px, 1.55vw, 25px); line-height: 1.52; }
+    .dark .lede, .cover .lede { color: #c9d7e3; }
+    .blue { color: var(--blue); }
+    .teal { color: var(--teal); }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 10px 15px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.66); color: var(--navy); font-size: clamp(11px, .85vw, 14px); font-weight: 700; }
+    .dark .pill, .cover .pill { border-color: rgba(255,255,255,.16); color: #eaf2f8; background: rgba(255,255,255,.06); }
+    .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); }
+    .grid-2 { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: clamp(36px, 6vw, 100px); }
+    .card { position: relative; padding: clamp(20px, 2.15vw, 34px); border: 1px solid var(--line); border-radius: 24px; background: rgba(255,255,255,.84); box-shadow: 0 14px 45px rgba(11,27,43,.05); }
+    .card p { margin-top: 14px; color: var(--slate); font-size: clamp(12px, 1vw, 16px); line-height: 1.55; }
+    .agent-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 30px; }
+    .agent { min-height: 150px; display: grid; grid-template-columns: auto 1fr; gap: 18px; align-content: start; padding: clamp(18px, 1.9vw, 28px); }
+    .avatar { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 17px; color: white; background: var(--blue); font-size: 20px; font-weight: 800; box-shadow: 0 10px 22px rgba(47,103,246,.23); }
+    .agent:nth-child(2) .avatar { background: var(--teal); box-shadow: 0 10px 22px rgba(32,201,183,.2); }
+    .agent:nth-child(3) .avatar { background: #6e73ee; }
+    .agent:nth-child(4) .avatar { background: #ef8d4d; }
+    .role { margin-top: 4px; color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .agent p { grid-column: 2; margin-top: -7px; }
+    .data-flywheel { position: relative; min-height: 390px; margin-top: 18px; }
+    .flywheel-ring { position: absolute; left: 50%; top: 50%; width: 68%; height: 70%; border-radius: 50%; transform: translate(-50%,-50%); }
+    .flywheel-ring { border: 2px solid rgba(47,103,246,.18); box-shadow: inset 0 0 60px rgba(47,103,246,.04); }
+    .flywheel-ring::before, .flywheel-ring::after { content: "›"; position: absolute; color: var(--teal); font-size: 25px; font-weight: 900; }
+    .flywheel-ring::before { right: -7px; top: 47%; }
+    .flywheel-ring::after { left: -7px; top: 47%; transform: rotate(180deg); }
+    .flywheel-runner { position: absolute; z-index: 6; left: 16%; top: 50%; width: 14px; height: 14px; border: 3px solid white; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 7px rgba(32,201,183,.16), 0 7px 20px rgba(32,201,183,.35); transform: translate(-50%,-50%); will-change: left, top; }
+    .flywheel-center { position: absolute; z-index: 3; left: 50%; top: 50%; width: 370px; min-height: 210px; padding: 18px 20px; border: 1px solid rgba(47,103,246,.24); border-radius: 34px; background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(235,244,255,.95)); box-shadow: 0 20px 55px rgba(11,27,43,.1); transform: translate(-50%,-50%); text-align: center; }
+    .flywheel-center .center-label { color: var(--blue); font-size: 10px; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
+    .flywheel-center h3 { margin-top: 8px; font-size: clamp(21px, 1.75vw, 29px); }
+    .flywheel-center p { margin-top: 8px; color: var(--slate); font-size: 11px; line-height: 1.42; }
+    .agent-briefs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 10px; text-align: left; }
+    .agent-brief { padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.88); }
+    .agent-brief b, .agent-brief span { display: block; }
+    .agent-brief b { color: var(--navy); font-size: 9px; }
+    .agent-brief span { margin-top: 2px; color: var(--slate); font-size: 7.5px; line-height: 1.25; }
+    .flywheel-outcomes { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+    .flywheel-outcomes span { font-size: 8px; font-weight: 800; }
+    .flywheel-outcomes .good { color: #07877c; }
+    .flywheel-outcomes .learn { color: #9a5d58; }
+    .flywheel-node { --node-color: var(--blue); position: absolute; z-index: 4; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 10px; width: 210px; min-height: 82px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.96); box-shadow: 0 12px 30px rgba(11,27,43,.06); opacity: .46; transform: scale(.975); transition: opacity .2s ease, transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+    .flywheel-node i { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 10px; color: white; background: var(--node-color); font-size: 10px; font-style: normal; font-weight: 900; }
+    .flywheel-node b, .flywheel-node span { display: block; }
+    .flywheel-node b { color: var(--navy); font-size: 14px; }
+    .flywheel-node span { margin-top: 4px; color: var(--slate); font-size: 10px; line-height: 1.35; }
+    .flywheel-node.n1 { left: 0; top: 39%; }
+    .flywheel-node.n2 { left: 16%; top: 0; }
+    .flywheel-node.n3 { right: 16%; top: 0; }
+    .flywheel-node.n4 { right: 0; top: 39%; }
+    .flywheel-node.n5 { right: 16%; top: calc(100% - 104px); }
+    .flywheel-node.n6 { left: 16%; top: calc(100% - 104px); }
+    .flywheel-node.arrived { opacity: 1; transform: translateY(-5px) scale(1); border-color: var(--node-color); box-shadow: 0 18px 40px rgba(47,103,246,.14); }
+    .problem-line { position: relative; margin-top: 38px; padding-left: 40px; }
+    .problem-line::before { content: ""; position: absolute; left: 17px; top: 22px; bottom: 22px; width: 2px; background: linear-gradient(var(--blue), var(--teal)); }
+    .problem { position: relative; display: grid; grid-template-columns: minmax(160px,.38fr) 1fr; gap: 24px; padding: 14px 20px 14px 26px; margin: 7px 0; border-radius: 15px; background: rgba(255,255,255,.72); }
+    .problem::before { content: ""; position: absolute; left: -30px; top: 24px; width: 12px; height: 12px; border: 3px solid white; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 1px var(--blue); }
+    .problem:nth-child(even)::before { background: var(--teal); box-shadow: 0 0 0 1px var(--teal); }
+    .problem b { font-size: clamp(14px, 1.1vw, 18px); }
+    .problem span { color: var(--slate); font-size: clamp(12px, .92vw, 15px); line-height: 1.5; }
+    .flow { margin-top: 26px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 16px; }
+    .flow-card { min-height: 240px; padding: clamp(20px, 2vw, 30px); border-radius: 24px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); }
+    .flow-card .step { color: #75e3d8; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .flow-card h3 { margin-top: 15px; }
+    .flow-card p { margin-top: 14px; color: #bdd0df; font-size: clamp(12px, 1vw, 16px); line-height: 1.55; }
+    .flow-arrow { align-self: center; color: #75e3d8; font-size: 28px; }
+    .message { margin-top: 18px; padding: 12px 14px; border-radius: 12px 12px 12px 4px; color: #eaf2f8; background: rgba(47,103,246,.22); font-size: clamp(11px, .85vw, 14px); line-height: 1.4; }
+    .check { display: flex; gap: 9px; align-items: flex-start; margin-top: 9px; color: #c9d7e3; font-size: clamp(11px, .82vw, 13px); }
+    .check::before { content: "✓"; color: #75e3d8; font-weight: 900; }
+    .process-subtitle { margin-top: 8px; color: #bdd0df; font-size: clamp(11px, .95vw, 15px); line-height: 1.4; font-weight: 650; letter-spacing: .01em; }
+    .repair-track { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; margin-top: 20px; padding-top: 28px; }
+    .repair-track::before, .repair-track::after { content: ""; position: absolute; top: 13px; left: 7.5%; width: 85%; height: 3px; border-radius: 999px; }
+    .repair-track::before { background: rgba(255,255,255,.12); }
+    .repair-track::after { background: linear-gradient(90deg, var(--blue), var(--teal)); transform: scaleX(0); transform-origin: left; }
+    .repair-step { --step-color: var(--blue); position: relative; min-height: 245px; padding: 24px 17px 18px; border: 1px solid rgba(255,255,255,.13); border-radius: 20px; background: rgba(255,255,255,.055); opacity: .36; transform: scale(.985); transition: opacity .25s ease; }
+    .repair-step::before { content: attr(data-step); position: absolute; z-index: 2; top: -29px; left: 50%; display: grid; place-items: center; width: 30px; height: 30px; border: 3px solid var(--navy); border-radius: 50%; color: white; background: var(--step-color); box-shadow: 0 0 0 2px rgba(255,255,255,.16); transform: translateX(-50%); font-size: 11px; font-weight: 900; }
+    .repair-step.tenant-step { --step-color: var(--teal); }
+    .repair-step.manager-step { --step-color: #8a7cf6; }
+    .repair-step.final-step { --step-color: #56dfb8; background: rgba(32,201,183,.1); }
+    .repair-actor { color: #75e3d8; font-size: 10px; font-weight: 850; letter-spacing: .15em; text-transform: uppercase; }
+    .repair-step h3 { margin-top: 11px; font-size: clamp(16px, 1.2vw, 21px); }
+    .repair-step > p { margin-top: 10px; min-height: 55px; color: #bdd0df; font-size: clamp(11px, .84vw, 13px); line-height: 1.48; }
+    .repair-ui { margin-top: 15px; padding: 11px 12px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; background: rgba(7,23,38,.38); }
+    .repair-ui b, .repair-ui span { display: block; }
+    .repair-ui b { color: #f3f8fb; font-size: clamp(11px, .86vw, 14px); line-height: 1.32; }
+    .repair-ui span { margin-top: 5px; color: #9fb4c5; font-size: clamp(9px, .7vw, 11px); line-height: 1.35; }
+    .repair-step.final-step .repair-ui b { color: #75e3d8; font-size: clamp(14px, 1.1vw, 18px); }
+    .slide.active .repair-step { animation: repairStep 13.2s ease-in-out infinite; animation-delay: calc(var(--i) * 2s); }
+    .slide.active .repair-track::after { animation: repairProgress 13.2s ease-in-out infinite; }
+    @keyframes repairStep { 0%,15% { opacity: 1; transform: translateY(-7px) scale(1); border-color: var(--step-color); box-shadow: 0 18px 44px rgba(0,0,0,.2); } 19%,100% { opacity: .36; transform: translateY(0) scale(.985); border-color: rgba(255,255,255,.13); box-shadow: none; } }
+    @keyframes repairProgress { 0% { transform: scaleX(.02); } 91% { transform: scaleX(1); } 100% { transform: scaleX(1); } }
+    .compare { margin-top: 32px; border: 1px solid var(--line); border-radius: 22px; overflow: hidden; background: rgba(255,255,255,.76); }
+    .compare-row { display: grid; grid-template-columns: 1.4fr repeat(3, .8fr); min-height: 68px; align-items: center; border-top: 1px solid var(--line); }
+    .compare-row:first-child { border-top: 0; background: #edf3f8; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .compare-row > div { padding: 14px 20px; }
+    .compare-row > div:not(:first-child) { text-align: center; border-left: 1px solid var(--line); }
+    .compare-row .ad { color: var(--blue); font-weight: 800; background: rgba(47,103,246,.045); }
+    .compare-row .no { color: #9eabb6; }
+    .compare-row .yes { color: #07877c; font-weight: 900; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 34px; }
+    .metric { padding: clamp(22px, 2.5vw, 38px); border-radius: 24px; color: white; background: var(--navy); }
+    .metric:nth-child(2) { background: var(--blue); }
+    .metric:nth-child(3) { color: var(--navy); background: #c9f4ed; }
+    .metric .number { font-size: clamp(42px, 4.5vw, 76px); line-height: 1; font-weight: 750; letter-spacing: -.055em; }
+    .metric h3 { margin-top: 20px; }
+    .metric p { margin-top: 9px; color: #bed0df; font-size: clamp(11px, .9vw, 14px); line-height: 1.45; }
+    .metric:nth-child(2) p { color: #e9efff; }
+    .metric:nth-child(3) p { color: #41686a; }
+    .proof-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+    .proof { padding: 18px 22px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.7); }
+    .proof b { display: block; color: var(--blue); font-size: clamp(23px, 2vw, 34px); letter-spacing: -.04em; }
+    .proof span { color: var(--slate); font-size: 12px; line-height: 1.4; }
+    .footprint-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(330px, .9fr); gap: 16px; margin-top: 16px; }
+    .berkeley-map { min-height: 292px; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: rgba(255,255,255,.82); box-shadow: 0 14px 40px rgba(11,27,43,.05); }
+    .berkeley-map { position: relative; isolation: isolate; background: radial-gradient(circle at 92% 34%, rgba(32,201,183,.16), transparent 28%), linear-gradient(145deg, #f9fcfe, #eaf2f8); }
+    .berkeley-map::before { content: ""; position: absolute; inset: -12%; z-index: 0; opacity: .55; background: repeating-linear-gradient(6deg, transparent 0 37px, rgba(82,101,121,.12) 38px 39px), repeating-linear-gradient(95deg, transparent 0 54px, rgba(82,101,121,.1) 55px 56px); }
+    .campus-zone { position: absolute; z-index: 2; left: 15%; top: 16%; width: 65%; height: 27%; display: grid; place-items: center; border: 1px solid rgba(32,201,183,.68); border-radius: 42% 18% 36% 22%; color: var(--navy); background: linear-gradient(135deg, rgba(32,201,183,.24), rgba(47,103,246,.12)); transform: rotate(-2deg); box-shadow: inset 0 0 34px rgba(255,255,255,.5); text-align: center; }
+    .campus-zone b { font-size: clamp(14px, 1.15vw, 19px); letter-spacing: .06em; }
+    .campus-zone span { display: block; margin-top: 2px; color: #36716f; font-size: 10px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    .map-road { position: absolute; z-index: 1; color: #7f91a2; font-size: 8px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+    .map-road.h { left: -4%; width: 108%; border-top: 1px solid rgba(82,101,121,.22); }
+    .map-road.v { top: -5%; height: 110%; border-left: 1px solid rgba(82,101,121,.22); }
+    .map-road.h::after, .map-road.v::after { content: attr(data-road); position: absolute; padding: 2px 5px; border-radius: 5px; background: rgba(247,250,253,.78); white-space: nowrap; }
+    .map-road.h::after { right: 3%; top: 3px; }
+    .map-road.v::after { top: 70%; left: 4px; transform: rotate(90deg); transform-origin: left top; }
+    .map-zone { position: absolute; z-index: 3; color: #8c9aa7; font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .map-marker { position: absolute; z-index: 5; display: flex; align-items: center; gap: 5px; width: max-content; height: 25px; padding: 3px 7px 3px 3px; border: 2px solid white; border-radius: 9px; color: white; background: var(--mark, var(--blue)); box-shadow: 0 7px 18px rgba(11,27,43,.22); transform: translate(-8%,-50%); font-size: 8.5px; font-weight: 800; white-space: nowrap; }
+    .map-marker.leftward { transform: translate(-92%,-50%); }
+    .map-marker i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 6px; color: var(--mark, var(--blue)); background: white; font-size: 8px; font-style: normal; font-weight: 900; }
+    .map-north { position: absolute; z-index: 5; top: 16px; right: 18px; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid rgba(82,101,121,.2); border-radius: 50%; color: var(--navy); background: rgba(255,255,255,.82); font-size: 10px; font-weight: 900; line-height: 1.05; }
+    .map-attribution { position: absolute; z-index: 5; left: 14px; bottom: 10px; color: #8594a2; font-size: 8px; letter-spacing: .03em; }
+    .performance-panel { display: grid; grid-template-rows: auto repeat(3, 1fr); gap: 8px; }
+    .performance-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 0 2px 2px; }
+    .performance-panel-head b { color: var(--navy); font-size: 14px; }
+    .performance-panel-head span { color: var(--blue); font-size: 9px; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+    .performance-card { display: grid; grid-template-columns: 104px 1fr; align-items: center; gap: 13px; min-height: 78px; padding: 12px 15px; border-radius: 17px; color: white; background: var(--navy); }
+    .performance-card:nth-child(3) { background: var(--blue); }
+    .performance-card:nth-child(4) { color: var(--navy); background: #c9f4ed; }
+    .performance-card b { font-size: clamp(29px, 2.55vw, 43px); line-height: 1; letter-spacing: -.055em; }
+    .performance-card strong, .performance-card span { display: block; }
+    .performance-card strong { font-size: 13px; line-height: 1.2; }
+    .performance-card span { margin-top: 4px; color: #bdd0df; font-size: 9px; line-height: 1.3; }
+    .performance-card:nth-child(3) span { color: #e9efff; }
+    .performance-card:nth-child(4) span { color: #41686a; }
+    .property-panel { padding: 18px 20px; }
+    .property-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 11px; border-bottom: 1px solid var(--line); }
+    .property-panel-head b { font-size: 15px; letter-spacing: -.02em; }
+    .live-pill { padding: 5px 8px; border-radius: 999px; color: #087b70; background: #d8f7f1; font-size: 9px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+    .property-list { list-style: none; margin: 9px 0 0; padding: 0; }
+    .property-list li { display: flex; align-items: center; gap: 9px; min-height: 29px; border-bottom: 1px solid rgba(214,224,234,.72); color: var(--navy); font-size: clamp(10px, .8vw, 12.5px); font-weight: 700; }
+    .property-list li:last-child { border-bottom: 0; }
+    .property-list i { display: grid; place-items: center; flex: 0 0 auto; width: 21px; height: 21px; border-radius: 7px; color: white; background: var(--blue); font-size: 9px; font-style: normal; font-weight: 900; }
+    .map-proof-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+    .map-proof { display: flex; align-items: baseline; gap: 10px; min-height: 60px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,.72); }
+    .map-proof b { color: var(--blue); font-size: clamp(22px, 1.9vw, 32px); letter-spacing: -.045em; }
+    .map-proof span { color: var(--slate); font-size: 10px; font-weight: 700; line-height: 1.32; }
+    .gtm { display: grid; grid-template-columns: .92fr 1.08fr; gap: clamp(30px, 5vw, 80px); margin-top: 38px; align-items: stretch; }
+    .stair { display: grid; gap: 12px; }
+    .stair-item { position: relative; padding: 20px 22px 20px 64px; border: 1px solid rgba(255,255,255,.14); border-radius: 18px; background: rgba(255,255,255,.055); }
+    .stair-item i { position: absolute; left: 19px; top: 19px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 10px; background: var(--blue); font-style: normal; font-weight: 800; }
+    .stair-item:nth-child(2) i { background: #6e73ee; }
+    .stair-item:nth-child(3) i { color: var(--navy); background: var(--teal); }
+    .stair-item p { margin-top: 5px; color: #bdd0df; font-size: clamp(11px, .86vw, 14px); }
+    .model { border-left: 1px solid rgba(255,255,255,.15); padding-left: clamp(30px, 4vw, 60px); display: flex; flex-direction: column; justify-content: center; }
+    .model h3 { color: #75e3d8; }
+    .model ul { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 14px; }
+    .model li { position: relative; padding-left: 27px; color: #d0dce6; font-size: clamp(13px, 1vw, 16px); line-height: 1.45; }
+    .model li::before { content: "→"; position: absolute; left: 0; color: #75e3d8; font-weight: 800; }
+    .ask-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+    .ask { min-height: 220px; padding: clamp(22px, 2.2vw, 34px); border-radius: 24px; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.055); }
+    .ask b { display: block; color: #75e3d8; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    .ask h3 { margin-top: 20px; }
+    .ask p { margin-top: 12px; color: #bdd0df; font-size: clamp(12px, .92vw, 15px); line-height: 1.55; }
+    .vision-line { margin-top: 20px; color: #d8e6f0; font-size: clamp(16px, 1.35vw, 22px); line-height: 1.45; font-weight: 650; letter-spacing: .01em; }
+    .vision-line strong { color: #75e3d8; font-weight: 800; }
+    .vision-slide .ask { min-height: 190px; }
+    .vision-slide .cta { margin-top: 26px; }
+    .cta { display: inline-flex; align-items: center; gap: 12px; margin-top: 36px; padding: 14px 20px; border-radius: 999px; color: #fff; background: var(--blue); box-shadow: 0 12px 28px rgba(47,103,246,.32); font-size: 14px; font-weight: 800; }
+    .nav { position: fixed; z-index: 20; left: 50%; bottom: 17px; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 7px 9px; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(7,23,38,.86); box-shadow: 0 12px 40px rgba(0,0,0,.2); backdrop-filter: blur(12px); }
+    .nav button { display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; color: white; background: transparent; }
+    .nav button:hover, .nav button:focus-visible { background: rgba(255,255,255,.13); outline: none; }
+    .nav button:disabled { opacity: .32; cursor: default; }
+    .nav .count { min-width: 66px; text-align: center; color: #dbe7f0; font-size: 11px; font-weight: 750; letter-spacing: .1em; }
+    .progress { position: fixed; z-index: 30; left: 0; bottom: 0; width: 100%; height: 4px; background: rgba(214,224,234,.24); }
+    .progress i { display: block; width: 12.5%; height: 100%; background: linear-gradient(90deg, var(--blue), var(--teal)); transition: width .35s ease; }
+    .hint { position: fixed; z-index: 20; right: 24px; bottom: 26px; color: #8da0b1; font-size: 10px; letter-spacing: .08em; }
+    .overview .deck { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); grid-auto-rows: max-content; gap: 14px; align-content: start; overflow: auto; height: 100vh; padding: 14px; background: #071726; }
+    .overview .slide { position: relative; inset: auto; width: 100%; height: auto; min-height: 0; aspect-ratio: 16 / 9; opacity: 1; visibility: visible; transform: none; border: 1px solid rgba(255,255,255,.18); border-radius: 12px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,.18); transition: border-color .2s ease, box-shadow .2s ease, translate .2s ease; }
+    .overview .slide-canvas { width: 210.526%; height: 210.526%; transform: scale(.475); pointer-events: none; }
+    .overview .slide::after { inset: 6px; }
+    .overview .slide.active { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(32,201,183,.32), 0 12px 34px rgba(0,0,0,.28); }
+    .overview .slide:hover { border-color: var(--teal); translate: 0 -2px; }
+    .overview .repair-step { opacity: 1; transform: none; animation: none !important; }
+    .overview .repair-track::after { transform: scaleX(1); animation: none !important; }
+    .overview .flywheel-node { opacity: 1; transform: none; animation: none !important; }
+    .overview .flywheel-runner { display: none; }
+    .overview .nav, .overview .hint, .overview .progress { display: none; }
+    @media (max-width: 920px) {
+      .slide-canvas { padding: 26px 30px 56px; }
+      .grid-2, .gtm { grid-template-columns: 1fr; gap: 22px; }
+      .metrics, .ask-grid { grid-template-columns: repeat(2, 1fr); }
+      .model { border-left: 0; border-top: 1px solid rgba(255,255,255,.15); padding: 24px 0 0; }
+      .flow { grid-template-columns: 1fr; gap: 10px; }
+      .flow-card { min-height: auto; }
+      .flow-arrow { transform: rotate(90deg); justify-self: center; }
+      .repair-track { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-top: 0; }
+      .repair-track::before, .repair-track::after { display: none; }
+      .repair-step { min-height: 175px; padding: 16px; }
+      .repair-step::before { position: static; width: 25px; height: 25px; margin-bottom: 8px; border-width: 2px; transform: none; }
+      .repair-step > p { min-height: 0; }
+      .data-flywheel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; min-height: 0; }
+      .flywheel-ring, .flywheel-runner { display: none; }
+      .flywheel-center { position: relative; left: auto; top: auto; grid-column: 1 / -1; width: 100%; min-height: 0; padding: 15px; transform: none; }
+      .flywheel-node, .flywheel-node.n1, .flywheel-node.n2, .flywheel-node.n3, .flywheel-node.n4, .flywheel-node.n5, .flywheel-node.n6 { position: relative; inset: auto; width: auto; min-height: 74px; opacity: 1; transform: none; animation: none !important; }
+      .footprint-layout { grid-template-columns: 1fr; }
+      .berkeley-map { min-height: 280px; }
+      .performance-panel { grid-template-columns: repeat(3, 1fr); grid-template-rows: auto 1fr; }
+      .performance-panel-head { grid-column: 1 / -1; }
+      .performance-card { grid-template-columns: 1fr; }
+      .property-panel { min-height: 0; }
+      .property-list { display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 16px; }
+      .compare-row { grid-template-columns: 1.2fr repeat(3, .7fr); font-size: 11px; }
+      .compare-row > div { padding: 10px; }
+    }
+    @media (max-width: 620px) {
+      .slide { overflow-y: auto; }
+      .agent-grid, .metrics, .proof-strip, .ask-grid { grid-template-columns: 1fr; }
+      .repair-track { grid-template-columns: 1fr; }
+      .data-flywheel { grid-template-columns: 1fr; }
+      .property-list, .map-proof-strip { grid-template-columns: 1fr; }
+      .performance-panel { grid-template-columns: 1fr; }
+      .performance-card { grid-template-columns: 88px 1fr; }
+      .agent { min-height: auto; }
+      .problem { grid-template-columns: 1fr; gap: 5px; }
+      .compare-row { grid-template-columns: 1.35fr repeat(3, .55fr); }
+      .compare-row > div { padding: 8px 5px; }
+      .overview .deck { grid-template-columns: 1fr; padding: 0; gap: 8px; }
+      .overview .slide { width: 100%; height: 100vh; aspect-ratio: auto; border-radius: 0; }
+      .overview .slide-canvas { width: 100%; height: 100%; transform: none; }
+      .hint { display: none; }
+    }
+    @media print {
+      html, body { overflow: visible; background: white; }
+      .deck { height: auto; overflow: visible; }
+      .slide { position: relative; inset: auto; width: 13.333in; height: 7.5in; opacity: 1; visibility: visible; transform: none; page-break-after: always; }
+      .slide-canvas { width: 100%; height: 100%; transform: none; }
+      .nav, .progress, .hint { display: none !important; }
+    }
+    @media print { .repair-step, .flywheel-node { opacity: 1; transform: none; animation: none !important; } .repair-track::after { transform: scaleX(1); animation: none !important; } .flywheel-runner { display: none; } }
+    @media (prefers-reduced-motion: reduce) { .slide, .progress i, .adlogo, .adlogo *, .repair-step, .repair-track::after, .flywheel-node, .flywheel-runner { transition: none; animation: none !important; } .adlogo .hp { stroke-dashoffset: 0; } .repair-step, .flywheel-node { opacity: 1; transform: none; } .repair-track::after { transform: scaleX(1); } .flywheel-runner { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+    <section class="slide cover active" data-title="Vision">
+      <div class="slide-canvas">
+      <header class="slide-head"><div class="brand"><span class="adlogo" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></span>askdwell.ai</div><span class="section-no">BUSINESS PITCH · 2026</span></header>
+      <div class="slide-body">
+        <div class="eyebrow">Property operations is the entry point</div>
+        <h1 style="margin-top:22px">One AI operating system—from <span class="teal">the building to everyday life.</span></h1>
+        <p class="lede">AskDwell starts by orchestrating apartment and student-housing operations—leasing, resident support, maintenance and follow-through—then expands beyond housing needs into the trusted AI layer for how people live.</p>
+        <div class="pill-row"><span class="pill"><i class="dot"></i> Property-management wedge</span><span class="pill"><i class="dot"></i> One human-centered experience</span><span class="pill"><i class="dot"></i> Lifestyle platform vision</span></div>
+      </div>
+      <footer class="slide-foot"><span>UC Berkeley SkyDeck + strategic partners</span><span>Confidential discussion deck</span></footer>
+      </div>
+    </section>
+
+    <section class="slide accent" data-title="Problem">
+      <div class="slide-canvas">
+      <header class="slide-head"><div class="brand"><span class="adlogo" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></span>askdwell</div><span class="section-no">01 · THE PROBLEM</span></header>
+      <div class="slide-body grid-2">
+        <div><div class="eyebrow">Software records. People still coordinate.</div><h2 style="margin-top:18px">Property teams don’t lack tools. They lack <span class="blue">orchestration.</span></h2><p class="lede">Every resident, lead, vendor, manager and owner creates another conversation—and another manual handoff.</p></div>
+        <div class="problem-line">
+          <div class="problem"><b>Tenant support</b><span>Routine questions and urgent issues arrive in the same inbox.</span></div>
+          <div class="problem"><b>Maintenance</b><span>Incomplete messages trigger photo chasing, triage and vendor phone tag.</span></div>
+          <div class="problem"><b>Leasing</b><span>Leads cool while teams repeat availability, tour and application follow-up.</span></div>
+          <div class="problem"><b>Owner decisions</b><span>Reports and approvals get buried across systems and meetings.</span></div>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>The cost is hidden in coordination—not only software.</span><span>02 / 08</span></footer>
+      </div>
+    </section>
+
+    <section class="slide accent" data-title="Data flywheel">
+      <div class="slide-canvas">
+      <header class="slide-head"><div class="brand"><span class="adlogo" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></span>askdwell</div><span class="section-no">02 · THE DATA FLYWHEEL</span></header>
+      <div class="slide-body">
+        <div class="eyebrow">Every interaction becomes a compounding data asset</div>
+        <h2 style="margin-top:12px;font-size:clamp(34px,3.8vw,62px)">Real operations make every AskDwell agent better.</h2>
+        <div class="data-flywheel" role="img" aria-label="Animated AskDwell property-management data flywheel from operational data capture through human correction and continuous agent improvement">
+          <div class="flywheel-ring"></div><div class="flywheel-runner"></div>
+          <div class="flywheel-center"><div class="center-label">Shared intelligence layer</div><h3>AskDwell PM Agents</h3><p>Grounded in a living knowledge graph, operating memory and property-specific SOPs.</p><div class="agent-briefs"><div class="agent-brief"><b>Colby</b><span>Tenant support + maintenance intake</span></div><div class="agent-brief"><b>Maven</b><span>Staff operations + coordinated follow-through</span></div><div class="agent-brief"><b>Bobby</b><span>Owner reporting + portfolio insights</span></div><div class="agent-brief"><b>Ava</b><span>Leasing + applicant follow-up</span></div></div><div class="flywheel-outcomes"><span class="good">✓ Success → work trace</span><span class="learn">× Correction → learning</span></div></div>
+          <article class="flywheel-node n1" style="--i:0;--node-color:#2f67f6"><i>01</i><div><b>Capture</b><span>Docs, SOPs, messages, email, calls and meeting notes</span></div></article>
+          <article class="flywheel-node n2" style="--i:1;--node-color:#5f73ef"><i>02</i><div><b>Distill</b><span>Entities, facts, decisions, tasks and real work traces</span></div></article>
+          <article class="flywheel-node n3" style="--i:2;--node-color:#20a6c9"><i>03</i><div><b>Ground</b><span>Knowledge graph, policies, memory and operating SOPs</span></div></article>
+          <article class="flywheel-node n4" style="--i:3;--node-color:#20c9b7"><i>04</i><div><b>Agents act</b><span>Retrieve, decide, communicate, execute and escalate</span></div></article>
+          <article class="flywheel-node n5" style="--i:4;--node-color:#8a7cf6"><i>05</i><div><b>Evaluate</b><span>Replay real cases, score outcomes and reveal capability gaps</span></div></article>
+          <article class="flywheel-node n6" style="--i:5;--node-color:#ef8d4d"><i>06</i><div><b>Correct + compound</b><span>Human review updates knowledge, SOPs and agent behavior</span></div></article>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Structured knowledge is the backbone · Unstructured operations are the signal · Human correction closes the loop</span><span>03 / 08</span></footer>
+      </div>
+    </section>
+
+    <section class="slide dark" data-title="Demo">
+      <div class="slide-canvas">
+      <header class="slide-head"><div class="brand"><span class="adlogo" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></span>askdwell</div><span class="section-no">03 · PRODUCT IN ACTION</span></header>
+      <div class="slide-body">
+        <div class="eyebrow">Tenant reports · Manager controls · AskDwell coordinates</div><h2 style="margin-top:14px">From repair request to paid, rated completion.</h2>
+        <p class="process-subtitle">One example of CollabHome’s AI-agentic, community-based property management system.</p>
+        <div class="repair-track" role="img" aria-label="Animated six-step tenant self-repair workflow from request through manager approval, completion evidence, payment and rating">
+          <article class="repair-step tenant-step" data-step="01" style="--i:0"><div class="repair-actor">Tenant</div><h3>Reports the repair</h3><p>“My bedroom window won’t lock.”</p><div class="repair-ui"><b>Photo attached</b><span>Security concern · Unit 3</span></div></article>
+          <article class="repair-step" data-step="02" style="--i:1"><div class="repair-actor">Colby · AI</div><h3>Structures + triages</h3><p>Completes the request and recommends tenant self-repair.</p><div class="repair-ui"><b>Tier 1 · Self-repair</b><span>Request complete</span></div></article>
+          <article class="repair-step manager-step" data-step="03" style="--i:2"><div class="repair-actor">Manager</div><h3>Approves the plan</h3><p>Reviews one clear action instead of coordinating every message.</p><div class="repair-ui"><b>Approve $40 credit</b><span>Human decision recorded</span></div></article>
+          <article class="repair-step" data-step="04" style="--i:3"><div class="repair-actor">Colby · AI</div><h3>Guides + follows up</h3><p>Sends the part, two-minute how-to and due date.</p><div class="repair-ui"><b>Tenant replies YES</b><span>Every-other-day follow-up</span></div></article>
+          <article class="repair-step tenant-step" data-step="05" style="--i:4"><div class="repair-actor">Tenant</div><h3>Fixes + proves it</h3><p>Installs the latch and sends a photo with the window locked.</p><div class="repair-ui"><b>Evidence received</b><span>Completion verified</span></div></article>
+          <article class="repair-step final-step" data-step="06" style="--i:5"><div class="repair-actor">Closed loop</div><h3>Gets paid + rated</h3><p>AskDwell closes the work order and updates the system of record.</p><div class="repair-ui"><b>$40 issued · ★★★★★</b><span>Rent credit + tenant rating</span></div></article>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Demo workflow · Tenant self-repair · Compensation applied through Buildium</span><span>04 / 08</span></footer>
+      </div>
+    </section>
+
+    <section class="slide accent" data-title="Differentiation">
+      <div class="slide-canvas">
+      <header class="slide-head"><div class="brand"><span class="adlogo" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></span>askdwell</div><span class="section-no">04 · WHY ASKDWELL</span></header>
+      <div class="slide-body">
+        <div class="eyebrow">Complement the system of record</div><h2 style="margin-top:14px">Intelligence across the workflow—without a rip-and-replace.</h2>
+        <div class="compare">
+          <div class="compare-row"><div>Capability</div><div class="ad">AskDwell</div><div>Traditional PMS</div><div>Point AI</div></div>
+          <div class="compare-row"><div>Coordinates tenants, staff, prospects & owners</div><div class="ad yes">✓</div><div class="no">—</div><div class="no">Partial</div></div>
+          <div class="compare-row"><div>Human approval for sensitive actions</div><div class="ad yes">✓</div><div class="no">Manual</div><div class="no">Varies</div></div>
+          <div class="compare-row"><div>Works on top of the existing PMS</div><div class="ad yes">✓</div><div class="no">—</div><div class="no">Partial</div></div>
+          <div class="compare-row"><div>One coordinated layer vs. add-on stack</div><div class="ad yes">✓</div><div class="no">—</div><div class="no">—</div></div>
+        </div>
+        <div class="pill-row" style="margin-top:22px"><span class="pill"><i class="dot"></i> Identity-scoped tenant privacy</span><span class="pill"><i class="dot"></i> Evidence-backed completion</span><span class="pill"><i class="dot"></i> Configurable approval thresholds</span></div>
+      </div>
+      <footer class="slide-foot"><span>AskDwell connects users, workflows, approvals and existing systems.</span><span>05 / 08</span></footer>
+      </div>
+    </section>
+
+    <section class="slide" data-title="Berkeley footprint">
+      <div class="slide-canvas">
+      <header class="slide-head"><div class="brand"><span class="adlogo" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></span>askdwell</div><span class="section-no">05 · VALIDATION + FOOTPRINT</span></header>
+      <div class="slide-body">
+        <div class="eyebrow">Live pilot · 8 CollabHome-managed Berkeley student-housing properties</div><h2 style="margin-top:12px;font-size:clamp(34px,4vw,64px)">Eight properties around UC Berkeley.</h2>
+        <div class="footprint-layout">
+          <div class="berkeley-map" role="img" aria-label="Relative map of eight CollabHome-managed Berkeley properties around the UC Berkeley campus">
+            <div class="campus-zone"><div><b>UC BERKELEY</b><span>Campus</span></div></div>
+            <span class="map-road h" data-road="Hearst Ave" style="top:17%"></span>
+            <span class="map-road h" data-road="Bancroft Way" style="top:41%"></span>
+            <span class="map-road h" data-road="Durant Ave" style="top:46%"></span>
+            <span class="map-road h" data-road="Derby St" style="top:64%"></span>
+            <span class="map-road v" data-road="Oxford St" style="left:15%"></span>
+            <span class="map-road v" data-road="Regent St" style="left:46%"></span>
+            <span class="map-road v" data-road="College Ave" style="left:62%"></span>
+            <span class="map-zone" style="left:23%;top:5%">Northside</span>
+            <span class="map-zone" style="left:38%;top:49%">Southside</span>
+            <span class="map-zone" style="left:78%;top:30%">Panoramic Hill</span>
+            <span class="map-zone" style="left:55%;top:78%">Elmwood</span>
+            <span class="map-marker" style="left:5%;top:28%;--mark:#2f67f6"><i>1</i><span>1773 Oxford St.</span></span>
+            <span class="map-marker" style="left:31%;top:45%;--mark:#20c9b7"><i>2</i><span>2425 Durant Ave.</span></span>
+            <span class="map-marker" style="left:25%;top:9%;--mark:#2f67f6"><i>3</i><span>2340 Hilgard Ave.</span></span>
+            <span class="map-marker leftward" style="left:97%;top:43%;--mark:#20c9b7"><i>4</i><span>150 Panoramic Way</span></span>
+            <span class="map-marker leftward" style="left:73%;top:88%;--mark:#2f67f6"><i>5</i><span>3110 College Ave.</span></span>
+            <span class="map-marker" style="left:5%;top:15%;--mark:#20c9b7"><i>6</i><span>1742 Spruce St.</span></span>
+            <span class="map-marker leftward" style="left:76%;top:67%;--mark:#2f67f6"><i>7</i><span>2712 Derby St.</span></span>
+            <span class="map-marker" style="left:43%;top:56%;--mark:#20c9b7"><i>8</i><span>2521 Regent St.</span></span>
+            <span class="map-north">N<br/>↑</span>
+            <span class="map-attribution">Relative positions · not to scale · © OpenStreetMap contributors</span>
+          </div>
+          <aside class="performance-panel" aria-label="Target performance measures">
+            <div class="performance-panel-head"><b>Target performance</b><span>Pilot measures</span></div>
+            <article class="performance-card"><b>40%↓</b><div><strong>Operating cost / unit</strong><span>Less repetitive staff work and manual coordination.</span></div></article>
+            <article class="performance-card"><b>15%↑</b><div><strong>Rental revenue</strong><span>Faster response and persistent follow-up for fewer lost leads.</span></div></article>
+            <article class="performance-card"><b>&lt;60s</b><div><strong>Routine response</strong><span>Target leasing and maintenance response time.</span></div></article>
+          </aside>
+        </div>
+        <div class="map-proof-strip"><div class="map-proof"><b>8</b><span>Berkeley properties in the operating pilot</span></div><div class="map-proof"><b>100K+</b><span>historical operating messages informing AskDwell</span></div><div class="map-proof"><b>$170M+</b><span>assets under management in the operating environment</span></div></div>
+      </div>
+      <footer class="slide-foot"><span>AskDwell AI OS is pilot-run across 8 Berkeley properties currently managed by CollabHome.</span><span>06 / 08</span></footer>
+      </div>
+    </section>
+
+    <section class="slide dark" data-title="Business model">
+      <div class="slide-canvas">
+      <header class="slide-head"><div class="brand"><span class="adlogo" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></span>askdwell</div><span class="section-no">06 · GO-TO-MARKET</span></header>
+      <div class="slide-body">
+        <div class="eyebrow">Property operations is the wedge</div><h2 style="margin-top:14px">Land with one painful workflow. Expand into the operating layer.</h2>
+        <div class="gtm">
+          <div class="stair">
+            <div class="stair-item"><i>1</i><h3>Design partner pilot</h3><p>Start with a high-frequency workflow: leasing, maintenance or tenant support.</p></div>
+            <div class="stair-item"><i>2</i><h3>Portfolio integration</h3><p>Connect the existing PMS, communication channels, approval rules and team structure.</p></div>
+            <div class="stair-item"><i>3</i><h3>Multi-agent expansion</h3><p>Add owner reporting, staff coordination and new properties on the same operating layer.</p></div>
+          </div>
+          <div class="model"><h3>Recurring platform economics</h3><ul><li>Subscription scales with managed doors and activated assistants.</li><li>Implementation-led deployment creates fast time-to-value and durable workflow fit.</li><li>ICP spans third-party managers and self-managing owners—from emerging portfolios to established operators.</li><li>Long-term expansion: property operations → asset management → portfolio intelligence.</li></ul></div>
+        </div>
+      </div>
+      <footer class="slide-foot"><span>Sell measurable operating outcomes, then expand by workflow and portfolio.</span><span>07 / 08</span></footer>
+      </div>
+    </section>
+
+    <section class="slide cover vision-slide" data-title="Big vision + partnership">
+      <div class="slide-canvas">
+      <header class="slide-head"><div class="brand"><span class="adlogo" aria-hidden="true"><span class="adhalo"></span><span class="adglow"></span><svg viewBox="0 0 24 24" fill="none"><path class="hp" d="M4 11.5 12 5l8 6.5"/><path class="hp hp2" d="M6 10.5V19h12v-8.5"/><circle class="addot" cx="12" cy="14" r="1.7"/></svg></span>askdwell.ai</div><span class="section-no">07 · PARTNERSHIP</span></header>
+      <div class="slide-body">
+        <div class="eyebrow">The big vision</div><h2 style="margin-top:16px">Property management is the entry point. <span class="teal">Everyday life is the platform.</span></h2>
+        <p class="vision-line">AskDwell enters through property management to become the <strong>AI Operating System for everyday living.</strong></p>
+        <div class="ask-grid" style="margin-top:26px">
+          <article class="ask"><b>SkyDeck</b><h3>BAM + market access</h3><p>Use the six-month Berkeley Acceleration Method, a Lead Advisor and SkyDeck’s customer-introduction network to sharpen the enterprise wedge, win design partners and prepare for the first institutional seed round.</p></article>
+          <article class="ask"><b>Design partners</b><h3>Live operating workflows</h3><p>Launch a scoped pilot, define success metrics and expand only when AskDwell earns the next workflow.</p></article>
+          <article class="ask"><b>Ecosystem partners</b><h3>Distribution + integration</h3><p>Connect PMS, communications, data and field-service ecosystems to deliver one coordinated experience.</p></article>
+        </div>
+        <div class="cta">Build the operating system for everyday life <span>→</span></div>
+      </div>
+      <footer class="slide-foot"><span>askdwell.ai</span><span>AI + a human touch</span></footer>
+      </div>
+    </section>
+  </div>
+
+  <nav class="nav" aria-label="Slide navigation">
+    <button id="prev" aria-label="Previous slide">←</button><span class="count" id="count">01 / 08</span><button id="next" aria-label="Next slide">→</button><button id="overview" aria-label="Toggle overview" title="Overview (O)">▦</button>
+  </nav>
+  <div class="hint">← → navigate · O overview · F fullscreen</div>
+  <div class="progress"><i id="bar"></i></div>
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll('.slide')];
+      const count = document.getElementById('count');
+      const bar = document.getElementById('bar');
+      const prev = document.getElementById('prev');
+      const next = document.getElementById('next');
+      const overview = document.getElementById('overview');
+      const flywheel = document.querySelector('.data-flywheel');
+      const flywheelRunner = flywheel?.querySelector('.flywheel-runner');
+      const flywheelNodes = flywheel ? [...flywheel.querySelectorAll('.flywheel-node')] : [];
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const flywheelDuration = 14400;
+      let flywheelStart = 0;
+      let flywheelWasActive = false;
+      let index = Math.max(0, Math.min(slides.length - 1, Number(location.hash.replace('#','')) - 1 || 0));
+      let overviewMode = false;
+      function render(push = true) {
+        slides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === index);
+          slide.classList.toggle('before', i < index);
+          slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+        });
+        count.textContent = String(index + 1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+        bar.style.width = ((index + 1) / slides.length * 100) + '%';
+        prev.disabled = index === 0;
+        next.disabled = index === slides.length - 1;
+        document.title = slides[index].dataset.title + ' · AskDwell.ai';
+        if (push) history.replaceState(null, '', '#' + (index + 1));
+      }
+      function go(delta) { if (overviewMode) toggleOverview(false); index = Math.max(0, Math.min(slides.length - 1, index + delta)); render(); }
+      function toggleOverview(force) {
+        overviewMode = typeof force === 'boolean' ? force : !overviewMode;
+        document.body.classList.toggle('overview', overviewMode);
+        slides.forEach(s => s.setAttribute('aria-hidden', 'false'));
+        if (!overviewMode) render(false);
+      }
+      function animateFlywheel(now) {
+        const isActive = Boolean(flywheel?.closest('.slide')?.classList.contains('active')) && !overviewMode && !reducedMotion.matches;
+        if (!isActive) {
+          flywheelWasActive = false;
+          flywheelNodes.forEach(node => node.classList.remove('arrived'));
+          requestAnimationFrame(animateFlywheel);
+          return;
+        }
+        if (!flywheelWasActive) {
+          flywheelStart = now;
+          flywheelWasActive = true;
+        }
+        const phase = ((now - flywheelStart) % flywheelDuration) / flywheelDuration;
+        const angle = Math.PI + phase * Math.PI * 2;
+        flywheelRunner.style.left = (50 + 34 * Math.cos(angle)) + '%';
+        flywheelRunner.style.top = (50 + 35 * Math.sin(angle)) + '%';
+        flywheelNodes.forEach((node, i) => {
+          const stop = i / flywheelNodes.length;
+          const rawDistance = Math.abs(phase - stop);
+          const distance = Math.min(rawDistance, 1 - rawDistance);
+          node.classList.toggle('arrived', distance < .046);
+        });
+        requestAnimationFrame(animateFlywheel);
+      }
+      prev.addEventListener('click', () => go(-1));
+      next.addEventListener('click', () => go(1));
+      overview.addEventListener('click', () => toggleOverview());
+      slides.forEach((slide, i) => slide.addEventListener('click', () => { if (overviewMode) { index = i; toggleOverview(false); render(); } }));
+      window.addEventListener('keydown', (e) => {
+        if (['ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); go(1); }
+        if (['ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+        if (e.key === 'Home') { index = 0; render(); }
+        if (e.key === 'End') { index = slides.length - 1; render(); }
+        if (e.key.toLowerCase() === 'o') toggleOverview();
+        if (e.key.toLowerCase() === 'f') document.documentElement.requestFullscreen?.();
+        if (e.key === 'Escape' && overviewMode) toggleOverview(false);
+      });
+      let touchX = null;
+      window.addEventListener('touchstart', e => touchX = e.changedTouches[0].clientX, {passive:true});
+      window.addEventListener('touchend', e => {
+        if (touchX === null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 55) go(dx < 0 ? 1 : -1);
+        touchX = null;
+      }, {passive:true});
+      render(false);
+      requestAnimationFrame(animateFlywheel);
+    })();
+  </script>
+</body>
+</html>
