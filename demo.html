@@ -4327,6 +4327,15 @@ SRC.assign_task={em:'🗂️',bg:'#e9effb',title:'Assign · Collab Tasks',html:f
 }};
 var t1Credit=40;
 function t1UpdateCredit(){ var el=document.getElementById('t1CreditInput'); if(el) t1Credit=Math.max(0,parseFloat(el.value)||0); ['t1PayLbl','t1PayLbl2'].forEach(function(id){ var l=document.getElementById(id); if(l) l.textContent=money(t1Credit); }); var tm=document.getElementById('t1Msg'); if(tm) tm.value=T1_MSG(); }
+function costSuggestSources(){
+  var chip='display:inline-flex;align-items:center;gap:5px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:4px 9px;font-size:11px;color:var(--muted);font-weight:600';
+  return '<div class="srclabel" style="margin:2px 2px 7px">💡 Task cost suggestion · based on</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">'+
+      '<span style="'+chip+'">🏢 54 historic tasks in Buildium</span>'+
+      '<span style="'+chip+'">🔎 3 public searches</span>'+
+      '<span style="'+chip+'">💬 156 GV messages</span>'+
+    '</div>';
+}
 function showTier1(){
   var t=UNCLAIMED[curUnclaimed];
   document.getElementById('srcTitle').innerHTML='<span class="si" style="background:var(--brand-soft)">🛠️</span>Tier 1 · Self-repair';
@@ -4347,6 +4356,7 @@ function showTier1(){
     '</div>'+
     '<div class="srclabel" style="margin:6px 2px 8px">Rent credit · self-repair compensation · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
     '<div class="compgrid"><label class="comprow"><span class="k">Rent credit</span><span class="cinput"><span class="cpre">$</span><input id="t1CreditInput" type="number" min="0" step="5" value="'+t1Credit+'" oninput="t1UpdateCredit()"></span></label></div>'+
+    costSuggestSources()+
     '<div class="kv" style="margin:8px 0 14px">'+
       '<div class="r"><div class="k">Paid to</div><div class="v">'+t.tenant+' (Tenant · '+t.unit+')</div></div>'+
       '<div class="r"><div class="k">Method</div><div class="v">Rent credit · via Buildium API</div></div>'+
@@ -4420,6 +4430,7 @@ function showTier2(){
       '<label class="comprow"><span class="k">Tenant · rent credit</span><span class="cinput"><span class="cpre">$</span><input id="t2TenantComp" type="number" min="0" step="10" value="'+t2TenantComp+'" oninput="t2UpdatePay()"></span></label>'+
       '<label class="comprow"><span class="k">Vendor · up to</span><span class="cinput"><span class="cpre">$</span><input id="t2VendorMax" type="number" min="0" step="10" value="'+t2VendorMax+'" oninput="t2UpdatePay()"></span></label>'+
     '</div>'+
+    costSuggestSources()+
     '<div class="srclabel" style="margin:12px 2px 8px">Payment summary</div>'+
     '<div class="kv" style="margin-bottom:14px" id="t2PaySummary">'+t2PayRows()+'</div>'+
     '<div class="srclabel" style="margin:6px 2px 8px">Message Colby will send · <span style="color:var(--brand)">editable</span></div>'+
@@ -5045,6 +5056,7 @@ function showTier4CP(){
       if(t4Mode==='vendor'){
         if(t4Approved){
           return '<div class="srclabel" style="margin:0 2px 8px">Approved compensation · <span style="color:var(--ok);font-weight:800">🔒 locked</span></div>'+
+            costSuggestSources()+
             '<div class="kv" style="margin-bottom:6px">'+t4vPayRows()+'</div>'+
             '<div style="font-size:11px;color:var(--muted-2);margin:0 2px 12px;line-height:1.4">'+T1_MGR+' already approved these amounts — they can\'t be changed when re-assigning a CP.</div>';
         }
@@ -5053,17 +5065,20 @@ function showTier4CP(){
             '<label class="comprow"><span class="k">CP · coordination fee</span><span class="cinput"><span class="cpre">$</span><input id="t4vCPFee" type="number" min="0" step="5" value="'+t4vCPFee+'" oninput="t4vUpdatePay()"></span></label>'+
             '<label class="comprow"><span class="k">Vendor · up to</span><span class="cinput"><span class="cpre">$</span><input id="t4vVendorMax" type="number" min="0" step="10" value="'+t4vVendorMax+'" oninput="t4vUpdatePay()"></span></label>'+
           '</div>'+
+          costSuggestSources()+
           '<div class="srclabel" style="margin:12px 2px 8px">Payment summary</div>'+
           '<div class="kv" style="margin-bottom:6px" id="t4vPaySummary">'+t4vPayRows()+'</div>'+
           '<div style="font-size:11px;color:var(--muted-2);margin:4px 2px 12px">CP paid via petty cash or rent credit (if a current tenant); vendor via petty cash. These amounts carry through the message, approval &amp; payment.</div>';
       }
       if(t4Approved){
         return '<div class="srclabel" style="margin:0 2px 8px">Approved compensation · <span style="color:var(--ok);font-weight:800">🔒 locked</span></div>'+
+          costSuggestSources()+
           '<div class="kv" style="margin-bottom:6px"><div class="r"><div class="k">Amount</div><div class="v">'+money(t4cFee)+'</div></div><div class="r"><div class="k">Paid to</div><div class="v">'+c.name+' (CP)</div></div>'+t4MethodRow()+'</div>'+
           '<div style="font-size:11px;color:var(--muted-2);margin:0 2px 12px;line-height:1.4">'+T1_MGR+' already approved this amount — it can\'t be changed when re-assigning a CP.</div>';
       }
       return '<div class="srclabel" style="margin:0 2px 8px">Compensation · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
         '<div class="compgrid"><label class="comprow"><span class="k">CP · amount</span><span class="cinput"><span class="cpre">$</span><input id="t4cFeeInput" type="number" min="0" step="5" value="'+t4cFee+'" oninput="t4cUpdateFee()"></span></label></div>'+
+        costSuggestSources()+
         '<div class="srclabel" style="margin:12px 2px 8px">Payment method</div>'+
         '<div class="kv" style="margin-bottom:6px">'+t4MethodRow()+'</div>'+
         '<div style="font-size:11px;color:var(--muted-2);margin:4px 2px 12px">Paid to '+c.name+' on completion. This amount &amp; method carry through the message, approval, and payment.</div>';
@@ -5587,12 +5602,14 @@ function t3CompBlock(){
         '<label class="comprow"><span class="k">CP · coordination fee</span><span class="cinput"><span class="cpre">$</span><input id="t3vCP" type="number" min="0" step="5" value="'+t4vCPFee+'" oninput="t3UpdateComp()"></span></label>'+
         '<label class="comprow"><span class="k">Vendor · up to</span><span class="cinput"><span class="cpre">$</span><input id="t3vVM" type="number" min="0" step="10" value="'+t4vVendorMax+'" oninput="t3UpdateComp()"></span></label>'+
       '</div>'+
+      costSuggestSources()+
       '<div class="srclabel" style="margin:12px 2px 8px">Payment summary</div>'+
       '<div class="kv" style="margin-bottom:6px" id="t3PaySummary">'+t4vPayRows()+'</div>'+
       '<div style="font-size:11px;color:var(--muted-2);margin:4px 2px 12px">CP paid via petty cash or rent credit (if a current tenant); vendor via petty cash.</div>';
   }
   return '<div class="srclabel" style="margin:0 2px 8px">Compensation · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
     '<div class="compgrid"><label class="comprow"><span class="k">CP · amount</span><span class="cinput"><span class="cpre">$</span><input id="t3cFee" type="number" min="0" step="5" value="'+t4cFee+'" oninput="t3UpdateComp()"></span></label></div>'+
+    costSuggestSources()+
     '<div class="srclabel" style="margin:12px 2px 8px">Payment method</div>'+
     '<div class="kv" style="margin-bottom:6px">'+t4MethodRow()+'</div>'+
     '<div style="font-size:11px;color:var(--muted-2);margin:4px 2px 12px">Paid to whoever claims &amp; completes the task.</div>';
@@ -5744,6 +5761,7 @@ function showTier5(){
     '<div style="background:var(--ai-soft);border:1px solid #c7ecdd;border-radius:12px;padding:11px 13px;font-size:12px;line-height:1.5;color:#0a7d57;margin:13px 0 14px"><b>How Tier 5 works:</b> you take this on personally and bring in a licensed vendor. As the drain is a resident-responsible clog, the tenant is charged an <b>editable repair fee</b> and simply <b>notified</b> — no approval needed from them. The <b>Collab manager approves the plan</b>, you gather 3 quotes for approval, then coordinate the visit.</div>'+
     '<div class="srclabel" style="margin:6px 2px 8px">Fee &amp; vendor budget · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
     '<div class="compgrid"><label class="comprow"><span class="k">Tenant repair fee</span><span class="cinput"><span class="cpre">$</span><input id="t5TenantFee" type="number" min="0" step="5" value="'+t5TenantFee+'" oninput="t5vUpdatePay()"></span></label><label class="comprow"><span class="k">Vendor · up to</span><span class="cinput"><span class="cpre">$</span><input id="t5VendorMax" type="number" min="0" step="10" value="'+t5VendorMax+'" oninput="t5vUpdatePay()"></span></label></div>'+
+    costSuggestSources()+
     '<div class="srclabel" style="margin:12px 2px 8px">Payment summary</div>'+
     '<div class="kv" style="margin-bottom:14px" id="t5PaySummary">'+t5vPayRows()+'</div>'+
     '<div class="srclabel" style="margin:6px 2px 8px">Message Colby will send · to '+t.tenant+' · <span style="color:var(--brand);font-weight:800">editable</span></div>'+
