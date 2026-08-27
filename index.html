@@ -1045,6 +1045,142 @@ footer{border-color:#D6E0EA!important;}
         <iframe src="https://calendly.com/d/cytg-dvn-xdn?hide_gdpr_banner=1" title="Book a 30-minute demo with AskDwell" loading="lazy"></iframe>
       </div>
     </div>
+
+<section id="adw-seat">
+  <style>
+    #adw-seat{--adw-blue:#2F67F6;--adw-teal:#20C9B7;--adw-orange:#F0572B;--adw-orange2:#FF804D;
+      --adw-ink:#0F2035;--adw-sub:#4B5A6B;--adw-line:#D8E0E8;
+      font-family:inherit;max-width:460px;margin:0 auto;padding:28px;
+      background:#fff;border:1px solid var(--adw-line);border-radius:18px;
+      box-shadow:0 14px 40px rgba(10,31,49,.07);box-sizing:border-box;}
+    #adw-seat *{box-sizing:border-box;}
+    #adw-seat .adw-tag{font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--adw-blue);margin-bottom:8px;}
+    #adw-seat h3{font-size:22px;line-height:1.2;letter-spacing:-.3px;color:var(--adw-ink);margin:0 0 6px;font-weight:700;}
+    #adw-seat p.adw-lede{font-size:13.5px;color:var(--adw-sub);margin:0 0 18px;font-weight:400;}
+    #adw-seat .adw-field{margin-bottom:14px;}
+    #adw-seat label{display:block;font-size:12.5px;font-weight:600;color:var(--adw-ink);margin-bottom:6px;}
+    #adw-seat input,#adw-seat select{width:100%;font-family:inherit;font-size:14.5px;padding:13px 14px;
+      border:1px solid #C7D2DE;border-radius:10px;background:#F9FBFD;color:var(--adw-ink);font-weight:400;}
+    #adw-seat input:focus,#adw-seat select:focus{outline:none;border-color:var(--adw-blue);background:#fff;
+      box-shadow:0 0 0 3px rgba(47,103,246,.12);}
+    #adw-seat button{width:100%;margin-top:4px;font-family:inherit;font-size:15px;font-weight:700;color:#fff;
+      padding:15px 20px;border:none;border-radius:12px;cursor:pointer;
+      background:linear-gradient(135deg,var(--adw-orange),var(--adw-orange2));
+      box-shadow:0 12px 26px rgba(240,87,43,.28);transition:.18s;}
+    #adw-seat button:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(240,87,43,.36);}
+    #adw-seat .adw-note{font-size:12px;color:#8391A0;margin-top:12px;text-align:center;font-weight:400;}
+    #adw-seat .adw-hp{position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;}
+    #adw-seat .adw-success{display:none;text-align:center;padding:20px 6px;}
+    #adw-seat .adw-success .adw-ok{width:56px;height:56px;border-radius:50%;background:rgba(25,185,138,.14);
+      color:#19B98A;display:grid;place-items:center;font-size:28px;margin:0 auto 14px;}
+    #adw-seat .adw-success h4{font-size:19px;color:var(--adw-ink);margin:0 0 8px;font-weight:700;}
+    #adw-seat .adw-success p{font-size:14px;color:var(--adw-sub);margin:0;font-weight:400;}
+  
+    /* Match the Book-a-demo box width + mobile layout */
+    #adw-seat{max-width:none;width:100%;margin:28px 0 0;padding:46px;border-radius:24px;}
+    #adw-seat .adw-head{max-width:690px;margin:0 auto 22px;text-align:center;}
+    #adw-seat h3{font-size:30px;letter-spacing:-.6px;}
+    #adw-seat p.adw-lede{font-size:15px;margin:10px 0 0;}
+    #adw-seat form{max-width:760px;margin:0 auto;}
+    #adw-seat .adw-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+    #adw-seat .adw-grid .adw-field{margin-bottom:0;}
+    #adw-seat button{margin-top:18px;}
+    @media(max-width:820px){#adw-seat .adw-grid{grid-template-columns:1fr 1fr;} #adw-seat .adw-grid .adw-field:last-child{grid-column:1/-1;}}
+    @media(max-width:600px){#adw-seat{padding:28px 20px;border-radius:18px;} #adw-seat h3{font-size:24px;} #adw-seat .adw-grid{grid-template-columns:1fr;gap:12px;} #adw-seat input,#adw-seat select{font-size:16px;}}
+  </style>
+
+  <div class="adw-head">
+  <div class="adw-tag">● Live session · no pressure</div>
+  <h3>Save my seat</h3>
+  <p class="adw-lede">Join our next casual live walkthrough + Q&amp;A. We'll email you the link and a reminder — and the recording if you can't make it.</p>
+  </div>
+
+  <form id="adwSeatForm" novalidate>
+    <div class="adw-grid">
+    <div class="adw-field">
+      <label for="adwFirst">First name</label>
+      <input type="text" id="adwFirst" name="first_name" placeholder="Jordan" autocomplete="given-name">
+    </div>
+    <div class="adw-field">
+      <label for="adwEmail">Email *</label>
+      <input type="email" id="adwEmail" name="email" required placeholder="you@company.com" autocomplete="email">
+    </div>
+    <div class="adw-field">
+      <label for="adwSegment">Which best describes you?</label>
+      <select id="adwSegment" name="segment">
+        <option value="">Choose one…</option>
+        <option value="Independent PM">Independent property manager</option>
+        <option value="Established operator">Established / multi-property operator</option>
+        <option value="Owner">Property owner / investor</option>
+        <option value="Other">Something else</option>
+      </select>
+    </div>
+    </div>
+    <!-- honeypot (spam trap — leave empty) -->
+    <input class="adw-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button type="submit">Save my seat →</button>
+    <p class="adw-note">No spam. We'll only email you about the session. Unsubscribe anytime.</p>
+  </form>
+
+  <div class="adw-success" id="adwSeatSuccess">
+    <div class="adw-ok">✓</div>
+    <h4>You're on the list! 🎉</h4>
+    <p>Check your inbox — we'll send the session link and a reminder before we go live.</p>
+  </div>
+
+  <script>
+  (function(){
+    /* ---- 1) Customer.io tracker (guarded: won't double-load) ---- */
+    if(!window.__cioLoaded && !document.getElementById('cio-tracker')){
+      var _cio = window._cio = window._cio || [];
+      var a=function(f){return function(){_cio.push([f].concat([].slice.call(arguments,0)))}};
+      var m=["load","identify","sidentify","track","page","on","off"];
+      for(var i=0;i<m.length;i++){_cio[m[i]]=a(m[i])}
+      var t=document.createElement('script'),s=document.getElementsByTagName('script')[0];
+      t.async=true;t.id='cio-tracker';
+      t.setAttribute('data-site-id','50ac3b940985dcd7031e');
+      t.setAttribute('data-use-array-params','true');
+      t.src='https://assets.customer.io/assets/track.js';   /* EU: track-eu.customer.io/assets/track.js */
+      s.parentNode.insertBefore(t,s);
+      window.__cioLoaded = true;
+    }
+
+    /* ---- 2) Form handler: identify the person into Customer.io ---- */
+    var form=document.getElementById('adwSeatForm');
+    var success=document.getElementById('adwSeatSuccess');
+    if(!form) return;
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var emailEl=document.getElementById('adwEmail');
+      var email=(emailEl.value||'').trim();
+      var first=(document.getElementById('adwFirst').value||'').trim();
+      var segment=(document.getElementById('adwSegment').value||'');
+      var honeypot=form.querySelector('input[name="website"]');
+      var valid=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+      if(!valid){ emailEl.focus(); emailEl.style.borderColor='#E0413B'; return; }
+      if(honeypot && honeypot.value){ return; } /* bot */
+      try{
+        if(window._cio && _cio.identify){
+          _cio.identify({
+            id: email,                       /* email as the person id */
+            email: email,
+            first_name: first,
+            segment: segment,                /* Independent PM / Established operator / Owner / Other */
+            signup_source: 'live_session_lp',
+            session_interest: 'live_session',
+            opt_in: true,
+            opt_in_date: Math.floor(Date.now()/1000),
+            created_at: Math.floor(Date.now()/1000)
+          });
+        }
+      }catch(err){}
+      form.style.display='none';
+      success.style.display='block';
+    });
+  })();
+  </script>
+</section>
+<!-- ============================ END ASKDWELL OPT-IN ============================ -->
   </div>
 </section>
 
