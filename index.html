@@ -1160,8 +1160,8 @@ footer{border-color:#D6E0EA!important;}
       if(!valid){ emailEl.focus(); emailEl.style.borderColor='#E0413B'; return; }
       if(honeypot && honeypot.value){ return; } /* bot */
       try{
-        if(window._cio && _cio.identify){
-          _cio.identify({
+        if(window._cio && window._cio.identify){
+          window._cio.identify({
             id: email,                       /* email as the person id */
             email: email,
             first_name: first,
