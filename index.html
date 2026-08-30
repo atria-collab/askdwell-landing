@@ -1172,8 +1172,28 @@ footer{border-color:#D6E0EA!important;}
             opt_in_date: Math.floor(Date.now()/1000),
             created_at: Math.floor(Date.now()/1000)
           });
+          /* Fire the event that triggers the "Save my seat" confirmation email
+             campaign in Customer.io (sent from hello@askdwell.ai). */
+          window._cio.track('saved_seat', {
+            first_name: first,
+            segment: segment,
+            signup_source: 'live_session_lp'
+          });
         }
       }catch(err){}
+      /* ---- 3) Confirmation email via Google Apps Script (Gmail, hello@askdwell.ai).
+              Paste your deployed Web app URL (ends in /exec) below. ---- */
+      var ADW_MAIL_ENDPOINT='https://script.google.com/macros/s/AKfycbzGBCq0GtBAcCEtuzX4dAJKHxGFzbWu7DtK-xUZJaXkjAO-d_jYJ9bmsu5Vnw64ykhUzg/exec';
+      try{
+        if(ADW_MAIL_ENDPOINT.indexOf('https://')===0 && window.fetch){
+          fetch(ADW_MAIL_ENDPOINT,{
+            method:'POST',
+            mode:'no-cors', /* fire-and-forget; Apps Script needs no CORS this way */
+            headers:{'Content-Type':'text/plain;charset=utf-8'},
+            body:JSON.stringify({email:email,first_name:first,segment:segment,website:(honeypot&&honeypot.value)||''})
+          });
+        }
+      }catch(err2){}
       form.style.display='none';
       success.style.display='block';
     });
