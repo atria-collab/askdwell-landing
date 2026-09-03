@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AskDwell — Live Demo Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF7F3;--card:#FFFFFF;--ink:#211B17;--sub:#5C534C;--muted:#8A817A;
+    --orange:#F0572B;--orange-lt:#FF8A4A;--line:#EDE4DB;--line2:#E2D7CC;
+    --dark:#14100d;--dark2:#221A16;--green:#2E9E6B;--tint:#FCF1EB;--blue:#3D6E8F;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{font-family:'Poppins',system-ui,sans-serif;background:#0d0a08;color:var(--ink);overflow:hidden;}
+
+  /* deck frame */
+  .deck{position:fixed;inset:0;}
+  .slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .5s ease;
+    display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;}
+  .slide.active{opacity:1;visibility:visible;z-index:2;}
+  .slide.active .anim{animation:rise .7s cubic-bezier(.2,.7,.3,1) both;}
+  .slide.active .anim:nth-child(2){animation-delay:.08s;}
+  .slide.active .anim:nth-child(3){animation-delay:.16s;}
+  .slide.active .anim:nth-child(4){animation-delay:.24s;}
+  .slide.active .d1{animation-delay:.1s;} .slide.active .d2{animation-delay:.22s;}
+  .slide.active .d3{animation-delay:.34s;} .slide.active .d4{animation-delay:.46s;}
+  .slide.active .d5{animation-delay:.58s;} .slide.active .d6{animation-delay:.70s;}
+  @keyframes rise{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
+  @keyframes pop{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+
+  .pad{flex:1;display:flex;flex-direction:column;justify-content:center;padding:7vh 8vw;}
+  .paper{background:var(--paper);}
+  .darkbg{background:radial-gradient(130% 150% at 50% -10%, #4a2a18 0%, #241a14 42%, #14100d 85%);color:#fff;}
+
+  /* eyebrow */
+  .eyebrow{display:flex;align-items:center;gap:13px;margin-bottom:20px;}
+  .eyebrow .num{font-size:13px;font-weight:700;color:var(--orange);letter-spacing:1px;}
+  .eyebrow .lbl{font-size:12px;font-weight:600;letter-spacing:2.6px;text-transform:uppercase;color:var(--muted);}
+  .darkbg .eyebrow .lbl{color:#b9b0a8;}
+  .eyebrow .rule{flex:1;height:2px;background:var(--line2);border-radius:2px;max-width:180px;}
+  .darkbg .eyebrow .rule{background:rgba(255,255,255,.18);}
+
+  h1{font-size:min(6.2vw,68px);line-height:1.05;font-weight:700;letter-spacing:-1.3px;}
+  h1 b{color:var(--orange);}
+  h2{font-size:min(4.6vw,46px);line-height:1.1;font-weight:700;letter-spacing:-.6px;margin-bottom:14px;}
+  h2 b{color:var(--orange);}
+  .lead{font-size:min(2.2vw,20px);line-height:1.6;color:var(--sub);font-weight:300;max-width:760px;}
+  .darkbg .lead{color:#c8c0b8;}
+
+  /* brand row */
+  .brand{display:flex;align-items:center;gap:15px;}
+  .logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#F0572B,#FF8A4A);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(240,87,43,.45);}
+  .wordmark{font-weight:700;font-size:24px;letter-spacing:.5px;line-height:1;color:#fff;}
+  .wordmark span{display:block;font-weight:500;font-size:10px;letter-spacing:3px;color:#b9b2ab;margin-top:6px;}
+  .wordmark span b{color:var(--orange-lt);}
+  .badge{font-size:12px;font-weight:500;color:#e7ded8;border:1px solid rgba(255,255,255,.22);
+    padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.05);}
+
+  .chips{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap;}
+  .chip{font-size:14px;font-weight:500;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);
+    padding:11px 18px;border-radius:11px;color:#eee7e1;display:flex;align-items:center;gap:9px;}
+  .paper .chip{background:#fff;border:1px solid var(--line2);color:var(--ink);}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:none;}
+
+  /* top-right brand tag on paper slides */
+  .cornerbrand{position:absolute;top:4vh;right:8vw;display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;color:var(--ink);z-index:3;}
+  .cornerbrand .lg{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#F0572B,#FF8A4A);}
+  .cornerbrand b{color:var(--orange);}
+
+  /* agent grid */
+  .agrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:8px;}
+  .acard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;
+    box-shadow:0 8px 26px rgba(80,50,30,.06);display:flex;gap:16px;align-items:flex-start;}
+  .acard.lead{border-color:rgba(240,87,43,.4);background:linear-gradient(100deg,#fff,#fff6f1);}
+  .aic{flex:none;width:50px;height:50px;border-radius:13px;background:rgba(240,87,43,.1);
+    border:1px solid rgba(240,87,43,.26);display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .acard h3{font-size:20px;font-weight:700;display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+  .acard .role{font-size:12px;font-weight:600;color:var(--orange);}
+  .acard p{font-size:14px;line-height:1.5;color:var(--sub);font-weight:300;margin-top:5px;}
+  .star{font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;background:var(--orange);color:#fff;padding:3px 9px;border-radius:999px;}
+
+  /* phone / chat demo */
+  .demowrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;height:100%;}
+  @media(max-width:900px){.demowrap{grid-template-columns:1fr;gap:20px;}}
+  .phone{width:100%;max-width:380px;background:#221d1b;border:1px solid #38322d;border-radius:26px;
+    padding:18px 18px 20px;box-shadow:0 26px 60px rgba(0,0,0,.5);margin:0 auto;}
+  .phead{display:flex;align-items:center;gap:12px;padding-bottom:13px;border-bottom:1px solid #38322d;margin-bottom:14px;}
+  .pdot{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#F0572B,#FF8A4A);display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .pname{font-size:15px;font-weight:600;color:#fff;}
+  .pstat{font-size:11px;color:#5fd08a;font-weight:500;margin-top:2px;display:flex;align-items:center;gap:6px;}
+  .blink{width:7px;height:7px;border-radius:50%;background:#5fd08a;box-shadow:0 0 0 0 rgba(95,208,138,.6);animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,208,138,.5);}70%{box-shadow:0 0 0 8px rgba(95,208,138,0);}100%{box-shadow:0 0 0 0 rgba(95,208,138,0);}}
+  .bubble{font-size:14px;line-height:1.45;padding:11px 15px;border-radius:15px;margin-bottom:10px;max-width:86%;}
+  .b-in{background:#2f2925;color:#f0ebe6;border-bottom-left-radius:5px;}
+  .b-out{background:var(--orange);color:#fff;margin-left:auto;border-bottom-right-radius:5px;}
+  .b-sys{font-size:11px;color:#8b857f;text-align:center;margin:2px 0 12px;font-style:italic;}
+  .b-tag{background:#1c3a2b;color:#7fe0aa;font-size:11.5px;font-weight:600;text-align:center;padding:8px;border-radius:10px;margin-top:4px;}
+
+  .demopts{display:flex;flex-direction:column;gap:20px;}
+  .dpt{display:flex;gap:15px;align-items:flex-start;}
+  .dpt .k{flex:none;width:38px;height:38px;border-radius:11px;background:var(--orange);color:#fff;font-weight:800;
+    display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 6px 16px rgba(240,87,43,.32);}
+  .dpt h4{font-size:18px;font-weight:700;margin-bottom:3px;}
+  .dpt p{font-size:14.5px;line-height:1.5;color:var(--sub);font-weight:300;}
+
+  /* flow (differentiator) */
+  .flow{display:flex;align-items:stretch;gap:0;margin-top:16px;flex-wrap:wrap;}
+  .fstep{flex:1;min-width:140px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 16px;position:relative;box-shadow:0 6px 18px rgba(80,50,30,.05);}
+  .fstep .fn{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;}
+  .fstep h4{font-size:15px;font-weight:700;margin:5px 0 4px;}
+  .fstep p{font-size:12.5px;line-height:1.45;color:var(--sub);font-weight:300;}
+  .fstep.fin{background:linear-gradient(120deg,#EAF7F0,#f4fbf7);border-color:rgba(46,158,107,.35);}
+  .fstep.fin .fn{color:var(--green);}
+  .farrow{align-self:center;color:var(--line2);font-size:22px;padding:0 6px;flex:none;}
+  .stopline{margin-top:16px;font-size:14px;color:var(--muted);font-weight:400;display:flex;align-items:center;gap:10px;}
+  .stopline b{color:var(--ink);font-weight:600;}
+  .stopline .tagstop{font-size:11px;font-weight:600;color:var(--muted);border:1px dashed var(--muted);padding:5px 11px;border-radius:8px;}
+
+  /* stat row */
+  .statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:10px 0 26px;}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 14px;text-align:center;box-shadow:0 8px 24px rgba(80,50,30,.06);}
+  .scard .big{font-size:min(5vw,48px);font-weight:800;line-height:1;color:var(--orange);letter-spacing:-1px;}
+  .scard .lbl{font-size:13px;line-height:1.35;color:var(--sub);margin-top:11px;font-weight:400;}
+  .proofline{font-size:15px;color:var(--sub);text-align:center;font-weight:300;}
+  .proofline b{color:var(--ink);font-weight:600;}
+
+  /* systems logos row */
+  .sysrow{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;}
+  .sys{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:14px 22px;font-weight:600;font-size:16px;color:var(--ink);box-shadow:0 4px 14px rgba(80,50,30,.05);}
+  .sys.soon{color:var(--muted);font-weight:500;}
+
+  /* two-col generic */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:10px;}
+  .feat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:0 8px 24px rgba(80,50,30,.05);}
+  .feat .ck{width:30px;height:30px;border-radius:9px;background:rgba(240,87,43,.12);color:var(--orange);font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
+  .feat h4{font-size:18px;font-weight:700;margin-bottom:5px;}
+  .feat p{font-size:14px;line-height:1.5;color:var(--sub);font-weight:300;}
+
+  /* trial steps */
+  .tsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:14px;}
+  .tstep{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 20px;box-shadow:0 8px 22px rgba(80,50,30,.05);}
+  .tstep .tn{width:40px;height:40px;border-radius:50%;background:var(--dark);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:13px;}
+  .tstep.free .tn{background:var(--green);}
+  .tstep h4{font-size:16px;font-weight:700;margin-bottom:5px;}
+  .tstep p{font-size:13px;line-height:1.5;color:var(--sub);font-weight:300;}
+
+  /* quote */
+  .quotebox{background:radial-gradient(130% 180% at 90% -20%, #3a2318 0%, #221610 55%, #17110e 90%);
+    border-radius:22px;padding:44px 48px;color:#fff;position:relative;overflow:hidden;max-width:900px;}
+  .quotebox .qm{font-size:70px;line-height:.5;color:var(--orange);font-weight:800;}
+  .quotebox p{font-size:min(3vw,26px);line-height:1.5;font-weight:400;font-style:italic;margin-top:10px;}
+  .quotebox .who{font-size:15px;color:var(--orange-lt);margin-top:20px;font-weight:600;font-style:normal;}
+
+  /* CTA */
+  .ctabox{background:linear-gradient(95deg,#F0572B,#FF7A45);border-radius:22px;color:#fff;padding:48px 56px;
+    display:flex;justify-content:space-between;align-items:center;box-shadow:0 20px 50px rgba(240,87,43,.4);flex-wrap:wrap;gap:24px;}
+  .ctabox h2{color:#fff;margin:0;}
+  .ctabox p{font-size:17px;color:#fff1ea;font-weight:300;margin-top:8px;}
+  .ctamail{background:#fff;color:var(--orange);font-weight:700;font-size:20px;padding:15px 28px;border-radius:13px;display:inline-block;}
+  .ctaweb{font-size:15px;color:#fff6f1;margin-top:11px;text-align:right;}
+
+  /* FAQ slide */
+  .faqpad{flex:1;display:flex;flex-direction:column;padding:4vh 6vw 5vh;overflow:hidden;}
+  .faqhead{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:16px;}
+  .langtog{display:flex;gap:6px;background:#fff;border:1px solid var(--line2);border-radius:999px;padding:4px;}
+  .langtog button{border:none;background:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--muted);
+    padding:7px 16px;border-radius:999px;cursor:pointer;}
+  .langtog button.on{background:var(--orange);color:#fff;}
+  .faqlist{padding-right:4px;flex:1;display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:11px 16px;align-content:start;}
+  @media(max-width:820px){.faqlist{grid-template-columns:1fr;}}
+  .faqlist::-webkit-scrollbar{width:8px;} .faqlist::-webkit-scrollbar-thumb{background:var(--line2);border-radius:8px;}
+  .qa{background:var(--card);border:1px solid var(--line);border-radius:13px;overflow:hidden;box-shadow:0 4px 14px rgba(80,50,30,.04);}
+  .qbtn{width:100%;text-align:left;background:none;border:none;font-family:inherit;cursor:pointer;
+    padding:13px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+  .qbtn .qtext{font-size:14px;font-weight:600;color:var(--ink);line-height:1.35;}
+  .qbtn .qn{flex:none;width:26px;height:26px;border-radius:7px;background:rgba(240,87,43,.1);color:var(--orange);
+    font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-right:2px;}
+  .qbtn .qrow{display:flex;align-items:center;gap:12px;}
+  .qbtn .chev{flex:none;color:var(--muted);font-size:20px;transition:transform .25s;}
+  .qa.open .chev{transform:rotate(45deg);color:var(--orange);}
+  .qans{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .qa.open{box-shadow:0 8px 24px rgba(240,87,43,.12);border-color:rgba(240,87,43,.35);}
+  .qa.open .qans{max-height:900px;}
+  .qans p{font-size:13px;line-height:1.55;color:var(--sub);font-weight:300;padding:0 16px 15px;}
+  .lang-zh{display:none;}
+  .show-zh .lang-en{display:none;} .show-zh .lang-zh{display:block;}
+  .show-zh .qbtn .lang-zh{display:inline;}
+  /* nav UI */
+  .nav{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:16px;
+    background:rgba(20,16,13,.72);backdrop-filter:blur(8px);padding:9px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);}
+  .nav button{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;opacity:.85;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .nav button:hover{opacity:1;background:rgba(255,255,255,.12);}
+  .dots{display:flex;gap:7px;}
+  .ndot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .2s;}
+  .ndot.on{background:var(--orange);width:22px;border-radius:999px;}
+  .counter{color:#cfc7c0;font-size:12.5px;font-weight:500;min-width:42px;text-align:center;}
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--orange);z-index:30;transition:width .4s ease;}
+  .hint{position:fixed;bottom:24px;right:26px;color:rgba(255,255,255,.4);font-size:11.5px;z-index:20;}
+  .foot-s{position:absolute;bottom:3vh;left:8vw;font-size:11px;letter-spacing:.6px;color:var(--muted);text-transform:uppercase;}
+  .darkbg .foot-s{color:#8b817a;}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <!-- 1 · COVER -->
+  <section class="slide darkbg active">
+    <div class="pad">
+      <div class="brand anim d1" style="justify-content:space-between;width:100%;">
+        <div class="brand">
+          <div class="logo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 11.5 12 5l8 6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10.5V19h12v-8.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14" r="2.1" fill="#fff"/></svg></div>
+          <div class="wordmark">ASKDWELL<span>POWERED BY <b>COLLAB</b></span></div>
+        </div>
+        <div class="badge">AI Property Operations · 24/7</div>
+      </div>
+      <div style="margin-top:6vh;">
+        <span class="eyebrow anim d2"><span class="lbl">The AI operations layer for property management</span></span>
+        <h1 class="anim d3">Manage more doors<br>with the <b>same team.</b></h1>
+        <p class="lead anim d4" style="margin-top:24px;">AskDwell puts a team of AI agents on top of the software you already run — answering tenants, chasing leads, and coordinating the work — so a lean operation can grow without adding headcount.</p>
+        <div class="chips anim d5">
+          <span class="chip"><span class="dot"></span>Works with your Buildium / AppFolio</span>
+          <span class="chip"><span class="dot"></span>Humans stay in control</span>
+          <span class="chip"><span class="dot"></span>Live in weeks, not months</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · Live walkthrough</div>
+  </section>
+
+  <!-- 2 · THE PROBLEM -->
+  <section class="slide paper">
+    <div class="cornerbrand"><span class="lg"></span>ASK<b>DWELL</b></div>
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">01</span><span class="lbl">The reality</span><span class="rule"></span></span>
+      <h2 class="anim d2">You're running <b>100–200 doors</b> — and wearing every hat.</h2>
+      <p class="lead anim d3">The messages don't stop at 5pm. Every after-hours text, every "is it still available?", every leaky faucet lands on one desk. You can't grow the portfolio without hiring — but hiring eats the margin that made growing worth it.</p>
+      <div class="two anim d4" style="margin-top:34px;">
+        <div class="feat"><div class="ck">!</div><h4>The 2am bottleneck</h4><p>Tenant messages and maintenance requests pile up on one person. Response time slips, and so does tenant satisfaction.</p></div>
+        <div class="feat"><div class="ck">!</div><h4>Growth = more hats</h4><p>Every new door adds coordination, follow-up, and lookups. The only lever you have today is your own hours — and there aren't more of them.</p></div>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · powered by Collab</div>
+  </section>
+
+  <!-- 3 · MEET THE AI TEAM -->
+  <section class="slide paper">
+    <div class="cornerbrand"><span class="lg"></span>ASK<b>DWELL</b></div>
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">02</span><span class="lbl">Meet your AI team</span><span class="rule"></span></span>
+      <h2 class="anim d2">Four agents. <b>One coordinated operation.</b></h2>
+      <p class="lead anim d3" style="margin-bottom:6px;">Each agent owns a lane — and they hand off to each other and to you. Start with the two that take the most off your desk today.</p>
+      <div class="agrid anim d4">
+        <div class="acard lead">
+          <div class="aic">💬</div>
+          <div><h3>Colby <span class="star">Start here</span></h3><div class="role">AI Tenant Front Desk</div>
+          <p>Answers tenants 24/7 on their own channel, reads a photo of the problem, and turns it into a clean work order — the after-hours load, gone.</p></div>
+        </div>
+        <div class="acard lead">
+          <div class="aic">🧭</div>
+          <div><h3>Maven <span class="star">Start here</span></h3><div class="role">Coordination &amp; Team Copilot</div>
+          <p>Triages and routes every request, tracks deadlines and open items, and answers your team's portfolio questions instantly — right in Slack or Teams.</p></div>
+        </div>
+        <div class="acard">
+          <div class="aic">🔑</div>
+          <div><h3>Ava</h3><div class="role">Leasing &amp; Prospects</div>
+          <p>Replies to new leads in under a minute, books tours, and sends applications — so vacancies fill before the lead goes cold.</p></div>
+        </div>
+        <div class="acard">
+          <div class="aic">📊</div>
+          <div><h3>Bobby</h3><div class="role">Owner Reporting</div>
+          <p>Builds owner reports automatically — like a year-to-date rent roll pulled straight from Buildium — the update you never have time to write.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · powered by Collab</div>
+  </section>
+
+  <!-- 4 · COLBY IN ACTION (the demo) -->
+  <section class="slide darkbg">
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">03</span><span class="lbl">Colby, live</span><span class="rule"></span></span>
+      <div class="demowrap">
+        <div class="phone anim d2">
+          <div class="phead"><div class="pdot">💬</div><div><div class="pname">Colby · Tenant Front Desk</div><div class="pstat"><span class="blink"></span>replied in 41 seconds · 11:52pm</div></div></div>
+          <div class="b-sys">Tenant · Unit 4B · after hours</div>
+          <div class="bubble b-in">Hi, water is leaking under my kitchen sink and it's getting on the floor 😟</div>
+          <div class="bubble b-out">Oh no — let's stop that fast. Can you send a quick photo, and is the water actively running or just pooling?</div>
+          <div class="bubble b-in">[photo] it's dripping from the pipe</div>
+          <div class="bubble b-out">Got it — that's the P-trap connection. Turn the valve under the sink clockwise to stop it for tonight. I've logged an urgent work order and I'm getting a plumber scheduled for the morning. You'll get a confirmed time by 8am.</div>
+          <div class="b-tag">✓ Work order #1847 created · flagged urgent · owner notified</div>
+        </div>
+        <div class="demopts">
+          <p class="lead anim d3" style="color:#c8c0b8;margin-bottom:8px;">This happened at midnight. No one on your team touched it.</p>
+          <div class="dpt anim d4"><div class="k">1</div><div><h4>Answered instantly, on their channel</h4><p style="color:#c8c0b8">No app to download, no portal. Colby replies where the tenant already texts.</p></div></div>
+          <div class="dpt anim d5"><div class="k">2</div><div><h4>Read the photo, diagnosed, de-escalated</h4><p style="color:#c8c0b8">It understood the image, gave a safe stop-gap, and calmed the tenant down.</p></div></div>
+          <div class="dpt anim d6"><div class="k">3</div><div><h4>Turned a crisis into a tracked work order</h4><p style="color:#c8c0b8">Logged, prioritized, and routed — with the owner kept in the loop automatically.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · Colby in action</div>
+  </section>
+
+  <!-- 4b · LOOM DEMO -->
+  <section class="slide darkbg">
+    <div class="pad" style="padding:5vh 6vw;">
+      <span class="eyebrow anim d1"><span class="num">03·b</span><span class="lbl">Watch it work — 2-minute walkthrough</span><span class="rule"></span></span>
+      <div class="anim d2" style="display:grid;grid-template-columns:1.4fr .9fr;gap:34px;align-items:center;flex:1;">
+        <div style="position:relative;padding-bottom:56%;height:0;border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12);">
+          <iframe src="https://www.loom.com/embed/a9cfab3728b74098bb36eae8caa30618?hideEmbedTopBar=true" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+        </div>
+        <div>
+          <h2 style="color:#fff;font-size:min(3.4vw,32px);">The three agents,<br><b>end to end.</b></h2>
+          <p class="lead" style="color:#c8c0b8;font-size:16px;margin-top:12px;">Jake's live walkthrough shows the full loop:</p>
+          <div class="chips" style="flex-direction:column;align-items:flex-start;margin-top:18px;gap:10px;">
+            <span class="chip"><span class="dot"></span><b style="font-weight:600;margin-right:4px;">Colby</b> — no-hot-water + leak → emergency work order, contractor booked</span>
+            <span class="chip"><span class="dot"></span><b style="font-weight:600;margin-right:4px;">Maven</b> — pulls multiple vendor quotes, picks the cheapest</span>
+            <span class="chip"><span class="dot"></span><b style="font-weight:600;margin-right:4px;">Bobby</b> — builds a YTD rent roll from Buildium automatically</span>
+          </div>
+          <p style="color:#8b817a;font-size:12.5px;margin-top:18px;">▶ Click play — or open loom.com/share/a9cfab37 if the room's offline.</p>
+        </div>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · full product demo</div>
+  </section>
+
+  <!-- 5 · MAVEN -->
+  <section class="slide paper">
+    <div class="cornerbrand"><span class="lg"></span>ASK<b>DWELL</b></div>
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">04</span><span class="lbl">Maven · your team copilot</span><span class="rule"></span></span>
+      <h2 class="anim d2">Ask your whole portfolio <b>anything.</b></h2>
+      <p class="lead anim d3">Maven is the coordination layer. Instead of digging through your PMS, your team just asks — in plain English, right where they work — and gets an instant, sourced answer.</p>
+      <div class="two anim d4" style="margin-top:30px;">
+        <div class="feat"><div class="ck">?</div><h4>"Which units have rent outstanding past 5 days?"</h4><p>Instant answer across the portfolio — no report to run, no spreadsheet to build.</p></div>
+        <div class="feat"><div class="ck">⚑</div><h4>Sources vendors &amp; picks the best price</h4><p>For a repair, Maven reaches out for multiple quotes, compares them, and books the most cost-effective option — keeping the system updated.</p></div>
+        <div class="feat"><div class="ck">↻</div><h4>Triages &amp; routes automatically</h4><p>Every incoming request gets classified and sent to the right place — or the right person.</p></div>
+        <div class="feat"><div class="ck">⏱</div><h4>Hours back, every week</h4><p>The repetitive lookups that eat a manager's day just… stop being manual.</p></div>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · powered by Collab</div>
+  </section>
+
+  <!-- 6 · THE DIFFERENTIATOR (flow) -->
+  <section class="slide paper">
+    <div class="cornerbrand"><span class="lg"></span>ASK<b>DWELL</b></div>
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">05</span><span class="lbl">Why it's different</span><span class="rule"></span></span>
+      <h2 class="anim d2">Most AI stops at the reply. <b>AskDwell finishes the job.</b></h2>
+      <div class="flow anim d3">
+        <div class="fstep"><div class="fn">01</div><h4>Request comes in</h4><p>Any tenant, any channel, any hour.</p></div>
+        <div class="farrow">→</div>
+        <div class="fstep"><div class="fn">02</div><h4>Agent handles it</h4><p>Colby / Ava answer &amp; gather details.</p></div>
+        <div class="farrow">→</div>
+        <div class="fstep"><div class="fn">03</div><h4>Maven coordinates</h4><p>Triage, route, track deadlines.</p></div>
+        <div class="farrow">→</div>
+        <div class="fstep"><div class="fn">04</div><h4>You approve</h4><p>Anything that needs judgment.</p></div>
+        <div class="farrow">→</div>
+        <div class="fstep fin"><div class="fn">05</div><h4>Work gets done</h4><p>Routed, completed, verified — loop closed.</p></div>
+      </div>
+      <div class="stopline anim d4"><span class="tagstop">◄ point-solutions stop here</span> Chatbots answer the message and open the ticket. <b>AskDwell carries it all the way to the work being done — and confirmed.</b></div>
+    </div>
+    <div class="foot-s">AskDwell · powered by Collab</div>
+  </section>
+
+  <!-- 7 · WORKS WITH YOUR STACK -->
+  <section class="slide paper">
+    <div class="cornerbrand"><span class="lg"></span>ASK<b>DWELL</b></div>
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">06</span><span class="lbl">No rip-and-replace</span><span class="rule"></span></span>
+      <h2 class="anim d2">It layers onto <b>what you already run.</b></h2>
+      <p class="lead anim d3">You don't migrate anything or learn a new platform. AskDwell connects to your current system and your tenant channels, then goes live on your single biggest bottleneck first.</p>
+      <div class="sysrow anim d4" style="margin-top:26px;">
+        <div class="sys">Buildium</div>
+        <div class="sys">AppFolio</div>
+        <div class="sys">Rent Manager</div>
+        <div class="sys">Propertyware</div>
+        <div class="sys">DoorLoop</div>
+      </div>
+      <div class="chips anim d5" style="margin-top:30px;">
+        <span class="chip" style="background:#fff;border:1px solid var(--line2);color:var(--ink);"><span class="dot"></span>SMS · WhatsApp · email · web · phone</span>
+        <span class="chip" style="background:#fff;border:1px solid var(--line2);color:var(--ink);"><span class="dot"></span>Live in weeks</span>
+        <span class="chip" style="background:#fff;border:1px solid var(--line2);color:var(--ink);"><span class="dot"></span>We do the setup for you</span>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · powered by Collab</div>
+  </section>
+
+  <!-- 8 · HUMAN IN THE LOOP -->
+  <section class="slide darkbg">
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">07</span><span class="lbl">You stay in control</span><span class="rule"></span></span>
+      <h2 class="anim d2" style="color:#fff;">AI doesn't run your operation.<br><b>Your team does.</b></h2>
+      <p class="lead anim d3" style="color:#c8c0b8;">Every agent is human-in-the-loop by design. The AI handles the gaps — the 2am message, the lead that needs a reply in minutes — and escalates anything that needs judgment straight to the right person.</p>
+      <div class="chips anim d4" style="margin-top:30px;">
+        <span class="chip"><span class="dot"></span>Legal notices → you approve</span>
+        <span class="chip"><span class="dot"></span>Lease exceptions → you approve</span>
+        <span class="chip"><span class="dot"></span>Spend over your threshold → you approve</span>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · human-in-the-loop by design</div>
+  </section>
+
+  <!-- 9 · PROOF -->
+  <section class="slide paper">
+    <div class="cornerbrand"><span class="lg"></span>ASK<b>DWELL</b></div>
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">08</span><span class="lbl">The proof</span><span class="rule"></span></span>
+      <h2 class="anim d2">Running a real portfolio today — <b>not a demo.</b></h2>
+      <div class="statrow anim d3">
+        <div class="scard"><div class="big">94%</div><div class="lbl">tenant<br>satisfaction</div></div>
+        <div class="scard"><div class="big">&lt;60s</div><div class="lbl">lead response<br>time</div></div>
+        <div class="scard"><div class="big">72hr</div><div class="lbl">avg maintenance<br>resolution</div></div>
+        <div class="scard"><div class="big">15+</div><div class="lbl">hours/week saved<br>per team</div></div>
+      </div>
+      <p class="proofline anim d4"><b>Collab runs these agents in production</b> across a $172M+ AUM portfolio — 13 properties in 4 markets. AskDwell is that same engine, opened up to independent managers.</p>
+    </div>
+    <div class="foot-s">AskDwell · figures from Collab's production portfolio</div>
+  </section>
+
+  <!-- 10 · HOW TO START / TRIAL -->
+  <section class="slide paper">
+    <div class="cornerbrand"><span class="lg"></span>ASK<b>DWELL</b></div>
+    <div class="pad">
+      <span class="eyebrow anim d1"><span class="num">09</span><span class="lbl">How you start</span><span class="rule"></span></span>
+      <h2 class="anim d2">A <b>14-day trial</b> — set up for you, on one property.</h2>
+      <p class="lead anim d3">No commitment, no config on your end. We stand it up, you feel the ease, and you decide from there.</p>
+      <div class="tsteps anim d4" style="margin-top:22px;">
+        <div class="tstep free"><div class="tn">1</div><h4>We connect it</h4><p>Our team wires Colby into your system and channels on one property — free, white-glove.</p></div>
+        <div class="tstep free"><div class="tn">2</div><h4>It goes live</h4><p>Colby answers tenants and builds work orders 24/7 for 14 days. You just watch it work.</p></div>
+        <div class="tstep"><div class="tn">3</div><h4>Day-14 recap</h4><p>A clear "here's everything we handled" report — the real hours you got back.</p></div>
+        <div class="tstep"><div class="tn">4</div><h4>Roll it out</h4><p>Expand across the portfolio and add Maven, Ava &amp; Bobby at your pace.</p></div>
+      </div>
+      <p class="lead anim d5" style="margin-top:22px;font-size:16px;">Full tech support is included in the trial <b>and</b> after you upgrade — you're never left to wire it up alone.</p>
+    </div>
+    <div class="foot-s">AskDwell · powered by Collab</div>
+  </section>
+
+  <!-- 10b · FAQ -->
+  <section class="slide paper" id="faqSlide">
+    <div class="cornerbrand"><span class="lg"></span>ASK<b>DWELL</b></div>
+    <div class="faqpad no-advance">
+      <div class="faqhead">
+        <div>
+          <span class="eyebrow" style="margin-bottom:8px;"><span class="num">10</span><span class="lbl">Common questions</span><span class="rule"></span></span>
+          <h2 style="margin:0;"><span class="lang-en">The answers to <b>"but what about…"</b></span><span class="lang-zh">客户常见问题 <b>Q&amp;A</b></span></h2>
+        </div>
+        <div class="langtog">
+          <button class="on" id="btnEN">English</button>
+          <button id="btnZH">中文</button>
+        </div>
+      </div>
+      <div class="faqlist" id="faqList">
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">1</span><span class="qtext"><span class="lang-en">What exactly is AskDwell?</span><span class="lang-zh">AskDwell 到底是什么？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">AskDwell is the AI operating layer for property management. It works on top of a company's existing PMS and communication tools, turning everyday conversations and requests into structured workflows that AI can answer, execute, follow through or escalate. It helps property teams manage more doors with a smaller team without replacing their existing systems or removing human control.</p>
+          <p class="lang-zh">AskDwell 是物业管理行业的 AI 运营层。它建立在物业管理公司现有的 PMS 和沟通工具之上，将日常对话和请求转化为结构化工作流，由 AI 直接回答、执行、持续跟进，或在需要时升级给人工处理。它帮助物业团队在不更换现有系统、也不削弱人工控制的前提下，用更精简的团队管理更多房源。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">2</span><span class="qtext"><span class="lang-en">Does AskDwell replace our current PMS? How does it integrate?</span><span class="lang-zh">AskDwell 会取代我们现有的 PMS 吗？它如何集成？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">No. Your PMS remains the official system of record for leases, accounting, tenant information and work orders. AskDwell sits above the PMS as an interaction, orchestration and execution layer. It connects through available APIs or authorized data interfaces and can also coordinate work across email, phone, SMS, WhatsApp and other tools. We confirm the exact integration scope during the initial workflow-mapping process.</p>
+          <p class="lang-zh">不会。现有 PMS 仍然是租约、财务、租户信息和工单等正式业务记录的管理系统。AskDwell 位于 PMS 之上，提供交互、流程编排和执行能力。它可以通过现有 API 或获得授权的数据接口进行连接，也可以协调电子邮件、电话、短信、WhatsApp 和其他工具中的工作。具体集成范围会在前期工作流梳理过程中确认。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">3</span><span class="qtext"><span class="lang-en">Which workflows can AskDwell support?</span><span class="lang-zh">AskDwell 可以支持哪些工作流程？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">AskDwell can support workflows across leasing, tenant communication, repair and maintenance, vendor coordination, owner reporting and approvals. Examples include following up with leasing leads, collecting complete maintenance information, coordinating the next steps of a work order, generating customized owner reports and routing higher-risk decisions for approval. We normally recommend starting with one high-value workflow and expanding after the value is proven.</p>
+          <p class="lang-zh">AskDwell 可以支持租赁、租户沟通、维修与维护、供应商协调、业主报告和审批等工作流程。例如，持续跟进租赁线索、收集完整报修信息、协调工单的后续执行、生成定制业主报告，以及将较高风险的决定提交审批。我们通常建议先从一项高价值流程开始，在验证价值后再逐步扩展。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">4</span><span class="qtext"><span class="lang-en">How would implementation or a pilot work?</span><span class="lang-zh">实施或试点项目会如何开展？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">We begin with a focused workflow-mapping session. Together, we identify the repetitive process consuming the most staff time, map the systems, communication channels, staff roles and approval rules involved, and agree on a measurable success metric. AskDwell is then configured for that workflow and tested in the live operating environment. The implementation timeline depends on workflow complexity and the accessibility of the client's existing systems, so we provide a specific plan after discovery.</p>
+          <p class="lang-zh">我们会先进行一次聚焦的工作流梳理。双方共同找出目前最占用员工时间的重复性流程，明确涉及的系统、沟通渠道、员工职责和审批规则，并确定可量化的成功标准。之后，我们会针对该流程配置 AskDwell，并在真实运营环境中进行测试。实施时间取决于流程复杂程度以及现有系统的接口条件，因此我们会在需求调研完成后提供具体实施方案。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">5</span><span class="qtext"><span class="lang-en">How do we keep people in control?</span><span class="lang-zh">如何确保人工仍然拥有控制权？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">The client determines what AskDwell may handle automatically and what still requires human review or approval. Routine, low-risk actions can be automated, while financial, legal, operational or other higher-risk decisions can be routed to the appropriate person. Approval rules can be configured by workflow, action type, property, dollar amount and staff role.</p>
+          <p class="lang-zh">客户可以自行决定哪些工作允许 AskDwell 自动处理，哪些工作仍然需要人工审核或批准。常规、低风险操作可以自动完成；涉及财务、法律、运营或其他较高风险的决定，则可以提交给合适的负责人审批。审批规则可以按照工作流程、操作类型、物业、金额和员工角色进行设置。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">6</span><span class="qtext"><span class="lang-en">What if the AI doesn't know the answer or makes a mistake?</span><span class="lang-zh">如果 AI 不知道答案或出现错误，怎么办？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">AskDwell is designed to ask follow-up questions when information is incomplete and to escalate the task when it does not have sufficient confidence or authority to proceed. The escalation includes the relevant background, source information and recommended next steps so an employee doesn't need to reconstruct the case. Actions and corrections can be recorded for auditability and used to improve the property-specific knowledge and workflow over time.</p>
+          <p class="lang-zh">当信息不完整时，AskDwell 会通过追问补充必要信息；当系统没有足够把握或权限继续执行时，会将任务升级给人工处理。升级任务会同时附带相关背景、信息来源和建议步骤，员工不需要重新梳理整个事件。系统还可以记录操作和人工纠正，便于审计，并持续改进该物业专属的知识和工作流程。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">7</span><span class="qtext"><span class="lang-en">How do you address data security, ownership and de-identification?</span><span class="lang-zh">你们如何处理数据安全、数据所有权和信息脱敏？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">The client retains ownership and control of its property data, documents, communications, operating procedures and customer-specific outputs. AskDwell accesses only the information needed to perform the agreed workflows. We do not sell customer data, share one client's confidential information with another, or use identifiable data to train public or shared AI models without explicit written consent. Wherever possible, sensitive information is de-identified or masked before an AI model processes it — names, phone numbers, emails, banking info and account IDs can be removed or replaced with internal reference IDs. Our security approach is built around encryption, role-based permissions, customer-level data separation, least-privilege access and audit trails. These commitments can be documented in the services agreement and a data-processing or security addendum.</p>
+          <p class="lang-zh">客户始终保留对其物业数据、文件、沟通记录、运营流程和客户专属输出的所有权和控制权。AskDwell 只会访问完成双方约定工作流程所必需的信息。未经客户明确书面同意，我们不会出售客户数据，不会向其他客户提供某一客户的保密信息，也不会使用可识别身份的客户数据训练公开或共享的 AI 模型。在条件允许的情况下，敏感信息会在交由 AI 模型处理之前进行脱敏或屏蔽：姓名、电话、邮箱、银行信息和账户编号可被删除或替换为内部参考编号。我们的安全设计包括数据加密、基于角色的权限、客户间数据隔离、最小权限访问和审计记录。这些承诺可写入服务协议以及数据处理或安全附录。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">8</span><span class="qtext"><span class="lang-en">How is AskDwell priced?</span><span class="lang-zh">AskDwell 如何收费？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">Because we're still early-stage, we're flexible and currently open to two structures. <b>Option 1 — simple subscription:</b> roughly $2–$4 per unit per month depending on portfolio size, integration needs and workflow scope; at this stage the fee mainly covers engineering, implementation and ongoing support. <b>Option 2 — lower base fee + usage-based:</b> you pay based on actual tokens consumed, so lighter usage costs less. For an initial pilot we can agree on a clear budget or usage cap so cost stays predictable.</p>
+          <p class="lang-zh">由于 AskDwell 目前仍处于早期阶段，我们在定价方式上比较灵活，目前可以考虑两种收费结构。<b>方案一 — 按户订阅：</b>目前预计约为每户每月 2 至 4 美元，具体取决于管理规模、集成要求和工作流范围；现阶段这项费用主要用于覆盖工程开发、实施和持续支持成本。<b>方案二 — 较低基础费 + 按量计费：</b>客户根据实际消耗的 AI 资源付费，使用量少费用也低。对于初始试点，双方可预先约定明确预算或使用上限，使费用保持可预测。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">9</span><span class="qtext"><span class="lang-en">How do we measure whether AskDwell is creating value?</span><span class="lang-zh">如何衡量 AskDwell 是否真正创造价值？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">Before launch, we agree on a baseline and a small set of success metrics for the selected workflow. Depending on the use case these may include response time, staff hours per task, maintenance resolution time, leasing conversion, requests resolved without manual coordination, owner or tenant satisfaction, and operating cost per unit. The pilot's purpose is to demonstrate measurable operational value before expanding.</p>
+          <p class="lang-zh">在正式启动之前，双方会针对所选择的工作流确定现状基准和一组核心成功指标。根据具体场景，这些指标可以包括回复速度、每项任务所需人工时间、维修解决时间、租赁转化率、无需人工协调即可解决的请求数量、业主或租户满意度，以及单套房源运营成本。试点项目的目的，就是在扩大使用范围之前，先证明可量化的运营价值。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">10</span><span class="qtext"><span class="lang-en">What data or system access does AskDwell need?</span><span class="lang-zh">AskDwell 需要访问哪些数据或系统？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">The required access depends on the workflow. For a reporting workflow, AskDwell may need read-only access to selected property and operating data. For a maintenance workflow, it may also need permission to create or update tasks, send approved communications and record status changes. We follow a minimum-access approach and define the permitted data, actions and user roles before implementation.</p>
+          <p class="lang-zh">所需访问权限取决于具体工作流。对于报告流程，AskDwell 可能只需要读取指定的物业和运营数据。对于维修流程，系统可能还需要创建或更新任务、发送已获授权的沟通信息，以及记录状态变化。我们遵循最小权限原则，并在实施前明确允许访问的数据、允许执行的操作和对应用户角色。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">11</span><span class="qtext"><span class="lang-en">Can AskDwell be customized and scaled across properties?</span><span class="lang-zh">AskDwell 能否针对不同物业进行定制并扩大规模？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">Yes. Each property or portfolio can have different SOPs, approval limits, staff roles, communication preferences, vendor relationships and reporting requirements. AskDwell applies those property-specific rules while reusing proven workflow templates. Once a workflow is validated, it can be adapted and deployed across additional properties without rebuilding the entire process from scratch.</p>
+          <p class="lang-zh">可以。每处物业或每个投资组合都可以拥有不同的 SOP、审批额度、员工角色、沟通偏好、供应商关系和报告要求。AskDwell 可以执行这些物业专属规则，同时复用已经验证的工作流模板。一项流程验证成功后，可以针对更多物业进行调整和部署，而不需要从头重新开发整个流程。</p>
+        </div></div>
+
+        <div class="qa"><button class="qbtn"><span class="qrow"><span class="qn">12</span><span class="qtext"><span class="lang-en">What support do you provide, and what happens to our data if we stop?</span><span class="lang-zh">你们提供哪些支持？如果停止使用，我们的数据怎么办？</span></span></span><span class="chev">+</span></button><div class="qans">
+          <p class="lang-en">During implementation we map the workflow, configure integrations and approval rules, test real cases and monitor the initial rollout. Ongoing support can include workflow adjustments, issue resolution and performance reviews. The client continues to own its data — if the relationship ends, you can export your customer-specific information and request deletion per the retention, backup and legal terms in the contract. AskDwell's underlying software and general workflow technology remain AskDwell's intellectual property.</p>
+          <p class="lang-zh">在实施过程中，我们会与客户共同梳理工作流程，配置系统集成和审批规则，测试真实案例，并监控初始上线情况。持续支持可以包括工作流调整、问题解决和效果复盘。客户始终拥有自己的数据。如果双方终止合作，客户可以导出其客户专属信息，并根据合同约定的数据保留、备份和法律要求提出删除请求。AskDwell 的底层软件和通用工作流技术仍属于 AskDwell 的知识产权。</p>
+        </div></div>
+
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · client Q&amp;A · EN / 中文</div>
+  </section>
+
+  <!-- 11 · CTA -->
+  <section class="slide darkbg">
+    <div class="pad">
+      <div class="quotebox anim d1">
+        <div class="qm">"</div>
+        <p>AI doesn't run Collab — our team does. AskDwell handles the gaps so we never have to choose between speed and quality.</p>
+        <div class="who">— Qian Wang, Founder &amp; EVP, Collab</div>
+      </div>
+      <div class="ctabox anim d2" style="margin-top:5vh;">
+        <div>
+          <h2 style="font-size:min(4vw,38px);">See AskDwell run a day of <em>your</em> operations.</h2>
+          <p>Let's set up your free 14-day trial on one property.</p>
+        </div>
+        <div style="text-align:right;">
+          <span class="ctamail">hello@askdwell.ai</span>
+          <div class="ctaweb">askdwell.ai</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot-s">AskDwell · powered by Collab · Prepared by LY Media</div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="Previous">‹</button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter"></span>
+  <button id="next" aria-label="Next">›</button>
+</div>
+<div class="hint">← → or space to navigate · F for fullscreen</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsWrap=document.getElementById('dots');
+  const counter=document.getElementById('counter');
+  const progress=document.getElementById('progress');
+  let i=0;
+  slides.forEach((s,idx)=>{const d=document.createElement('div');d.className='ndot';d.onclick=()=>go(idx);dotsWrap.appendChild(d);});
+  const ndots=[...document.querySelectorAll('.ndot')];
+  function go(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+    ndots.forEach((d,idx)=>d.classList.toggle('on',idx===i));
+    counter.textContent=(i+1)+' / '+slides.length;
+    progress.style.width=((i+1)/slides.length*100)+'%';
+  }
+  document.getElementById('next').onclick=()=>go(i+1);
+  document.getElementById('prev').onclick=()=>go(i-1);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){go(0);} else if(e.key==='End'){go(slides.length-1);}
+    else if(e.key.toLowerCase()==='f'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}
+  });
+  // click right/left half of screen to advance (ignore nav bar + interactive FAQ)
+  document.getElementById('deck').addEventListener('click',e=>{
+    if(e.target.closest('.nav')||e.target.closest('.no-advance'))return;
+    if(e.clientX> window.innerWidth*0.5) go(i+1); else go(i-1);
+  });
+  // FAQ accordion
+  document.querySelectorAll('#faqList .qbtn').forEach(btn=>{
+    btn.addEventListener('click',()=>btn.parentElement.classList.toggle('open'));
+  });
+  // language toggle
+  const faqSlide=document.getElementById('faqSlide');
+  const bEN=document.getElementById('btnEN'), bZH=document.getElementById('btnZH');
+  bEN.addEventListener('click',()=>{faqSlide.classList.remove('show-zh');bEN.classList.add('on');bZH.classList.remove('on');});
+  bZH.addEventListener('click',()=>{faqSlide.classList.add('show-zh');bZH.classList.add('on');bEN.classList.remove('on');});
+  go(0);
+</script>
+</body>
+</html>
