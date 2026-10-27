@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AskDwell — AI property operations</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0E0B0A;--bg2:#15100F;--panel:#1B1513;--panel2:#211917;
@@ -705,6 +705,20 @@ footer{border-color:#D6E0EA!important;}
   pointer-events:auto;
 }
 
+
+/* ===== Language switch + Chinese typography ===== */
+.navlinks a.navbtn{color:#fff!important}
+body,button,input,select,.btn,.tab,.live-agent-tab,.listings-back,.listing-primary,.listing-secondary{font-family:Poppins,"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif!important}
+html[lang="zh-CN"] h1{letter-spacing:-1px;line-height:1.15}
+html[lang="zh-CN"] h2{letter-spacing:-.5px;line-height:1.25}
+html[lang="zh-CN"] .valuecard h3{letter-spacing:0}
+html[lang="zh-CN"] .lead,html[lang="zh-CN"] .agentdesc,html[lang="zh-CN"] .panel p,html[lang="zh-CN"] .caseintro p{line-height:1.8}
+html[lang="zh-CN"] .eyebrow,html[lang="zh-CN"] .role,html[lang="zh-CN"] .agenttag,html[lang="zh-CN"] .label{letter-spacing:1.2px}
+html[lang="zh-CN"] .msg{line-height:1.6}
+.lang-switch{display:inline-flex;align-items:center;padding:3px;border-radius:999px;background:#fff;border:1px solid #D2DCE6;box-shadow:0 2px 8px rgba(10,31,49,.05)}
+.lang-switch button{border:none;background:transparent;cursor:pointer;font:600 12px Poppins,"Noto Sans SC",sans-serif;color:#607080;padding:6px 11px;border-radius:999px;transition:.2s}
+.lang-switch button.on{background:linear-gradient(135deg,#2F67F6,#20C9B7);color:#fff}
+.lang-switch button:not(.on):hover{color:#0B1B2B}
 </style>
 </head>
 <body>
@@ -1510,6 +1524,874 @@ document.querySelectorAll('.demo-logo-mark').forEach(mark=>{
       }, 80);
     }
   });
+})();
+</script>
+
+<template id="i18n-zh">
+
+<nav id="nav">
+  <div class="navin">
+    <a href="#top" class="logo demo-brand"><span class="demo-logo-mark" aria-hidden="true">
+<svg viewBox="0 0 24 24" fill="none">
+  <path d="M4 11.5 12 5l8 6.5" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6 10.5V19h12v-8.5" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="12" cy="14" r="2" fill="#fff"/>
+</svg>
+</span><span>askdwell</span></a>
+    <div class="navlinks">
+      <a href="#product">产品</a>
+      <a href="#how">工作方式</a>
+      <a href="#customer">客户案例</a>
+      <a href="#who">适用对象</a>
+      <a href="#compare">对比</a>
+      <a href="#book" class="btn btn-p navbtn" style="padding:10px 18px">预约演示</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap herogrid">
+    <div>
+      <span class="badge"><span class="dot"></span>在真实物业运营中打造与验证</span>
+      <h1>用更精简的团队，<span class="grad">管理更多房源。</span></h1>
+      <p class="lead">AskDwell 为物业管理中的重复性工作配备一支协同运作的 AI 团队——租户支持、员工运营、潜在租客招租以及业主沟通——无需替换您团队已在使用的系统，也无需改变既有的工作习惯。</p>
+      <div class="hero-actions">
+        <a class="btn btn-p" href="#how">了解工作方式 →</a>
+        <a class="btn btn-g" href="#book">预约演示</a>
+      </div>
+      <div class="trust">
+        <span>✓ <b>7×24 小时沟通</b></span>
+        <span>✓ <b>操作由人工把控</b></span>
+        <span>✓ 兼容您<b>现有的物业管理系统</b></span>
+      </div>
+    </div>
+    <div class="valuecard reveal">
+      <div class="label">AskDwell 带来的改变</div>
+      <h3>重复性工作交给 AI，<span class="grad">让团队专注于增长。</span></h3>
+      <div class="outcomes">
+        <div class="outcome"><span class="icon">↗</span><div><b>降低运营成本</b><span>AskDwell 基于您团队现有的物业管理系统、邮箱、消息渠道和工具，自动处理招租、租户、业主及日常运营中的重复性跟进工作。</span></div></div>
+        <div class="outcome"><span class="icon">∞</span><div><b>保持团队原有的工作方式</b><span>无需强制改变流程，也无需学习新的管理方式。您的物业经理可以按习惯照常工作，配置、系统集成和 AI 对接都由我们的团队在幕后完成。</span></div></div>
+        <div class="outcome"><span class="icon">◎</span><div><b>始终由人掌控</b><span>由您的团队决定哪些事项可由 AskDwell 自动处理，哪些仍需人工审核或审批。</span></div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="sec agent-overview" id="product">
+  <div class="wrap">
+    <div class="center reveal">
+      <span class="eyebrow">认识我们的智能助手</span>
+      <h2>四位助手，<span class="grad">一体化协同运营。</span></h2>
+      <p class="lead" style="margin:14px auto 0;max-width:760px">每位 AskDwell 助手服务于物业管理流程中的不同角色——租户、员工、潜在租客和业主——并在幕后相互协作。</p>
+    </div>
+    <div class="agentgrid reveal">
+      <div class="agentcard"><div class="role">租户 · 租户支持</div><div class="agentname">Colby</div><div class="agentdesc">解答租户的日常问题，收集维修详情和照片，查询经授权的物业信息，并及时向住户同步进展。</div></div>
+      <div class="agentcard"><div class="role">员工 · 运营</div><div class="agentname">Maven</div><div class="agentdesc">整理各类请求，预先拟定操作，协调员工与供应商，跟踪截止日期，并将例外事项提交审批。</div></div>
+      <div class="agentcard"><div class="role">潜在租客 · 招租</div><div class="agentname">Ava</div><div class="agentdesc">Ava 回复租房咨询，推荐客户的可租房源，安排看房，并全程跟进每位潜在租客的申请、签约、押金和入住。</div></div>
+      <div class="agentcard"><div class="role">业主 · 报告与审批</div><div class="agentname">Bobby</div><div class="agentdesc">提供报告和运营动态，识别需要关注的事项，无需额外开会即可收集业主审批。</div></div>
+    </div>
+    <div class="agentflow reveal"><b>Colby / Ava / Bobby</b> 与对应的用户沟通 → <b>Maven</b> 统筹运营 → 您的物业管理系统和团队仍是数据记录与决策控制的核心。</div>
+  </div>
+</section>
+
+<section class="sec" id="customer">
+  <div class="wrap">
+    <div class="center reveal" style="margin-bottom:40px">
+      <span class="eyebrow">源自真实运营</span>
+      <h2>AskDwell 的首位运营合作伙伴：<span class="grad">Collab。</span></h2>
+      <p class="lead" style="margin:14px auto 0;max-width:780px">AskDwell 围绕 Collab 的真实物业管理流程开发，并在日常运营中经过检验，之后才向外部物业经理和业主开放。</p>
+    </div>
+    <div class="casegrid reveal">
+      <div class="caseintro">
+        <span class="eyebrow">客户亮点</span>
+        <h3>先有真实流程，再有销售演示。</h3>
+        <p>Collab 带来 6 年多户住宅运营经验、丰富的消息与工作流历史、实时物业运营、资产组合数据以及落地实施反馈。这让 AskDwell 拥有一个真实环境，去检验在招租、租户、维修、员工和业主等环节中真正有效的做法。</p>
+        <div class="cred">
+          <div><b>100,000+</b><span>条历史运营消息，用于训练 AskDwell 的 AI 模型</span></div>
+          <div><b>$170M+</b><span>管理资产规模</span></div>
+          <div><b>4</b><span>个市场</span></div>
+        </div>
+      </div>
+      <div class="caseprocess interactive">
+        <div class="interactive-top">
+          <div>
+            <span class="eyebrow">AI 与人协同工作</span>
+            <h3>看四位助手如何在真实运营中工作。</h3>
+            <p>每位助手负责一类关系——租户、员工、潜在租客或业主——而审批权和现有系统始终由您的团队掌控。</p>
+          </div>
+          <div class="interactive-badges">
+            <span class="ibadge">4 位分角色助手</span>
+            <span class="ibadge">必要时人工审批</span>
+            <span class="ibadge">兼容现有物业管理系统</span>
+          </div>
+        </div>
+
+        <div class="live-agent-demo" id="liveAgentDemo">
+          <div class="live-agent-tabs">
+            <button class="live-agent-tab active" data-live-agent="colby">Colby<span>租户</span></button>
+            <button class="live-agent-tab" data-live-agent="maven">Maven<span>员工</span></button>
+            <button class="live-agent-tab" data-live-agent="ava">Ava<span>潜在租客</span></button>
+            <button class="live-agent-tab" data-live-agent="bobby">Bobby<span>业主</span></button>
+          </div>
+
+          <div class="live-agent-pane active" data-live-pane="colby">
+            <div class="live-agent-head"><div class="live-agent-avatar">C</div><div class="live-agent-meta"><b>Colby</b><span>● 在线 · 租户助手</span></div><div class="live-agent-channel">WhatsApp</div></div>
+            <div class="live-agent-body">
+              <div class="msg user demo-step">你好，我厨房水槽下面的柜子里在漏水。</div>
+              <div class="msg ai demo-step">我来帮您处理。能否发一张漏水处和水槽下方区域的清晰照片？</div>
+              <div class="msg user demo-step">好的，照片在这里。</div><div class="chat-photo-wrap demo-step"><img class="chat-photo" src="" alt="租户拍摄的厨房水槽下方漏水管道照片"><div class="chat-photo-caption">租户照片 · 厨房水槽下方管道漏水</div></div><div style="display:none"></div>
+              <div class="msg ai demo-step">谢谢。看起来漏水可能来自管道接口处。请将水槽下方的截止阀顺时针拧紧，然后告诉我是否还在滴水。</div>
+              <div class="msg user demo-step">好了，不漏了。</div>
+              <div class="msg ai demo-step">太好了，这样可以避免进一步损坏。我已创建维修工单 #55501，并附上了您的照片和排查记录。团队会跟进后续处理。</div>
+              <div class="msg sys demo-step">✓ 已在 Buildium 创建工单 · 已附照片和排查记录</div>
+            </div>
+          </div>
+
+          <div class="live-agent-pane" data-live-pane="maven">
+            <div class="live-agent-head"><div class="live-agent-avatar" style="background:linear-gradient(135deg,#6A5ACD,#8E7CFF)">M</div><div class="live-agent-meta"><b>Maven</b><span>● 在线 · 员工运营助手</span></div><div class="live-agent-channel">员工频道</div></div>
+            <div class="live-agent-body">
+              <div class="msg user demo-step">@Maven 1200 Central 目前有哪些未完成事项？</div>
+              <div class="msg ai demo-step">共 3 项未完成：#55501 水槽漏水——未分配；#55488 走廊灯——处理中；#55470 车库遥控器——等待供应商。</div>
+              <div class="msg user demo-step">把 #55501 分配给 Dave，并调为高优先级。</div>
+              <div class="msg ai demo-step demo-pause"><b>草稿已就绪</b><br>#55501 → Dave Ruiz<br>优先级 → 高<br><button class="live-demo-action demo-action-btn" data-action="maven-approve">批准并执行 ✓</button></div>
+              <div class="msg sys demo-step demo-after-action">✓ 已记录经理审批</div>
+              <div class="msg ai demo-step demo-after-action">已完成。#55501 已分配给 Dave Ruiz，并标记为高优先级。记录时间：上午 10:42。</div>
+            </div>
+          </div>
+
+          <div class="live-agent-pane" data-live-pane="ava">
+            <div class="live-agent-head"><div class="live-agent-avatar" style="background:linear-gradient(135deg,#E26B48,#FF946B)">A</div><div class="live-agent-meta"><b>Ava</b><span>● 在线 · 潜在租客招租助手</span></div><div class="live-agent-channel">招租</div></div>
+            <div class="live-agent-body">
+              <div class="msg user demo-step">我想找加州大学伯克利分校附近的两居室，8 月 1 日起可入住。</div>
+              <div class="msg ai demo-step demo-pause">我在该物业经授权的房源库中找到了两套符合您入住日期和偏好的房源。<br><button class="live-demo-action demo-action-btn" data-action="ava-homes">查看匹配房源 →</button></div>
+              <div class="msg sys demo-step demo-after-action">✓ 已打开 2 套匹配房源</div>
+              <div class="msg ai demo-step demo-after-action">您希望现场看房还是线上看房？</div>
+              <div class="msg user demo-step demo-after-action">现场看房，周六下午可以。</div>
+              <div class="msg ai demo-step demo-after-action">周六下午 2:00 有空档。我已为您预约看房并发送了确认信息，看房后我会再跟进。</div>
+            </div>
+          </div>
+
+          <div class="live-agent-pane" data-live-pane="bobby">
+            <div class="live-agent-head"><div class="live-agent-avatar" style="background:linear-gradient(135deg,#287AA9,#48A9D8)">B</div><div class="live-agent-meta"><b>Bobby</b><span>● 在线 · 业主助手</span></div><div class="live-agent-channel">业主门户</div></div>
+            <div class="live-agent-body">
+              <div class="msg user demo-step">Bobby，能把 Oxford 最新的 T-12 报表和租金清单发给我吗？</div>
+              <div class="msg ai demo-step demo-pause">当然可以。我已准备好最新的物业资料包。<br><button class="live-demo-action demo-action-btn" data-action="bobby-report">查看 T-12 与租金清单 →</button></div>
+              <div class="msg sys demo-step demo-after-action">✓ 已查看物业资料包</div>
+              <div class="msg ai demo-step demo-after-action demo-pause">另有一项需要您审批：热水器更换报价为 <b>$6,800</b>，超出您设定的审批额度。供应商建议更换。<br><button class="live-demo-action demo-action-btn" data-action="bobby-approve">批准更换 ✓</button></div>
+              <div class="msg sys demo-step demo-after-second-action">✓ 已记录业主审批</div>
+              <div class="msg ai demo-step demo-after-second-action">已批准并记录。我已将授权转给 Maven，由其安排时间并协调供应商。</div>
+            </div>
+          </div>
+          <div class="live-demo-note">可切换不同助手。消息将依次出现，遇到审批步骤时会暂停，直到您点击操作按钮。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec workflowsec" id="how">
+  <div class="wrap">
+    <div class="center reveal">
+      <span class="eyebrow">了解 AskDwell 如何工作</span>
+      <h2>从一条消息，<span class="grad">到一项行动。</span></h2>
+      <p class="lead" style="margin:14px auto 0;max-width:720px">选择一个您团队每天都在处理的工作流程。助手叫什么并不重要，重要的是 AskDwell 完成了什么。</p>
+    </div>
+
+    <div class="tabs reveal">
+      <button class="tab active" data-panel="0">租户咨询</button>
+      <button class="tab" data-panel="1">维修请求</button>
+      <button class="tab" data-panel="2">员工运营</button>
+      <button class="tab" data-panel="3">潜在租客招租</button>
+      <button class="tab" data-panel="4">业主报告与审批</button>
+    </div>
+
+    <div class="reveal">
+      <div class="panel active" data-panel="0">
+        <div>
+          <span class="agenttag">由 Colby 驱动</span>
+          <h3>即时解答租户日常问题</h3>
+          <p>租户在熟悉的渠道中提问。Colby 根据该租户和物业的可用信息作答，需要人工介入时会及时转交。</p>
+          <ul><li>7×24 小时日常支持</li><li>多语言回复</li><li>在授权范围内提供物业和租约信息</li></ul>
+        </div>
+        <div class="demo-box">
+          <div class="msg user">今天还是明天收垃圾？</div>
+          <div class="msg ai">您所在的楼是明天上午 8 点前收。垃圾桶在北门旁边。</div>
+          <div class="msg user">¿Y el gimnasio a qué hora abre?</div>
+          <div class="msg ai">El gimnasio abre de 6 AM a 11 PM todos los días.</div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="1">
+        <div>
+          <span class="agenttag">Colby + Maven</span>
+          <h3>把信息不全的报修消息，变成可执行的维修工单</h3>
+          <p>Colby 不会把含糊的消息直接丢给员工，而是先补齐缺失的信息，再由 Maven 协调下一步。</p>
+          <ul><li>收集照片和排查细节</li><li>创建结构化的维修工单</li><li>跟踪后续进展并通知租户</li></ul>
+        </div>
+        <div class="demo-box">
+          <div class="msg user">你好，我厨房水槽下面的柜子里在漏水 😟</div>
+          <div class="msg ai">很抱歉给您带来不便。能否发一张漏水处和水槽下方区域的清晰照片？</div>
+          <div class="msg user">好的，照片在这里。</div>
+          <div class="chat-photo-wrap">
+            <img class="chat-photo" src="" alt="租户拍摄的厨房水槽下方漏水管道照片">
+            <div class="chat-photo-caption">租户照片 · 厨房水槽下方管道漏水</div>
+          </div>
+          <div class="msg ai">谢谢。请将水槽下方的截止阀顺时针拧紧，然后告诉我是否还在滴水。</div>
+          <div class="msg user">好了，不漏了。</div>
+          <div class="msg sys">✓ 已创建维修工单 #55501，并附照片和排查记录</div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="2">
+        <div>
+          <span class="agenttag">由 Maven 驱动</span>
+          <h3>Maven 拟定操作，经理一键审批。</h3>
+          <p>让员工工作流程清晰具体：分配、优先级、通知、跟进或其他运营操作都会先拟好草稿，并在审批前明确展示将要发生的变更。</p>
+          <ul><li>拟定具体的运营操作</li><li>执行前展示具体变更</li><li>记录审批与完成情况</li></ul>
+        </div>
+        <div class="demo-box">
+          <div class="msg user">把水槽漏水工单 #55501 分配给 Dave，并设为高优先级。</div>
+          <div class="msg ai"><b>草稿已就绪</b><br>工单 #55501 → Dave Ruiz<br>优先级 → 高<br><span class="fake-link">批准</span> &nbsp; 编辑</div>
+          <div class="msg sys">经理点击“批准”</div>
+          <div class="msg ai">已完成。#55501 已分配给 Dave Ruiz，并标记为高优先级。记录时间：上午 10:42。</div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="3">
+        <div>
+          <span class="agenttag">Ava（潜在租客）+ Maven</span>
+          <h3>让每一条租客线索持续推进</h3>
+          <p>Ava 是面向潜在租客的招租助手。她只使用客户授权的房源库，并从咨询、看房、申请、签约、押金到入住全程跟进。</p>
+          <ul><li>快速响应租客线索</li><li>推荐匹配的可租房源</li><li>安排看房并跟进未完成的步骤</li></ul>
+        </div>
+        <div class="demo-box">
+          <div class="msg user">我想找加州大学伯克利分校附近的两居室，8 月 1 日入住。</div>
+          <div class="msg ai">我找到了两套符合您入住日期的房源。 <a href="#matching-homes"  type="button" class="fake-link matching-homes-trigger" type="button" class="matching-homes-trigger">查看匹配房源 →</a></div>
+          <div class="msg user">周六下午可以去看房。</div>
+          <div class="msg ai">周六下午 2:00 有空档。我已为您预约看房并发送了确认信息，看房后我会再跟进。</div>
+        </div>
+      </div>
+
+      <div class="panel" data-panel="4">
+        <div>
+          <span class="agenttag">Bobby + Maven</span>
+          <h3>报告与决策，一站式交给业主</h3>
+          <p>Bobby 将物业信息转化为简洁的业主沟通：所需报告、需关注的事项以及待审批内容。</p>
+          <ul><li>报告与资产组合查询</li><li>面向业主的运营摘要</li><li>超出设定阈值的例外事项自动提交审批</li></ul>
+        </div>
+        <div class="demo-box">
+          <div class="msg user">Bobby，能把 Oxford 最新的 T-12 报表和租金清单发给我吗？</div>
+          <div class="msg ai">当然可以。我已准备好最新的物业资料包。<br><span class="fake-link" id="openReport">查看 T-12 与租金清单</span></div>
+          <div class="msg ai">另有一项需要您审批：热水器更换报价为 <b>$6,800</b>，超出您设定的审批额度。是否批准更换？</div>
+          <div class="msg user">好的，批准。</div>
+          <div class="msg ai">已批准并记录。我已将授权转给 Maven，由其安排时间并协调供应商。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="results">
+  <div class="wrap">
+    <div class="center reveal">
+      <span class="eyebrow">业务成果</span>
+      <h2>衡量运营者<span class="grad">真正关心的指标。</span></h2>
+
+    </div>
+    <div class="resultgrid reveal">
+      <div class="result"><div class="metric">40% ↓</div><h3>单位运营成本</h3><p>在管理同等规模资产的前提下，减少员工的重复性工作、人工协调和行政开销。</p></div>
+      <div class="result"><div class="metric">15% ↑</div><h3>租金收入</h3><p>通过更快的响应、持续的跟进和看房协调，提升招租线索转化率，减少潜在租客流失。</p></div>
+      <div class="result"><div class="metric">&lt;60 秒</div><h3>租户与业主响应时间</h3><p>将日常招租及维修保养的响应时间从最长 24 小时缩短至 60 秒以内。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="who" style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="center reveal">
+      <span class="eyebrow">AskDwell 适合谁</span>
+      <h2>专为<span class="grad">管理出租物业的团队</span>打造。</h2>
+      <p class="lead" style="margin:14px auto 0;max-width:820px">无论您是为第三方业主提供管理服务，还是自主管理自有资产，AskDwell 都能融入您团队现有的工作方式。</p>
+    </div>
+    <div class="pgrid reveal">
+      <div class="per">
+        <h3>物业管理公司</h3>
+        <p>为多位业主管理物业。房源规模增长更快，人员却无需同步扩张。</p>
+      </div>
+      <div class="per">
+        <h3>小型自管业主</h3>
+        <p>无需组建完整的物业管理团队，即可获得专业的运营支持。</p>
+      </div>
+      <div class="per">
+        <h3>成熟的自管业主</h3>
+        <p>在内部物业管理团队中自动化处理大量工作流程。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="compare">
+  <div class="wrap">
+    <div class="center reveal">
+      <span class="eyebrow">为什么选择 AskDwell</span>
+      <h2>一个 AI 运营层，<span class="grad">贯通您的物业工作流程。</span></h2>
+      <p class="lead" style="margin:14px auto 0;max-width:820px">传统物业管理系统负责核心数据记录，单点解决方案只解决个别问题。AskDwell 则通过一个协同的 AI 层，把用户、工作流程、审批和您现有的物业管理系统连接在一起。</p>
+    </div>
+    <div class="comp reveal">
+      <div class="row head">
+        <div class="cell">能力</div><div class="cell us">AskDwell</div><div class="cell">传统物业管理系统</div><div class="cell">企业级 AI 平台</div><div class="cell">单点解决方案</div>
+      </div>
+      <div class="row body"><div class="cell">在一个系统中协调租户、员工和业主</div><div class="cell us yes">✓</div><div class="cell no">×</div><div class="cell partial">部分</div><div class="cell no">×</div></div>
+      <div class="row body"><div class="cell">每项变更都由人工批准（杜绝擅自操作）</div><div class="cell us yes">✓</div><div class="cell partial">部分</div><div class="cell partial">部分</div><div class="cell partial">部分</div></div>
+      <div class="row body"><div class="cell">绝不虚报无法证实的“已完成”</div><div class="cell us yes">✓</div><div class="cell partial">部分</div><div class="cell partial">部分</div><div class="cell partial">部分</div></div>
+      <div class="row body"><div class="cell">租户隐私严格限定于单一身份</div><div class="cell us yes">✓</div><div class="cell yes">✓</div><div class="cell partial">部分</div><div class="cell partial">部分</div></div>
+      <div class="row body"><div class="cell">基于您现有的物业管理系统运行</div><div class="cell us yes">✓</div><div class="cell no">×</div><div class="cell partial">部分</div><div class="cell yes">✓</div></div>
+      <div class="row body"><div class="cell">Community-Pro 现场执行</div><div class="cell us yes">✓</div><div class="cell no">×</div><div class="cell no">×</div><div class="cell no">×</div></div>
+      <div class="row body"><div class="cell">一体化协同系统，而非一堆附加插件</div><div class="cell us yes">✓</div><div class="cell partial">部分</div><div class="cell partial">部分</div><div class="cell no">×</div></div>
+    </div>
+    
+  </div>
+</section>
+
+
+<section class="sec" id="book">
+  <div class="wrap">
+    <div class="bookbox reveal">
+      <span class="eyebrow">预约演示</span>
+      <h2>看 AskDwell 如何运转<span class="grad">您一天的运营。</span></h2>
+      <p>在 30 分钟的交流中，我们将向您展示 AskDwell 如何融入您现有的物业管理系统、沟通渠道、团队架构和审批规则。</p>
+      <button class="btn btn-p" id="showSchedulerBtn" type="button">预约 30 分钟演示</button>
+      <div id="calendarArea" class="calendar-area" aria-hidden="true">
+        <iframe src="https://calendly.com/d/cytg-dvn-xdn?hide_gdpr_banner=1" title="预约 AskDwell 30 分钟演示" loading="lazy"></iframe>
+      </div>
+    </div>
+
+<section id="adw-seat">
+  <style>
+    #adw-seat{--adw-blue:#2F67F6;--adw-teal:#20C9B7;--adw-orange:#F0572B;--adw-orange2:#FF804D;
+      --adw-ink:#0F2035;--adw-sub:#4B5A6B;--adw-line:#D8E0E8;
+      font-family:inherit;max-width:460px;margin:0 auto;padding:28px;
+      background:#fff;border:1px solid var(--adw-line);border-radius:18px;
+      box-shadow:0 14px 40px rgba(10,31,49,.07);box-sizing:border-box;}
+    #adw-seat *{box-sizing:border-box;}
+    #adw-seat .adw-tag{font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--adw-blue);margin-bottom:8px;}
+    #adw-seat h3{font-size:22px;line-height:1.2;letter-spacing:-.3px;color:var(--adw-ink);margin:0 0 6px;font-weight:700;}
+    #adw-seat p.adw-lede{font-size:13.5px;color:var(--adw-sub);margin:0 0 18px;font-weight:400;}
+    #adw-seat .adw-field{margin-bottom:14px;}
+    #adw-seat label{display:block;font-size:12.5px;font-weight:600;color:var(--adw-ink);margin-bottom:6px;}
+    #adw-seat input,#adw-seat select{width:100%;font-family:inherit;font-size:14.5px;padding:13px 14px;
+      border:1px solid #C7D2DE;border-radius:10px;background:#F9FBFD;color:var(--adw-ink);font-weight:400;}
+    #adw-seat input:focus,#adw-seat select:focus{outline:none;border-color:var(--adw-blue);background:#fff;
+      box-shadow:0 0 0 3px rgba(47,103,246,.12);}
+    #adw-seat button{width:100%;margin-top:4px;font-family:inherit;font-size:15px;font-weight:700;color:#fff;
+      padding:15px 20px;border:none;border-radius:12px;cursor:pointer;
+      background:linear-gradient(135deg,var(--adw-orange),var(--adw-orange2));
+      box-shadow:0 12px 26px rgba(240,87,43,.28);transition:.18s;}
+    #adw-seat button:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(240,87,43,.36);}
+    #adw-seat .adw-note{font-size:12px;color:#8391A0;margin-top:12px;text-align:center;font-weight:400;}
+    #adw-seat .adw-hp{position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;}
+    #adw-seat .adw-success{display:none;text-align:center;padding:20px 6px;}
+    #adw-seat .adw-success .adw-ok{width:56px;height:56px;border-radius:50%;background:rgba(25,185,138,.14);
+      color:#19B98A;display:grid;place-items:center;font-size:28px;margin:0 auto 14px;}
+    #adw-seat .adw-success h4{font-size:19px;color:var(--adw-ink);margin:0 0 8px;font-weight:700;}
+    #adw-seat .adw-success p{font-size:14px;color:var(--adw-sub);margin:0;font-weight:400;}
+  
+    /* Match the Book-a-demo box width + mobile layout */
+    #adw-seat{max-width:none;width:100%;margin:28px 0 0;padding:46px;border-radius:24px;}
+    #adw-seat .adw-head{max-width:690px;margin:0 auto 22px;text-align:center;}
+    #adw-seat h3{font-size:30px;letter-spacing:-.6px;}
+    #adw-seat p.adw-lede{font-size:15px;margin:10px 0 0;}
+    #adw-seat form{max-width:760px;margin:0 auto;}
+    #adw-seat .adw-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+    #adw-seat .adw-grid .adw-field{margin-bottom:0;}
+    #adw-seat button{margin-top:18px;}
+    @media(max-width:820px){#adw-seat .adw-grid{grid-template-columns:1fr 1fr;} #adw-seat .adw-grid .adw-field:last-child{grid-column:1/-1;}}
+    @media(max-width:600px){#adw-seat{padding:28px 20px;border-radius:18px;} #adw-seat h3{font-size:24px;} #adw-seat .adw-grid{grid-template-columns:1fr;gap:12px;} #adw-seat input,#adw-seat select{font-size:16px;}}
+  </style>
+
+  <div class="adw-head">
+  <div class="adw-tag">● 线上直播 · 轻松参与</div>
+  <h3>为我预留席位</h3>
+  <p class="adw-lede">参加我们下一场轻松的线上产品演示与问答。我们会通过邮件发送参会链接和提醒；如果您无法到场，也会发送回放。</p>
+  </div>
+
+  <form id="adwSeatForm" novalidate>
+    <div class="adw-grid">
+    <div class="adw-field">
+      <label for="adwFirst">名字</label>
+      <input type="text" id="adwFirst" name="first_name" placeholder="小王" autocomplete="given-name">
+    </div>
+    <div class="adw-field">
+      <label for="adwEmail">邮箱 *</label>
+      <input type="email" id="adwEmail" name="email" required placeholder="you@company.com" autocomplete="email">
+    </div>
+    <div class="adw-field">
+      <label for="adwSegment">以下哪项最符合您的身份？</label>
+      <select id="adwSegment" name="segment">
+        <option value="">请选择…</option>
+        <option value="Independent PM">独立物业经理</option>
+        <option value="Established operator">成熟 / 多物业运营商</option>
+        <option value="Owner">业主 / 投资人</option>
+        <option value="Other">其他</option>
+      </select>
+    </div>
+    </div>
+    <!-- honeypot (spam trap — leave empty) -->
+    <input class="adw-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button type="submit">为我预留席位 →</button>
+    <p class="adw-note">绝不发送垃圾邮件。我们只会发送与本场活动相关的邮件，您可随时退订。</p>
+  </form>
+
+  <div class="adw-success" id="adwSeatSuccess">
+    <div class="adw-ok">✓</div>
+    <h4>报名成功！🎉</h4>
+    <p>请查收邮件——我们会在直播开始前发送参会链接和提醒。</p>
+  </div>
+
+  <script>
+  (function(){
+    /* ---- 1) Customer.io tracker (guarded: won't double-load) ---- */
+    if(!window.__cioLoaded && !document.getElementById('cio-tracker')){
+      var _cio = window._cio = window._cio || [];
+      var a=function(f){return function(){_cio.push([f].concat([].slice.call(arguments,0)))}};
+      var m=["load","identify","sidentify","track","page","on","off"];
+      for(var i=0;i<m.length;i++){_cio[m[i]]=a(m[i])}
+      var t=document.createElement('script'),s=document.getElementsByTagName('script')[0];
+      t.async=true;t.id='cio-tracker';
+      t.setAttribute('data-site-id','50ac3b940985dcd7031e');
+      t.setAttribute('data-use-array-params','true');
+      t.src='https://assets.customer.io/assets/track.js';   /* EU: track-eu.customer.io/assets/track.js */
+      s.parentNode.insertBefore(t,s);
+      window.__cioLoaded = true;
+    }
+
+    /* ---- 2) Form handler: identify the person into Customer.io ---- */
+    var form=document.getElementById('adwSeatForm');
+    var success=document.getElementById('adwSeatSuccess');
+    if(!form) return;
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var emailEl=document.getElementById('adwEmail');
+      var email=(emailEl.value||'').trim();
+      var first=(document.getElementById('adwFirst').value||'').trim();
+      var segment=(document.getElementById('adwSegment').value||'');
+      var honeypot=form.querySelector('input[name="website"]');
+      var valid=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+      if(!valid){ emailEl.focus(); emailEl.style.borderColor='#E0413B'; return; }
+      if(honeypot && honeypot.value){ return; } /* bot */
+      try{
+        if(window._cio && window._cio.identify){
+          window._cio.identify({
+            id: email,                       /* email as the person id */
+            email: email,
+            first_name: first,
+            segment: segment,                /* Independent PM / Established operator / Owner / Other */
+            signup_source: 'live_session_lp',
+            session_interest: 'live_session',
+            opt_in: true,
+            opt_in_date: Math.floor(Date.now()/1000),
+            created_at: Math.floor(Date.now()/1000)
+          });
+          /* Fire the event that triggers the "Save my seat" confirmation email
+             campaign in Customer.io (sent from hello@askdwell.ai). */
+          window._cio.track('saved_seat', {
+            first_name: first,
+            segment: segment,
+            signup_source: 'live_session_lp'
+          });
+        }
+      }catch(err){}
+      /* ---- 3) Confirmation email via Google Apps Script (Gmail, hello@askdwell.ai).
+              Paste your deployed Web app URL (ends in /exec) below. ---- */
+      var ADW_MAIL_ENDPOINT='https://script.google.com/macros/s/AKfycbzGBCq0GtBAcCEtuzX4dAJKHxGFzbWu7DtK-xUZJaXkjAO-d_jYJ9bmsu5Vnw64ykhUzg/exec';
+      try{
+        if(ADW_MAIL_ENDPOINT.indexOf('https://')===0 && window.fetch){
+          fetch(ADW_MAIL_ENDPOINT,{
+            method:'POST',
+            mode:'no-cors', /* fire-and-forget; Apps Script needs no CORS this way */
+            headers:{'Content-Type':'text/plain;charset=utf-8'},
+            body:JSON.stringify({email:email,first_name:first,segment:segment,website:(honeypot&&honeypot.value)||''})
+          });
+        }
+      }catch(err2){}
+      form.style.display='none';
+      success.style.display='block';
+    });
+  })();
+  </script>
+</section>
+<!-- ============================ END ASKDWELL OPT-IN ============================ -->
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a href="#top" class="footer-brand-logo demo-brand" aria-label="AskDwell 首页"><span class="demo-logo-mark" aria-hidden="true">
+<svg viewBox="0 0 24 24" fill="none">
+  <path d="M4 11.5 12 5l8 6.5" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6 10.5V19h12v-8.5" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="12" cy="14" r="2" fill="#fff"/>
+</svg>
+</span><span>askdwell</span></a>
+        <p>AI 驱动的物业运营，连接租户、员工、业主、工作流程以及您团队已在使用的系统。</p>
+        <div class="footer-social" aria-label="AskDwell 社交媒体">
+          <a href="https://www.instagram.com/askdwell.ai/" target="_blank" rel="noopener noreferrer" aria-label="AskDwell 的 Instagram" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.tiktok.com/@askdwell" target="_blank" rel="noopener noreferrer" aria-label="AskDwell 的 TikTok" title="TikTok"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 3c.3 2 1.6 3.6 3.6 3.9V9.4c-1.4 0-2.7-.4-3.6-1.1v6.4A5.6 5.6 0 1 1 10.4 9.1v2.6a3 3 0 1 0 2.6 3V3H16z"/></svg></a>
+          <a href="https://www.facebook.com/profile.php?id=61591485185193" target="_blank" rel="noopener noreferrer" aria-label="AskDwell 的 Facebook" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.5V7c0-.8.4-1.2 1.3-1.2H17V3h-2.4C11.9 3 11 4.6 11 6.6v1.9H9V11h2v10h3V11h2.2l.4-2.5H14z"/></svg></a>
+        </div>
+      </div>
+      <div class="footlinks">
+        <div class="footgroup">
+          <h5>产品</h5>
+          <a href="#product">产品</a>
+          <a href="#how">工作方式</a>
+          <a href="#compare">对比</a>
+        </div>
+        <div class="footgroup">
+          <h5>公司</h5>
+          <a href="#customer">客户案例</a>
+          <a href="#who">适用对象</a>
+        </div>
+        <div class="footgroup">
+          <h5>开始使用</h5>
+          <a href="#book">预约演示</a>
+        </div>
+      </div>
+    </div>
+    <div class="copyright" style="display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center;">
+      <div>© 2026 AskDwell。保留所有权利。 · <a href="https://askdwell.ai/terms.html" style="color:var(--sub);text-decoration:none;">服务条款</a></div>
+      <div>以 <span style="color:var(--orange2);">AI + 人性化服务</span> 打造 · 由 AskDwell 提供支持</div>
+    </div>
+  </div>
+</footer>
+
+<div class="modal" id="reportModal">
+  <div class="modal-card">
+    <div class="modal-head"><div><b>Oxford — T-12 报表与当前租金清单</b><div class="small">由 Bobby 准备的示例演示资料包</div></div><button id="closeReport">✕</button></div>
+    <div class="modal-body">
+      <div class="eyebrow" style="margin-bottom:10px">T-12 运营报表（近 12 个月）</div>
+      <table class="report">
+        <tr><td>潜在总租金</td><td>$1,248,000</td></tr>
+        <tr><td>空置及坏账损失</td><td>($62,400)</td></tr>
+        <tr class="tot"><td>有效总收入</td><td>$1,185,600</td></tr>
+        <tr><td>维修保养</td><td>$94,500</td></tr>
+        <tr><td>水电燃气</td><td>$132,000</td></tr>
+        <tr class="tot"><td>净营业收入</td><td style="color:var(--green)">$585,600</td></tr>
+      </table>
+      <div class="eyebrow" style="margin:24px 0 10px">当前租金清单</div>
+      <table class="report">
+        <tr><td>101 室 · 两居 · 正常</td><td>$2,400</td></tr>
+        <tr><td>102 室 · 两居 · 正常</td><td>$2,450</td></tr>
+        <tr><td>205 室 · 一居 · 正常</td><td>$1,900</td></tr>
+        <tr><td>210 室 · 开间 · 空置</td><td>$1,650</td></tr>
+      </table>
+      <p class="small" style="margin-top:15px">仅为示例——并非 Collab 的实际财务数据。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>35));
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+const tabs=[...document.querySelectorAll('.tab')];
+const panels=[...document.querySelectorAll('.panel')];
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  const idx=t.dataset.panel;
+  tabs.forEach(x=>x.classList.toggle('active',x===t));
+  panels.forEach(p=>p.classList.toggle('active',p.dataset.panel===idx));
+}));
+
+const modal=document.getElementById('reportModal');
+document.getElementById('openReport').addEventListener('click',()=>modal.classList.add('open'));
+document.getElementById('closeReport').addEventListener('click',()=>modal.classList.remove('open'));
+modal.addEventListener('click',e=>{if(e.target===modal) modal.classList.remove('open')});
+</script>
+
+
+<script>
+(function(){
+  const sleep = ms => new Promise(r=>setTimeout(r,ms));
+  let runToken = 0;
+
+  function resetPane(pane){
+    pane.querySelectorAll('.demo-step').forEach(el=>el.classList.remove('demo-visible'));
+    pane.querySelectorAll('.demo-action-btn').forEach(btn=>{btn.disabled=false; btn.dataset.clicked='';});
+  }
+  function reveal(el, body){
+    el.classList.add('demo-visible');
+    setTimeout(()=>{body.scrollTop=body.scrollHeight;},40);
+  }
+  function waitForAction(button, token){
+    return new Promise(resolve=>{
+      if(!button){resolve();return;}
+      const handler=()=>{
+        if(token!==runToken) return resolve();
+        button.dataset.clicked='1'; button.disabled=true;
+        button.removeEventListener('click',handler);
+        resolve();
+      };
+      button.addEventListener('click',handler,{once:true});
+    });
+  }
+  async function playPane(key){
+    const pane=document.querySelector(`.live-agent-pane[data-live-pane="${key}"]`);
+    if(!pane) return;
+    runToken++; const token=runToken;
+    document.querySelectorAll('.live-agent-pane').forEach(resetPane);
+    const body=pane.querySelector('.live-agent-body');
+    body.classList.add('demo-running'); body.scrollTop=0;
+    const steps=[...pane.querySelectorAll('.demo-step')];
+
+    if(key==='maven'){
+      for(let i=0;i<4;i++){if(token!==runToken)return; await sleep(i?700:250); reveal(steps[i],body);}
+      await waitForAction(pane.querySelector('[data-action="maven-approve"]'),token);
+      if(token!==runToken)return;
+      for(let i=4;i<steps.length;i++){await sleep(500); reveal(steps[i],body);}
+      return;
+    }
+    if(key==='ava'){
+      for(let i=0;i<2;i++){if(token!==runToken)return; await sleep(i?700:250); reveal(steps[i],body);}
+      await waitForAction(pane.querySelector('[data-action="ava-homes"]'),token);
+      if(token!==runToken)return;
+      for(let i=2;i<steps.length;i++){await sleep(550); reveal(steps[i],body);}
+      return;
+    }
+    if(key==='bobby'){
+      for(let i=0;i<2;i++){if(token!==runToken)return; await sleep(i?700:250); reveal(steps[i],body);}
+      await waitForAction(pane.querySelector('[data-action="bobby-report"]'),token);
+      if(token!==runToken)return;
+      // Open the sample report, then continue after a short delay so the workflow remains visible.
+      const modal=document.getElementById('reportModal'); if(modal) modal.classList.add('open');
+      await sleep(400); reveal(steps[2],body); await sleep(650); reveal(steps[3],body);
+      await waitForAction(pane.querySelector('[data-action="bobby-approve"]'),token);
+      if(token!==runToken)return;
+      for(let i=4;i<steps.length;i++){await sleep(500); reveal(steps[i],body);}
+      return;
+    }
+    // Colby: fully automatic conversation
+    for(let i=0;i<steps.length;i++){if(token!==runToken)return; await sleep(i?650:250); reveal(steps[i],body);}
+  }
+
+  document.querySelectorAll('.live-agent-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const key=btn.dataset.liveAgent;
+      document.querySelectorAll('.live-agent-tab').forEach(b=>b.classList.toggle('active',b===btn));
+      document.querySelectorAll('.live-agent-pane').forEach(p=>p.classList.toggle('active',p.dataset.livePane===key));
+      playPane(key);
+    });
+  });
+  // Start Colby after initial load
+  setTimeout(()=>playPane('colby'),500);
+})();
+</script>
+
+
+<script>
+document.querySelectorAll('.demo-logo-mark').forEach(mark=>{
+  mark.addEventListener('pointerenter',()=>{
+    mark.animate(
+      [{transform:'translateY(0) scale(1)'},{transform:'translateY(-5px) scale(1.08)'},{transform:'translateY(0) scale(1)'}],
+      {duration:520,easing:'cubic-bezier(.2,.8,.2,1)'}
+    );
+  });
+});
+</script>
+
+
+<div class="listings-view" id="matchingHomesView" aria-hidden="true">
+  <div class="listings-topbar">
+    <div class="listings-topbar-inner">
+      <div class="listings-brand">
+        <span class="demo-logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 11.5 12 5l8 6.5" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 10.5V19h12v-8.5" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="14" r="2" fill="#fff"/>
+          </svg>
+        </span>
+        askdwell
+      </div>
+      <button class="listings-back" id="closeMatchingHomes">← 返回 Ava</button>
+    </div>
+  </div>
+  <div class="listings-hero">
+    <div class="eyebrow">Ava 找到 2 套匹配房源</div>
+    <h2>加州大学伯克利分校附近的两居室</h2>
+    <p>约 8 月 1 日起可入住。以下示例卡片展示了 Ava 在物业授权房源库中检索后，租客将看到的内容。</p>
+  </div>
+  <div class="listing-grid">
+    <article class="listing-card">
+      <div class="listing-photo one">
+        <span class="listing-badge">最佳匹配</span>
+      </div>
+      <div class="listing-body">
+        <div class="listing-row">
+          <div>
+            <div class="listing-title">Oxford · 304 室</div>
+            <div class="listing-meta">加州伯克利 · 2 卧 · 1 卫 · 带家具</div>
+          </div>
+          <div class="listing-price">$2,895/月</div>
+        </div>
+        <p class="listing-desc">靠近加州大学伯克利分校校园的明亮带家具两居室，开放式客厅布局紧凑实用，厨房经过翻新，前往 Northside 商圈和公共交通都很便利。</p>
+        <div class="listing-features">
+          <span class="listing-feature">8 月 1 日起可入住</span>
+          <span class="listing-feature">12 个月租约</span>
+          <span class="listing-feature">靠近校园</span>
+          <span class="listing-feature">支持线上看房</span>
+        </div>
+        <div class="listing-actions">
+          <button class="listing-primary" type="button">预约看房</button>
+          <button class="listing-secondary" type="button">查看完整详情</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="listing-card">
+      <div class="listing-photo two">
+        <span class="listing-badge">同样匹配</span>
+      </div>
+      <div class="listing-body">
+        <div class="listing-row">
+          <div>
+            <div class="listing-title">Hilgard · E 室</div>
+            <div class="listing-meta">加州伯克利 · 2 卧 · 1 卫 · Northside</div>
+          </div>
+          <div class="listing-price">$3,050/月</div>
+        </div>
+        <p class="listing-desc">位于 Northside 的安静两居室，采光充足，装修已更新，前往加州大学伯克利分校十分方便。适合希望住在居住氛围浓厚的社区、同时又靠近校园的租客。</p>
+        <div class="listing-features">
+          <span class="listing-feature">8 月 1 日起可入住</span>
+          <span class="listing-feature">12 个月租约</span>
+          <span class="listing-feature">可养宠物</span>
+          <span class="listing-feature">支持现场看房</span>
+        </div>
+        <div class="listing-actions">
+          <button class="listing-primary" type="button">预约看房</button>
+          <button class="listing-secondary" type="button">查看完整详情</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+
+<script>
+(function(){
+  const view = document.getElementById('matchingHomesView');
+  const close = document.getElementById('closeMatchingHomes');
+
+  function openListings(){
+    if(!view) return;
+    view.classList.add('open');
+    view.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    view.scrollTop=0;
+  }
+  function closeListings(){
+    if(!view) return;
+    view.classList.remove('open');
+    view.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+  }
+
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('.matching-homes-trigger');
+    if(trigger){
+      e.preventDefault();
+      openListings();
+    }
+  });
+  if(close) close.addEventListener('click', closeListings);
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && view && view.classList.contains('open')) closeListings();
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  const btn = document.getElementById('showSchedulerBtn');
+  const area = document.getElementById('calendarArea');
+  if(!btn || !area) return;
+  btn.addEventListener('click', function(){
+    const isVisible = area.style.display === 'block';
+    area.style.display = isVisible ? 'none' : 'block';
+    area.setAttribute('aria-hidden', isVisible ? 'true' : 'false');
+    if(!isVisible){
+      setTimeout(function(){
+        area.scrollIntoView({behavior:'smooth', block:'start'});
+      }, 80);
+    }
+  });
+})();
+</script>
+
+</template>
+<script>
+(function(){
+  var tpl=document.getElementById('i18n-zh'); if(!tpl) return;
+  var ATTRS=['alt','placeholder','title','aria-label'];
+  var textPairs=[], htmlPairs=[], attrPairs=[];
+  var ZH_TITLE='AskDwell — AI 物业运营', EN_TITLE=document.title;
+  function kids(n){return [].filter.call(n.childNodes,function(c){return !(c.nodeType===1&&c.tagName==='SCRIPT');});}
+  function walk(a,b){
+    if(a.nodeType===1){
+      ATTRS.forEach(function(n){var x=a.getAttribute(n),y=b.getAttribute&&b.getAttribute(n);
+        if(x!==null&&y!==null&&x!==y) attrPairs.push([a,n,x,y]);});
+      if(a.tagName==='SCRIPT'||a.tagName==='STYLE'||a.tagName==='TEMPLATE') return;
+    }
+    var ac=kids(a), bc=kids(b), same=ac.length===bc.length;
+    for(var i=0;same&&i<ac.length;i++){ if(ac[i].nodeType!==bc[i].nodeType||ac[i].nodeName!==bc[i].nodeName) same=false; }
+    if(!same){
+      if(a.innerHTML!==b.innerHTML && !a.querySelector('button,input,select,script,img')) htmlPairs.push([a,a.innerHTML,b.innerHTML]);
+      return;
+    }
+    for(var j=0;j<ac.length;j++){
+      if(ac[j].nodeType===3){ if(ac[j].nodeValue!==bc[j].nodeValue) textPairs.push([ac[j],ac[j].nodeValue,bc[j].nodeValue]); }
+      else if(ac[j].nodeType===1) walk(ac[j],bc[j]);
+    }
+  }
+  var live=document.body.childNodes, ref=tpl.content.childNodes;
+  for(var k=0;k<ref.length&&k<live.length;k++){
+    if(live[k]===tpl) break;
+    if(live[k].nodeType===ref[k].nodeType&&live[k].nodeName===ref[k].nodeName){
+      if(live[k].nodeType===1) walk(live[k],ref[k]);
+      else if(live[k].nodeType===3&&live[k].nodeValue!==ref[k].nodeValue) textPairs.push([live[k],live[k].nodeValue,ref[k].nodeValue]);
+    }
+  }
+  var cur='en';
+  function setLang(l){
+    var z=l==='zh', idx=z?2:1;
+    textPairs.forEach(function(p){p[0].nodeValue=p[idx];});
+    htmlPairs.forEach(function(p){p[0].innerHTML=p[idx];});
+    attrPairs.forEach(function(p){p[0].setAttribute(p[1],z?p[3]:p[2]);});
+    document.documentElement.lang=z?'zh-CN':'en';
+    document.title=z?ZH_TITLE:EN_TITLE;
+    cur=l;
+    document.querySelectorAll('.lang-switch button').forEach(function(b){b.classList.toggle('on',b.dataset.lang===l);b.setAttribute('aria-pressed',b.dataset.lang===l);});
+    try{localStorage.setItem('askdwell_lang',l);}catch(e){}
+  }
+  // Toggle in the nav, placed before "Book a demo"
+  var sw=document.createElement('div'); sw.className='lang-switch'; sw.setAttribute('role','group'); sw.setAttribute('aria-label','Language / 语言');
+  sw.innerHTML='<button type="button" data-lang="en">EN</button><button type="button" data-lang="zh">中文</button>';
+  var navbtn=document.querySelector('.navlinks .navbtn'); navbtn.parentNode.insertBefore(sw,navbtn);
+  sw.addEventListener('click',function(e){var b=e.target.closest('button'); if(b&&b.dataset.lang!==cur) setLang(b.dataset.lang);});
+  // Initial language: ?lang= / #zh  >  saved choice  >  browser language
+  var init='en', q=(new URLSearchParams(location.search).get('lang')||'').toLowerCase();
+  if(q.indexOf('zh')===0||location.hash==='#zh') init='zh';
+  else if(q==='en') init='en';
+  else { var saved=null; try{saved=localStorage.getItem('askdwell_lang');}catch(e){}
+    if(saved==='zh'||saved==='en') init=saved;
+    else if((navigator.language||'').toLowerCase().indexOf('zh')===0) init='zh'; }
+  setLang(init);
+  window.askdwellSetLang=setLang;
 })();
 </script>
 
